@@ -1,197 +1,276 @@
-// FIXED Firebase Functions Gen 2 - Proper Cloud Run Structure
+// Firebase Functions Gen 2 with Real Google Analytics 4 Integration
 const { onCall } = require('firebase-functions/v2/https');
 const { setGlobalOptions } = require('firebase-functions/v2');
+const { BetaAnalyticsDataClient } = require('@google-analytics/data');
 
 // Set global options for all functions
 setGlobalOptions({
   region: 'us-central1',
   memory: '256MiB',
   timeoutSeconds: 60,
-  maxInstances: 10
 });
 
-// Health Check Function - Gen 2 Callable (FIXED)
+// Initialize Google Analytics Data API client
+const analyticsDataClient = new BetaAnalyticsDataClient({
+  keyFilename: './service-account-key.json', // The JSON file you downloaded
+});
+
+// Your GA4 Property ID
+const GA4_PROPERTY_ID = '495789768'; // Your actual property ID
+
+// Health Check Function
 exports.healthCheck = onCall({
+  invoker: 'public',
   cors: true,
-  invoker: 'public'
+  maxInstances: 10
 }, async (request) => {
   try {
-    const response = {
+    return {
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      message: 'SargaSolutions Firebase Functions are running successfully!',
-      version: '2.1.0',
-      method: 'callable-gen2-fixed'
+      message: 'Firebase Functions with GA4 integration operational',
+      version: '2.0',
+      propertyId: GA4_PROPERTY_ID,
+      features: ['real-time-analytics', 'ga4-integration', 'caribbean-focus']
     };
-    
-    return response;
   } catch (error) {
     console.error('Health check error:', error);
     throw new Error(`Health check failed: ${error.message}`);
   }
 });
 
-// Test Analytics Function - Gen 2 Callable (FIXED)
+// Test Analytics Connection Function
 exports.testAnalytics = onCall({
+  invoker: 'public',
   cors: true,
-  invoker: 'public'
+  maxInstances: 10
 }, async (request) => {
   try {
-    const testData = {
-      message: 'Analytics test successful!',
+    // Test GA4 connection with a simple request
+    const [response] = await analyticsDataClient.runReport({
+      property: `properties/${GA4_PROPERTY_ID}`,
+      dateRanges: [
+        {
+          startDate: 'today',
+          endDate: 'today',
+        },
+      ],
+      metrics: [
+        { name: 'activeUsers' },
+      ],
+    });
+
+    return {
+      success: true,
+      message: 'Google Analytics 4 connection successful!',
       timestamp: new Date().toISOString(),
-      sampleMetrics: {
-        pageViews: 1247,
-        uniqueVisitors: 892,
-        bounceRate: 45.2,
-        avgSessionDuration: '2m 34s'
-      },
-      method: 'callable-gen2-fixed',
-      status: 'success'
+      propertyId: GA4_PROPERTY_ID,
+      dataAvailable: response.rows?.length > 0,
+      activeUsers: response.rows?.[0]?.metricValues?.[0]?.value || '0',
+      testConnection: 'PASSED'
     };
-    
-    return testData;
   } catch (error) {
-    console.error('Test analytics error:', error);
-    throw new Error(`Test analytics failed: ${error.message}`);
+    console.error('Analytics test error:', error);
+    return {
+      success: false,
+      message: `GA4 connection failed: ${error.message}`,
+      timestamp: new Date().toISOString(),
+      error: error.code || 'UNKNOWN_ERROR',
+      testConnection: 'FAILED'
+    };
   }
 });
 
-// Enhanced Analytics Data Function - Gen 2 Callable (FIXED)
+// Enhanced Analytics Data Function with Real GA4 Data
 exports.getAnalyticsData = onCall({
+  invoker: 'public',
   cors: true,
-  invoker: 'public'
+  maxInstances: 10
 }, async (request) => {
   try {
-    // Enhanced sample analytics data
-    const analyticsData = {
-      overview: {
-        totalVisitors: 15847,
-        totalPageViews: 23691,
-        totalSessions: 18432,
-        bounceRate: 42.8,
-        avgSessionDuration: '3m 12s',
-        newUsers: 67.3,
-        returningUsers: 32.7
-      },
+    // Get real-time active users
+    const [realtimeResponse] = await analyticsDataClient.runRealtimeReport({
+      property: `properties/${GA4_PROPERTY_ID}`,
+      metrics: [
+        { name: 'activeUsers' },
+      ],
+    });
+
+    // Get 7-day analytics data
+    const [weeklyResponse] = await analyticsDataClient.runReport({
+      property: `properties/${GA4_PROPERTY_ID}`,
+      dateRanges: [
+        {
+          startDate: '7daysAgo',
+          endDate: 'today',
+        },
+      ],
+      metrics: [
+        { name: 'sessions' },
+        { name: 'screenPageViews' },
+        { name: 'bounceRate' },
+        { name: 'averageSessionDuration' },
+        { name: 'totalUsers' },
+      ],
+    });
+
+    // Get country data with Caribbean focus
+    const [countryResponse] = await analyticsDataClient.runReport({
+      property: `properties/${GA4_PROPERTY_ID}`,
+      dateRanges: [
+        {
+          startDate: '7daysAgo',
+          endDate: 'today',
+        },
+      ],
+      dimensions: [
+        { name: 'country' },
+      ],
+      metrics: [
+        { name: 'sessions' },
+        { name: 'totalUsers' },
+      ],
+      orderBys: [
+        {
+          metric: { metricName: 'sessions' },
+          desc: true,
+        },
+      ],
+      limit: 20,
+    });
+
+    // Process country data with Caribbean focus
+    const countries = countryResponse.rows?.map(row => ({
+      country: row.dimensionValues[0].value,
+      sessions: parseInt(row.metricValues[0].value) || 0,
+      users: parseInt(row.metricValues[1].value) || 0,
+      isCaribbean: [
+        'Jamaica', 'Barbados', 'Trinidad and Tobago', 'Dominican Republic',
+        'Puerto Rico', 'Haiti', 'Cuba', 'Bahamas', 'Martinique', 'Guadeloupe',
+        'Saint Lucia', 'Grenada', 'Saint Vincent and the Grenadines',
+        'Antigua and Barbuda', 'Dominica', 'Saint Kitts and Nevis'
+      ].includes(row.dimensionValues[0].value)
+    })) || [];
+
+    // Sort to prioritize Caribbean countries
+    countries.sort((a, b) => {
+      if (a.isCaribbean && !b.isCaribbean) return -1;
+      if (!a.isCaribbean && b.isCaribbean) return 1;
+      return b.sessions - a.sessions;
+    });
+
+    const realTimeUsers = parseInt(realtimeResponse.rows?.[0]?.metricValues?.[0]?.value || '0');
+    const totalSessions = parseInt(weeklyResponse.rows?.[0]?.metricValues?.[0]?.value || '0');
+    const totalPageViews = parseInt(weeklyResponse.rows?.[0]?.metricValues?.[1]?.value || '0');
+    const bounceRate = parseFloat(weeklyResponse.rows?.[0]?.metricValues?.[2]?.value || '0');
+    const totalUsers = parseInt(weeklyResponse.rows?.[0]?.metricValues?.[4]?.value || '0');
+
+    return {
+      success: true,
+      timestamp: new Date().toISOString(),
+      source: 'google-analytics-4',
+      propertyId: GA4_PROPERTY_ID,
       realTime: {
-        activeUsers: Math.floor(Math.random() * 50) + 10,
-        activePages: [
-          { page: '/home', users: Math.floor(Math.random() * 20) + 5 },
-          { page: '/services', users: Math.floor(Math.random() * 15) + 3 },
-          { page: '/about', users: Math.floor(Math.random() * 10) + 2 },
-          { page: '/contact', users: Math.floor(Math.random() * 8) + 1 }
-        ]
+        activeUsers: realTimeUsers
       },
       traffic: {
-        last7Days: [
-          { date: '2025-07-01', visitors: 2341, pageViews: 3567 },
-          { date: '2025-07-02', visitors: 2156, pageViews: 3289 },
-          { date: '2025-07-03', visitors: 2890, pageViews: 4123 },
-          { date: '2025-07-04', visitors: 3124, pageViews: 4567 },
-          { date: '2025-07-05', visitors: 2789, pageViews: 3987 },
-          { date: '2025-07-06', visitors: 2567, pageViews: 3654 },
-          { date: '2025-07-07', visitors: 2980, pageViews: 4234 }
-        ]
+        sessions: totalSessions,
+        pageViews: totalPageViews,
+        bounceRate: Math.round(bounceRate * 100), // Convert to percentage
+        users: totalUsers
       },
-      topPages: [
-        { page: '/home', views: 8932, rate: 35.2 },
-        { page: '/services/web-development', views: 4567, rate: 18.1 },
-        { page: '/services/cloud-solutions', views: 3421, rate: 13.5 },
-        { page: '/about', views: 2891, rate: 11.4 },
-        { page: '/contact', views: 2156, rate: 8.5 },
-        { page: '/blog', views: 1789, rate: 7.1 },
-        { page: '/portfolio', views: 1567, rate: 6.2 }
-      ],
-      referrers: [
-        { source: 'google.com', visitors: 8934, percentage: 56.4 },
-        { source: 'linkedin.com', visitors: 2341, percentage: 14.8 },
-        { source: 'direct', visitors: 1987, percentage: 12.5 },
-        { source: 'github.com', visitors: 1234, percentage: 7.8 },
-        { source: 'stackoverflow.com', visitors: 892, percentage: 5.6 },
-        { source: 'medium.com', visitors: 459, percentage: 2.9 }
-      ],
-      countries: [
-        { country: 'United States', code: 'US', visitors: 7234, flag: '🇺🇸', lat: 39.8283, lng: -98.5795 },
-        { country: 'Canada', code: 'CA', visitors: 2156, flag: '🇨🇦', lat: 56.1304, lng: -106.3468 },
-        { country: 'United Kingdom', code: 'GB', visitors: 1891, flag: '🇬🇧', lat: 55.3781, lng: -3.4360 },
-        { country: 'Germany', code: 'DE', visitors: 1456, flag: '🇩🇪', lat: 51.1657, lng: 10.4515 },
-        { country: 'France', code: 'FR', visitors: 1234, flag: '🇫🇷', lat: 46.2276, lng: 2.2137 },
-        { country: 'Australia', code: 'AU', visitors: 987, flag: '🇦🇺', lat: -25.2744, lng: 133.7751 },
-        { country: 'India', code: 'IN', visitors: 889, flag: '🇮🇳', lat: 20.5937, lng: 78.9629 }
-      ],
-      devices: {
-        desktop: { visitors: 9234, percentage: 58.2 },
-        mobile: { visitors: 5891, percentage: 37.1 },
-        tablet: { visitors: 722, percentage: 4.7 }
+      countries: countries.slice(0, 15), // Top 15 countries
+      caribbeanMetrics: {
+        countries: countries.filter(c => c.isCaribbean),
+        totalSessions: countries.filter(c => c.isCaribbean).reduce((sum, c) => sum + c.sessions, 0),
+        totalUsers: countries.filter(c => c.isCaribbean).reduce((sum, c) => sum + c.users, 0)
       },
-      browsers: [
-        { browser: 'Chrome', visitors: 11234, percentage: 70.9 },
-        { browser: 'Safari', visitors: 2891, percentage: 18.2 },
-        { browser: 'Firefox', visitors: 1234, percentage: 7.8 },
-        { browser: 'Edge', visitors: 456, percentage: 2.9 },
-        { browser: 'Other', visitors: 32, percentage: 0.2 }
-      ],
-      conversionFunnel: [
-        { step: 'Home Page Visit', users: 15847, rate: 100 },
-        { step: 'Service Page View', users: 8934, rate: 56.4 },
-        { step: 'Contact Form View', users: 3456, rate: 21.8 },
-        { step: 'Contact Form Submit', users: 892, rate: 5.6 },
-        { step: 'Project Inquiry', users: 234, rate: 1.5 }
-      ],
-      goals: {
-        contactFormSubmissions: 892,
-        newsletterSignups: 456,
-        projectInquiries: 234,
-        blogSubscriptions: 167
-      },
-      performance: {
-        avgLoadTime: '2.1s',
-        avgFirstContentfulPaint: '1.3s',
-        avgLargestContentfulPaint: '2.8s',
-        cumulativeLayoutShift: 0.09
-      },
-      lastUpdated: new Date().toISOString(),
-      method: 'callable-gen2-fixed',
-      status: 'success'
+      dataRange: '7 days',
+      message: 'Real Google Analytics 4 data retrieved successfully'
     };
-
-    return analyticsData;
   } catch (error) {
     console.error('Analytics data error:', error);
-    throw new Error(`Failed to fetch analytics data: ${error.message}`);
+    
+    // Fallback to sample data if GA4 fails
+    return {
+      success: false,
+      timestamp: new Date().toISOString(),
+      source: 'sample-data-fallback',
+      error: error.message,
+      message: `GA4 error: ${error.message}. Using sample data.`,
+      realTime: { activeUsers: Math.floor(Math.random() * 50) + 10 },
+      traffic: {
+        sessions: 18432,
+        pageViews: 23691,
+        bounceRate: 43,
+        users: 15847
+      },
+      countries: [
+        { country: 'Jamaica', sessions: 3420, users: 2890, isCaribbean: true },
+        { country: 'United States', sessions: 8234, users: 6912, isCaribbean: false },
+        { country: 'Barbados', sessions: 1876, users: 1534, isCaribbean: true },
+        { country: 'Trinidad and Tobago', sessions: 1654, users: 1398, isCaribbean: true },
+        { country: 'Canada', sessions: 1243, users: 1087, isCaribbean: false },
+      ]
+    };
   }
 });
 
-// Visitor Trends Function - Gen 2 Callable (FIXED)
+// Visitor Trends Function with Real GA4 Data
 exports.getVisitorTrends = onCall({
+  invoker: 'public',
   cors: true,
-  invoker: 'public'
+  maxInstances: 10
 }, async (request) => {
   try {
-    const trends = {
-      hourlyTrends: Array.from({ length: 24 }, (_, i) => ({
-        hour: i,
-        visitors: Math.floor(Math.random() * 200) + 50
-      })),
-      weeklyTrends: [
-        { day: 'Monday', visitors: 2341, change: +5.2 },
-        { day: 'Tuesday', visitors: 2156, change: -7.9 },
-        { day: 'Wednesday', visitors: 2890, change: +34.1 },
-        { day: 'Thursday', visitors: 3124, change: +8.1 },
-        { day: 'Friday', visitors: 2789, change: -10.7 },
-        { day: 'Saturday', visitors: 1567, change: -43.8 },
-        { day: 'Sunday', visitors: 1234, change: -21.3 }
+    // Get daily data for the last 30 days
+    const [response] = await analyticsDataClient.runReport({
+      property: `properties/${GA4_PROPERTY_ID}`,
+      dateRanges: [
+        {
+          startDate: '30daysAgo',
+          endDate: 'today',
+        },
       ],
-      monthlyGrowth: +23.4,
-      yearlyGrowth: +156.7,
-      method: 'callable-gen2-fixed',
-      status: 'success'
-    };
+      dimensions: [
+        { name: 'date' },
+      ],
+      metrics: [
+        { name: 'sessions' },
+        { name: 'totalUsers' },
+        { name: 'screenPageViews' },
+      ],
+      orderBys: [
+        {
+          dimension: { dimensionName: 'date' },
+          desc: false,
+        },
+      ],
+    });
 
-    return trends;
+    const trends = response.rows?.map(row => ({
+      date: row.dimensionValues[0].value,
+      sessions: parseInt(row.metricValues[0].value) || 0,
+      users: parseInt(row.metricValues[1].value) || 0,
+      pageviews: parseInt(row.metricValues[2].value) || 0
+    })) || [];
+
+    return {
+      success: true,
+      timestamp: new Date().toISOString(),
+      source: 'google-analytics-4',
+      propertyId: GA4_PROPERTY_ID,
+      trends,
+      summary: {
+        totalDays: trends.length,
+        avgSessionsPerDay: trends.reduce((sum, day) => sum + day.sessions, 0) / (trends.length || 1),
+        avgUsersPerDay: trends.reduce((sum, day) => sum + day.users, 0) / (trends.length || 1),
+        peakDay: trends.reduce((peak, day) => day.sessions > peak.sessions ? day : peak, trends[0] || { sessions: 0 })
+      },
+      message: 'Real visitor trends data retrieved successfully'
+    };
   } catch (error) {
     console.error('Visitor trends error:', error);
-    throw new Error(`Failed to fetch visitor trends: ${error.message}`);
+    throw new Error(`Failed to get visitor trends: ${error.message}`);
   }
 });
