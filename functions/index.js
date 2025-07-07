@@ -33,7 +33,7 @@ const corsHandler = (req, res, next) => {
 };
 
 // Health Check Function
-exports.healthCheck = onRequest((req, res) => {
+exports.healthCheck = onRequest({ invoker: 'public' }, (req, res) => {
   corsHandler(req, res, () => {
     try {
       const response = {
@@ -56,7 +56,7 @@ exports.healthCheck = onRequest((req, res) => {
 });
 
 // Test Analytics Function
-exports.testAnalytics = onRequest((req, res) => {
+exports.testAnalytics = onRequest({ invoker: 'public' }, (req, res) => {
   corsHandler(req, res, () => {
     try {
       const testData = {
@@ -84,7 +84,7 @@ exports.testAnalytics = onRequest((req, res) => {
 });
 
 // Enhanced Analytics Data Function
-exports.getAnalyticsData = onRequest((req, res) => {
+exports.getAnalyticsData = onRequest({ invoker: 'public' }, (req, res) => {
   corsHandler(req, res, () => {
     try {
       // Enhanced sample analytics data
@@ -192,7 +192,7 @@ exports.getAnalyticsData = onRequest((req, res) => {
 });
 
 // Visitor Trends Function
-exports.getVisitorTrends = onRequest((req, res) => {
+exports.getVisitorTrends = onRequest({ invoker: 'public' }, (req, res) => {
   corsHandler(req, res, () => {
     try {
       const trends = {
