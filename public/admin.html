@@ -924,11 +924,7 @@
         const auth = getAuth(app);
         const functions = getFunctions(app);
 
-        // Firebase Callable Functions
-        const getAnalyticsData = httpsCallable(functions, 'getAnalyticsData');
-        const testAnalytics = httpsCallable(functions, 'testAnalytics');
-        const healthCheck = httpsCallable(functions, 'healthCheck');
-        const getVisitorTrends = httpsCallable(functions, 'getVisitorTrends');
+        // Firebase Callable Functions will be created when needed
 
         // Global variables
         let contactsData = [];
@@ -1143,6 +1139,9 @@
                 // Show loading state
                 showAnalyticsLoading();
                 hideMessages();
+                
+                // Create callable function here
+                const getAnalyticsData = httpsCallable(functions, 'getAnalyticsData');
                 
                 // Call Firebase Callable Function
                 const result = await getAnalyticsData();
@@ -1599,4 +1598,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
