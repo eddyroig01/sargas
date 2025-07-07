@@ -1157,7 +1157,8 @@
                 console.log('Analytics result:', analyticsData);
                 
                 if (analyticsData) {
-                    analyticsData = analyticsData;
+                    // Store analytics data globally
+                    window.currentAnalyticsData = analyticsData;
                     analyticsInitialized = true;
                     
                     console.log('Processing analytics data:', analyticsData);
@@ -1510,8 +1511,8 @@
             document.getElementById('todayCount').textContent = todayContacts + todayNewsletter;
             
             // Update total visitors from analytics
-            if (analyticsData && analyticsData.traffic) {
-                document.getElementById('totalVisitors').textContent = analyticsData.traffic.users || '0';
+            if (window.currentAnalyticsData && window.currentAnalyticsData.traffic) {
+                document.getElementById('totalVisitors').textContent = window.currentAnalyticsData.traffic.users || '0';
             } else {
                 document.getElementById('totalVisitors').textContent = '0';
             }
