@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SargaSolutions - Autonomous Maritime Solutions</title>
+    <title>SARGAS.AI - Autonomous Maritime Solutions</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -76,6 +76,17 @@
             padding: 15px 40px;
             max-width: 1600px;
             margin: 0 auto;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-image {
+            height: 40px;
+            width: auto;
         }
         
         .logo {
@@ -159,48 +170,8 @@
             overflow: hidden;
         }
         
-        /* Green line effect with interruption */
+        /* Hero Section Patterns */
         .hero-section::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            top: 0;
-            width: 2px;
-            height: 35%;
-            background: linear-gradient(to bottom, var(--accent-green), var(--accent-green));
-            transform: translateX(-50%);
-            z-index: 1;
-        }
-        
-        .hero-section::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            bottom: 0;
-            width: 2px;
-            height: 35%;
-            background: linear-gradient(to top, var(--accent-green), var(--accent-green));
-            transform: translateX(-50%);
-            z-index: 1;
-        }
-        
-        .hero-visual {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 60%;
-            height: 100%;
-            background: var(--tech-gray);
-            border-left: 2px solid var(--accent-green);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: var(--text-gray);
-            z-index: 1;
-        }
-        
-        .hero-visual::before {
             content: '';
             position: absolute;
             top: 0;
@@ -208,9 +179,417 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 30% 20%, var(--glow-green) 0%, transparent 50%),
-                radial-gradient(circle at 70% 80%, var(--glow-green) 0%, transparent 50%);
-            opacity: 0.1;
+                radial-gradient(circle at 15% 25%, var(--glow-green) 0%, transparent 30%),
+                radial-gradient(circle at 85% 75%, var(--glow-green) 0%, transparent 30%);
+            opacity: 0.08;
+            z-index: 0;
+        }
+        
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        /* Circuit Pattern Animations */
+        .circuit-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        
+        .circuit-line {
+            position: absolute;
+            background: var(--accent-green);
+            opacity: 0.6;
+        }
+        
+        .circuit-node {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--accent-green);
+            animation: nodePulse 2s ease-in-out infinite;
+        }
+        
+        /* Floating Data Points */
+        .data-points {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        
+        .data-point {
+            position: absolute;
+            color: var(--accent-green);
+            font-size: 12px;
+            opacity: 0.7;
+            animation: floatUpDown 4s ease-in-out infinite;
+        }
+        
+        /* Scan Lines */
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+            opacity: 0;
+            animation: scanMove 6s linear infinite;
+        }
+        
+        /* Animations */
+        @keyframes pulseGlow {
+            0%, 100% {
+                opacity: 0.3;
+                box-shadow: 0 0 5px var(--accent-green);
+            }
+            50% {
+                opacity: 0.8;
+                box-shadow: 0 0 20px var(--accent-green);
+            }
+        }
+        
+        @keyframes nodePulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes floatUpDown {
+            0%, 100% {
+                transform: translateY(0px);
+                opacity: 0.4;
+            }
+            50% {
+                transform: translateY(-15px);
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes scanMove {
+            0% {
+                top: -5px;
+                opacity: 0;
+            }
+            10%, 90% {
+                opacity: 0.6;
+            }
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+        
+        .horizontal-1 {
+            width: 200px;
+            height: 2px;
+            top: 25%;
+            left: 15%;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+        
+        .horizontal-2 {
+            width: 150px;
+            height: 2px;
+            top: 75%;
+            right: 20%;
+            animation: pulseGlow 3s ease-in-out infinite 1.5s;
+        }
+        
+        .vertical-1 {
+            width: 2px;
+            height: 120px;
+            top: 30%;
+            left: 35%;
+            animation: pulseGlow 3s ease-in-out infinite 0.5s;
+        }
+        
+        .vertical-2 {
+            width: 2px;
+            height: 80px;
+            top: 20%;
+            right: 25%;
+            animation: pulseGlow 3s ease-in-out infinite 2s;
+        }
+        
+        .node-1 {
+            top: 25%;
+            left: 35%;
+            animation-delay: 0s;
+        }
+        
+        .node-2 {
+            top: 25%;
+            left: 33%;
+            animation-delay: 0.3s;
+        }
+        
+        .node-3 {
+            top: 75%;
+            right: 20%;
+            animation-delay: 0.6s;
+        }
+        
+        .node-4 {
+            top: 50%;
+            left: 50%;
+            animation-delay: 0.9s;
+        }
+        
+        .point-1 {
+            top: 20%;
+            left: 60%;
+            animation-delay: 0s;
+        }
+        
+        .point-2 {
+            top: 40%;
+            left: 25%;
+            animation-delay: 0.8s;
+        }
+        
+        .point-3 {
+            top: 60%;
+            right: 30%;
+            animation-delay: 1.6s;
+        }
+        
+        .point-4 {
+            top: 80%;
+            left: 45%;
+            animation-delay: 2.4s;
+        }
+        
+        .point-5 {
+            top: 35%;
+            right: 15%;
+            animation-delay: 3.2s;
+        }
+        
+        .scan-1 {
+            animation-delay: 0s;
+        }
+        
+        .scan-2 {
+            animation-delay: 3s;
+        }
+        
+        /* Left Side Patterns */
+        .hero-left-patterns {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        /* Right Side Patterns */
+        .hero-right-patterns {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .right-pattern {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .right-h1 {
+            width: 180px;
+            height: 2px;
+            top: 35%;
+            right: 20%;
+            animation: pulseGlow 3s ease-in-out infinite 0.8s;
+        }
+        
+        .right-h2 {
+            width: 120px;
+            height: 2px;
+            top: 65%;
+            right: 15%;
+            animation: pulseGlow 3s ease-in-out infinite 2.3s;
+        }
+        
+        .right-v1 {
+            width: 2px;
+            height: 100px;
+            top: 20%;
+            right: 30%;
+            animation: pulseGlow 3s ease-in-out infinite 1.3s;
+        }
+        
+        .right-v2 {
+            width: 2px;
+            height: 80px;
+            top: 50%;
+            right: 40%;
+            animation: pulseGlow 3s ease-in-out infinite 2.1s;
+        }
+        
+        .right-node-1 {
+            top: 35%;
+            right: 30%;
+            animation-delay: 0.5s;
+        }
+        
+        .right-node-2 {
+            top: 50%;
+            right: 40%;
+            animation-delay: 1s;
+        }
+        
+        .right-node-3 {
+            top: 65%;
+            right: 25%;
+            animation-delay: 1.5s;
+        }
+        
+        .right-data .right-point-1 {
+            top: 25%;
+            right: 45%;
+            animation-delay: 0.6s;
+        }
+        
+        .right-data .right-point-2 {
+            top: 45%;
+            right: 20%;
+            animation-delay: 1.4s;
+        }
+        
+        .right-data .right-point-3 {
+            top: 70%;
+            right: 35%;
+            animation-delay: 2.2s;
+        }
+        
+        .right-data .right-point-4 {
+            top: 80%;
+            right: 50%;
+            animation-delay: 3s;
+        }
+        
+        .right-data .right-point-5 {
+            top: 30%;
+            right: 15%;
+            animation-delay: 3.8s;
+        }
+        
+        .right-scan-1 {
+            animation-delay: 2s;
+        }
+        
+        .right-scan-2 {
+            animation-delay: 5s;
+        }
+        
+        .left-pattern {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .left-h1 {
+            width: 180px;
+            height: 2px;
+            top: 35%;
+            left: 20%;
+            animation: pulseGlow 3s ease-in-out infinite 0.5s;
+        }
+        
+        .left-h2 {
+            width: 120px;
+            height: 2px;
+            top: 65%;
+            left: 15%;
+            animation: pulseGlow 3s ease-in-out infinite 2s;
+        }
+        
+        .left-v1 {
+            width: 2px;
+            height: 100px;
+            top: 20%;
+            left: 30%;
+            animation: pulseGlow 3s ease-in-out infinite 1s;
+        }
+        
+        .left-v2 {
+            width: 2px;
+            height: 80px;
+            top: 50%;
+            left: 40%;
+            animation: pulseGlow 3s ease-in-out infinite 1.8s;
+        }
+        
+        .left-node-1 {
+            top: 35%;
+            left: 30%;
+            animation-delay: 0.2s;
+        }
+        
+        .left-node-2 {
+            top: 50%;
+            left: 40%;
+            animation-delay: 0.7s;
+        }
+        
+        .left-node-3 {
+            top: 65%;
+            left: 25%;
+            animation-delay: 1.2s;
+        }
+        
+        .left-data .left-point-1 {
+            top: 25%;
+            left: 45%;
+            animation-delay: 0.3s;
+        }
+        
+        .left-data .left-point-2 {
+            top: 45%;
+            left: 20%;
+            animation-delay: 1.1s;
+        }
+        
+        .left-data .left-point-3 {
+            top: 70%;
+            left: 35%;
+            animation-delay: 1.9s;
+        }
+        
+        .left-data .left-point-4 {
+            top: 80%;
+            left: 50%;
+            animation-delay: 2.7s;
+        }
+        
+        .left-scan-1 {
+            animation-delay: 1s;
+        }
+        
+        .left-scan-2 {
+            animation-delay: 4s;
         }
         
         .hero-content {
@@ -218,8 +597,24 @@
             margin: 0 auto;
             padding: 0 40px;
             position: relative;
-            z-index: 2;
-            width: 45%;
+            z-index: 3;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* Hero Content Patterns */
+        .hero-content::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            right: -50px;
+            bottom: -50px;
+            background: 
+                radial-gradient(circle at 20% 30%, var(--glow-green) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, var(--glow-green) 0%, transparent 40%);
+            opacity: 0.05;
+            z-index: -1;
         }
         
         .tech-badge {
@@ -249,9 +644,9 @@
         .hero-subtitle {
             font-size: 18px;
             color: var(--text-gray);
-            margin-bottom: 40px;
+            margin: 0 auto 40px;
             font-weight: 400;
-            max-width: 500px;
+            max-width: 600px;
             line-height: 1.7;
         }
         
@@ -343,6 +738,62 @@
             line-height: 1.7;
         }
         
+        .section-image {
+            width: 100%;
+            max-width: 700px;
+            margin: 40px auto;
+            display: block;
+        }
+        
+        .sargassum-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border: 2px solid var(--border-green);
+            border-radius: 0;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            animation: imageGlow 3s ease-in-out infinite;
+        }
+        
+        .sargassum-image:hover {
+            transform: scale(1.02);
+            border-color: var(--accent-green);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+        }
+        
+        .sargassum-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
+            animation: scanImage 4s linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        @keyframes imageGlow {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+            }
+        }
+        
+        @keyframes scanImage {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+        
         .problem-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -402,16 +853,16 @@
         }
         
         .solution-card {
-            background: linear-gradient(135deg, var(--tech-gray) 0%, var(--secondary-black) 100%);
-            border: 1px solid var(--border-green);
-            padding: 50px;
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 50px;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
+    background: linear-gradient(135deg, var(--tech-gray) 0%, var(--secondary-black) 100%);
+    border: 1px solid var(--border-green);
+    padding: 50px;
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 50px;
+    align-items: end; /* This will align both items to the bottom */
+    position: relative;
+    overflow: hidden;
+}
         
         .solution-card.mirrored {
             grid-template-columns: 400px 1fr;
@@ -440,18 +891,12 @@
             position: relative;
         }
         
-        .solution-visual::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 80px;
-            height: 80px;
-            border: 2px solid var(--accent-green);
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 2s linear infinite;
-            transform: translate(-50%, -50%);
+        .solution-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 0;
+            display: block;
         }
         
         @keyframes spin {
@@ -578,8 +1023,7 @@
         }
         
         .lidar-video-container {
-            max-width: 1200px;
-            margin: 0 auto;
+            width: 100%;
             text-align: center;
         }
         
@@ -599,7 +1043,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 4px;
+            border-radius: 0;
+            display: block;
         }
         
         .lidar-video-placeholder::before {
@@ -670,18 +1115,12 @@
             position: relative;
         }
         
-        .feed-display::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 60px;
-            height: 60px;
-            border: 2px solid var(--accent-green);
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1.5s linear infinite;
-            transform: translate(-50%, -50%);
+        .detection-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0;
+            display: block;
         }
         
         /* Contact Section */
@@ -871,21 +1310,24 @@
             font-size: 12px;
             text-transform: uppercase;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .newsletter-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+        }
+        
+        .newsletter-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
         }
         
         /* Responsive Design */
         @media (max-width: 1024px) {
             .hero-content {
                 width: 100%;
-            }
-            
-            .hero-visual {
-                display: none;
-            }
-            
-            .solution-card {
-                grid-template-columns: 1fr;
-                text-align: center;
             }
             
             .about-content {
@@ -933,7 +1375,10 @@
     <!-- Sleek Header -->
     <header class="header">
         <nav class="nav-container">
-            <div class="logo">SargaSolutions</div>
+            <div class="logo-section">
+                <img src="Assets/logo.png" alt="SargaSolutions Logo" class="logo-image">
+                <div class="logo">SARGAS.AI</div>
+            </div>
             <ul class="nav-menu">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#problem">Problem</a></li>
@@ -947,19 +1392,58 @@
 
     <!-- Hero Section with Visual Focus -->
     <section id="home" class="hero-section">
-        <div class="hero-visual">
-            <div style="text-align: center;">
-                <div style="margin-bottom: 20px; font-size: 24px; color: var(--accent-green);">🚁</div>
-                <div>Hero Video/Animation Placeholder</div>
-                <div style="font-size: 12px; margin-top: 10px;">Autonomous Maritime Operations</div>
+        <!-- Left side circuit patterns -->
+        <div class="hero-left-patterns">
+            <div class="circuit-pattern left-pattern">
+                <div class="circuit-line left-h1"></div>
+                <div class="circuit-line left-h2"></div>
+                <div class="circuit-line left-v1"></div>
+                <div class="circuit-line left-v2"></div>
+                <div class="circuit-node left-node-1"></div>
+                <div class="circuit-node left-node-2"></div>
+                <div class="circuit-node left-node-3"></div>
             </div>
+            
+            <div class="data-points left-data">
+                <div class="data-point left-point-1">◆</div>
+                <div class="data-point left-point-2">●</div>
+                <div class="data-point left-point-3">▲</div>
+                <div class="data-point left-point-4">■</div>
+            </div>
+            
+            <div class="scan-line left-scan-1"></div>
+            <div class="scan-line left-scan-2"></div>
+        </div>
+        
+        <!-- Right side circuit patterns -->
+        <div class="hero-right-patterns">
+            <div class="circuit-pattern right-pattern">
+                <div class="circuit-line right-h1"></div>
+                <div class="circuit-line right-h2"></div>
+                <div class="circuit-line right-v1"></div>
+                <div class="circuit-line right-v2"></div>
+                <div class="circuit-node right-node-1"></div>
+                <div class="circuit-node right-node-2"></div>
+                <div class="circuit-node right-node-3"></div>
+            </div>
+            
+            <div class="data-points right-data">
+                <div class="data-point right-point-1">◆</div>
+                <div class="data-point right-point-2">●</div>
+                <div class="data-point right-point-3">▲</div>
+                <div class="data-point right-point-4">■</div>
+                <div class="data-point right-point-5">◇</div>
+            </div>
+            
+            <div class="scan-line right-scan-1"></div>
+            <div class="scan-line right-scan-2"></div>
         </div>
         
         <div class="hero-content">
             <div class="tech-badge">Next-Gen Maritime Tech</div>
             <h1 class="hero-title">Autonomous Maritime Solutions</h1>
             <p class="hero-subtitle">
-                Revolutionary watercraft technology for sargassum seaweed collection and maritime logistics. 
+                Revolutionary watercraft technology for sargassum seaweed collection and maritime operations. 
                 Protecting coastlines with AI-powered autonomous vessels and predictive analytics.
             </p>
             <a href="#solutions" class="cta-button">Explore Solutions</a>
@@ -973,10 +1457,12 @@
                 <div class="section-badge">Critical Challenge</div>
                 <h2 class="section-title">The Sargassum Challenge</h2>
                 <p class="section-subtitle">
-                    Massive sargassum blooms threaten Caribbean beaches, marine ecosystems, and tourism economies. 
+                    Massive sargassum blooms threaten beaches globally, marine ecosystems, and tourism economies. 
                     Current solutions are ineffective, costly, and environmentally harmful.
                 </p>
             </div>
+            
+            <img src="Assets/sargassum.png" alt="Sargassum Seaweed Problem" class="section-image sargassum-image">
             
             <div class="problem-grid">
                 <div class="problem-card">
@@ -991,7 +1477,7 @@
                 
                 <div class="problem-card">
                     <h3>Failed Solutions</h3>
-                    <p>Traditional beach cleaning is reactive, labor-intensive, and fails to address the root cause of offshore sargassum accumulation.</p>
+                    <p>Traditional beach cleaning is reactive, labor-intensive, and fails to address the root cause of inshore sargassum accumulation.</p>
                 </div>
             </div>
         </div>
@@ -1014,7 +1500,7 @@
                         <h3>ISAC - AI Collection Platform</h3>
                         <p class="solution-description">
                             Our flagship autonomous watercraft uses advanced AI navigation and high-capacity collection systems 
-                            to gather and store sargassum efficiently in open waters.
+                            to gather and store sargassum efficiently near shore.
                         </p>
                         <ul class="features-list">
                             <li>Solar-boosted autonomous operation</li>
@@ -1025,18 +1511,18 @@
                         </ul>
                     </div>
                     <div class="solution-visual">
-                        3D ISAC Model & Animation
+                        <img src="Assets/ISAC.jpg" alt="ISAC Autonomous Collection Platform" class="solution-image">
                     </div>
                 </div>
                 
                 <div class="solution-card mirrored">
                     <div class="solution-visual">
-                        3D ISAC Scout Model & Demo
+                        <img src="Assets/ISAC-SCOUT.png" alt="ISAC Scout Interceptor Vessel" class="solution-image">
                     </div>
                     <div class="solution-info">
                         <h3>ISAC Scout - Interceptor Vessel</h3>
                         <p class="solution-description">
-                            Compact support craft that prevents blooms from reaching shore by redirecting them into offshore 
+                            Compact support craft that prevents blooms from reaching shore by redirecting them into inshore 
                             holding zones until ISAC is available. Fully autonomous and fleet-coordinated.
                         </p>
                         <ul class="features-list">
@@ -1054,7 +1540,7 @@
                         <h3>SargaScan - Early Warning AI</h3>
                         <p class="solution-description">
                             Solar-powered camera network uses AI algorithms to detect sargassum and predict its movement. 
-                            All insights processed through our web app with real-time data visualization.
+                            All insights processed through our web platform with real-time data visualization.
                         </p>
                         <ul class="features-list">
                             <li>Computer vision sargassum detection</li>
@@ -1065,16 +1551,16 @@
                         </ul>
                     </div>
                     <div class="solution-visual">
-                        SargaScan Camera Network Visualization
+                        <img src="Assets/SARGASCAN.png" alt="SargaScan Camera Network Visualization" class="solution-image">
                     </div>
                 </div>
                 
                 <div class="solution-card mirrored">
                     <div class="solution-visual">
-                        Web App Interface & Dashboard Demo
+                        <img src="Assets/WEBAPP.png" alt="Web App Interface & Dashboard Demo" class="solution-image">
                     </div>
                     <div class="solution-info">
-                        <h3>Control Web App - Fleet Management</h3>
+                        <h3>Fleet Hub - Web Platform</h3>
                         <p class="solution-description">
                             Centralized command platform managing ISAC, ISAC Scout, and SargaScan fleets. 
                             Real-time monitoring, mission coordination, and comprehensive data analytics.
@@ -1112,7 +1598,7 @@
                         </svg>
                     </div>
                     <h3>AI Navigation</h3>
-                    <p>Advanced pathfinding algorithms with obstacle avoidance and fleet coordination capabilities for autonomous operations.</p>
+                    <p>Advanced marine pathfinding algorithms with obstacle avoidance and fleet coordination capabilities for autonomous operations.</p>
                 </div>
                 
                 <div class="tech-card">
@@ -1147,7 +1633,7 @@
                         </svg>
                     </div>
                     <h3>IoT Sensors</h3>
-                    <p>Comprehensive environmental monitoring including water quality, weather conditions, and marine life protection systems.</p>
+                    <p>Smart sensors delivering real-time data on water quality, weather, and underwater activity for optimized operations.</p>
                 </div>
             </div>
         </div>
@@ -1175,7 +1661,7 @@
             <div class="about-content">
                 <div class="about-text">
                     <p>
-                        SargaSolutions is an environmental technology startup developing autonomous systems to tackle the growing 
+                        SARGAS.AI is a maritime technology startup developing autonomous systems to tackle the growing 
                         threat of sargassum seaweed along tropical coastlines. Our cutting-edge approach combines robotics, 
                         artificial intelligence, and sustainable design principles.
                     </p>
@@ -1186,7 +1672,7 @@
                     </p>
                     <p>
                         While our initial mission focuses on protecting the Caribbean's ecological and economic value, our 
-                        autonomous navigation technologies are designed for broader applications in marine logistics, 
+                        autonomous navigation technologies are designed for broader applications in marine operations, 
                         environmental monitoring, and water-based mobility solutions.
                     </p>
                 </div>
@@ -1194,7 +1680,7 @@
                 <div class="live-feed">
                     <div class="feed-header">Live SargaScan Feed</div>
                     <div class="feed-display">
-                        Real-time Sargassum Detection Data
+                        <img src="Assets/DETECTION.png" alt="Real-time Sargassum Detection Data" class="detection-image">
                     </div>
                     <a href="#contact" class="cta-button" style="width: 100%; text-align: center; display: block;">Request Demo</a>
                 </div>
@@ -1262,7 +1748,7 @@
                         </div>
                         <div class="form-group">
                             <label>Message</label>
-                            <textarea name="message" rows="4" placeholder="Tell us about your interest in SargaSolutions..."></textarea>
+                            <textarea name="message" rows="4" placeholder="Tell us about your interest in SARGAS.AI..."></textarea>
                         </div>
                         <button type="submit" class="cta-button" style="width: 100%;">Send Message</button>
                     </form>
@@ -1298,9 +1784,9 @@
         <div class="section-container">
             <div class="footer-grid">
                 <div class="footer-section">
-                    <h4>SargaSolutions</h4>
+                    <h4>SARGAS.AI</h4>
                     <p style="color: var(--text-gray); font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
-                        Autonomous maritime technology for sargassum management and coastal protection through innovative AI-powered solutions.
+                        Autonomous maritime technology for sargassum management, marine operations, and water-based mobility solutions.
                     </p>
                 </div>
                 
@@ -1386,6 +1872,546 @@
             card.style.transform = 'translateY(30px)';
             card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             observer.observe(card);
+        });
+    </script>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase SDK
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBtJCbeevb1rXYT76Tu0uNSo3Tj_GkoKz8",
+            authDomain: "sargasolutions-webbpage.firebaseapp.com",
+            projectId: "sargasolutions-webbpage",
+            storageBucket: "sargasolutions-webbpage.firebasestorage.app",
+            messagingSenderId: "301093678831",
+            appId: "1:301093678831:web:b60d26f1b0f6041f9a751a",
+            measurementId: "G-85ESTBJQ5G"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app, 'sargasolutions-db');
+
+        // Contact form handler
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, setting up form handlers...');
+            
+            const contactForm = document.querySelector('#contact form');
+            const submitButton = contactForm.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
+
+            // Newsletter form handler - FIXED
+            const newsletterForm = document.querySelector('.newsletter-form');
+            const newsletterInput = document.querySelector('.newsletter-input');
+            const newsletterButton = document.querySelector('.newsletter-button');
+            
+            console.log('Newsletter elements found:', {
+                form: !!newsletterForm,
+                input: !!newsletterInput, 
+                button: !!newsletterButton
+            });
+
+            if (!newsletterForm || !newsletterInput || !newsletterButton) {
+                console.error('Newsletter form elements not found!');
+                return;
+            }
+
+            const originalNewsletterText = newsletterButton.textContent;
+
+            // Contact form submission
+            contactForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Get form data
+                const formData = new FormData(contactForm);
+                const contactData = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    organization: formData.get('organization') || '',
+                    interest: formData.get('interest'),
+                    message: formData.get('message'),
+                    timestamp: serverTimestamp(),
+                    userAgent: navigator.userAgent,
+                    submittedFrom: window.location.href
+                };
+
+                // Show loading state
+                submitButton.textContent = 'SENDING...';
+                submitButton.disabled = true;
+                submitButton.style.opacity = '0.7';
+
+                try {
+                    // Add document to Firestore
+                    const docRef = await addDoc(collection(db, 'contacts'), contactData);
+                    console.log('Contact document written with ID: ', docRef.id);
+
+                    // Show success message
+                    showNotification('Message sent successfully! We\'ll get back to you soon.', 'success');
+                    
+                    // Reset form
+                    contactForm.reset();
+
+                } catch (error) {
+                    console.error('Error adding contact document: ', error);
+                    showNotification('Sorry, there was an error sending your message. Please try again.', 'error');
+                } finally {
+                    // Reset button
+                    submitButton.textContent = originalButtonText;
+                    submitButton.disabled = false;
+                    submitButton.style.opacity = '1';
+                }
+            });
+
+            // Newsletter form submission - FIXED
+            newsletterForm.addEventListener('submit', async function(e) {
+                console.log('Newsletter form submitted!');
+                e.preventDefault();
+
+                const email = newsletterInput.value.trim();
+                console.log('Email entered:', email);
+                
+                // Validate email
+                if (!email || !isValidEmail(email)) {
+                    console.log('Invalid email');
+                    showNewsletterFeedback('Please enter a valid email address', 'error');
+                    return;
+                }
+
+                // Show loading state
+                newsletterButton.textContent = 'SUBSCRIBING...';
+                newsletterButton.disabled = true;
+                newsletterButton.style.opacity = '0.7';
+                console.log('Loading state activated');
+
+                try {
+                    const newsletterData = {
+                        email: email,
+                        timestamp: serverTimestamp(),
+                        source: 'website_newsletter',
+                        userAgent: navigator.userAgent,
+                        subscribedFrom: window.location.href
+                    };
+
+                    console.log('Attempting to save to Firebase...', newsletterData);
+                    
+                    // Add to newsletter collection
+                    const docRef = await addDoc(collection(db, 'newsletter'), newsletterData);
+                    console.log('Newsletter subscription saved with ID: ', docRef.id);
+
+                    // Show success message
+                    showNewsletterFeedback('Success!', 'success');
+                    
+                    // Reset form
+                    newsletterInput.value = '';
+
+                } catch (error) {
+                    console.error('Error saving newsletter subscription: ', error);
+                    showNewsletterFeedback('Sorry, there was an error. Please try again.', 'error');
+                } finally {
+                    // Reset button
+                    setTimeout(() => {
+                        newsletterButton.textContent = originalNewsletterText;
+                        newsletterButton.disabled = false;
+                        newsletterButton.style.opacity = '1';
+                    }, 2000);
+                }
+            });
+
+            // Add click event as backup
+            newsletterButton.addEventListener('click', function(e) {
+                console.log('Newsletter button clicked directly');
+                // Always prevent default and handle manually
+                e.preventDefault();
+                handleNewsletterSubmission();
+            });
+
+            // Separate function to handle newsletter submission
+            async function handleNewsletterSubmission() {
+                console.log('Handling newsletter submission...');
+                
+                const email = newsletterInput.value.trim();
+                console.log('Email entered:', email);
+                
+                // Validate email
+                if (!email || !isValidEmail(email)) {
+                    console.log('Invalid email');
+                    showNewsletterFeedback('Please enter a valid email address', 'error');
+                    return;
+                }
+
+                // Show loading state
+                newsletterButton.textContent = 'SUBSCRIBING...';
+                newsletterButton.disabled = true;
+                newsletterButton.style.opacity = '0.7';
+                console.log('Loading state activated');
+
+                try {
+                    const newsletterData = {
+                        email: email,
+                        timestamp: serverTimestamp(),
+                        source: 'website_newsletter',
+                        userAgent: navigator.userAgent,
+                        subscribedFrom: window.location.href
+                    };
+
+                    console.log('Attempting to save to Firebase...', newsletterData);
+                    
+                    // Add to newsletter collection
+                    const docRef = await addDoc(collection(db, 'newsletter'), newsletterData);
+                    console.log('Newsletter subscription saved with ID: ', docRef.id);
+
+                    // Show success message
+                    showNewsletterFeedback('Success!', 'success');
+                    
+                    // Reset form
+                    newsletterInput.value = '';
+
+                } catch (error) {
+                    console.error('Error saving newsletter subscription: ', error);
+                    showNewsletterFeedback('Sorry, there was an error. Please try again.', 'error');
+                } finally {
+                    // Reset button
+                    setTimeout(() => {
+                        newsletterButton.textContent = originalNewsletterText;
+                        newsletterButton.disabled = false;
+                        newsletterButton.style.opacity = '1';
+                    }, 2000);
+                }
+            }
+
+            // Email validation function
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            // Newsletter feedback function
+            function showNewsletterFeedback(message, type) {
+                if (type === 'success') {
+                    showNewsletterSuccessAnimation();
+                } else {
+                    showNewsletterErrorFeedback(message);
+                }
+            }
+
+            // Newsletter success animation
+            function showNewsletterSuccessAnimation() {
+                const newsletterSection = document.querySelector('.newsletter-section');
+                
+                // Create animation overlay
+                const animationOverlay = document.createElement('div');
+                animationOverlay.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(10, 10, 10, 0.95);
+                    z-index: 1000;
+                    pointer-events: none;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+
+                // Create data stream effect
+                const dataStream = document.createElement('div');
+                dataStream.style.cssText = `
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    overflow: hidden;
+                `;
+
+                // Add multiple data lines
+                for (let i = 0; i < 8; i++) {
+                    const dataLine = document.createElement('div');
+                    dataLine.style.cssText = `
+                        position: absolute;
+                        left: ${10 + i * 12}%;
+                        top: -20px;
+                        width: 2px;
+                        height: 60px;
+                        background: linear-gradient(to bottom, transparent, var(--accent-green), transparent);
+                        animation: dataFlow 1.5s ease-in-out ${i * 0.1}s forwards;
+                        opacity: 0;
+                    `;
+                    dataStream.appendChild(dataLine);
+                }
+
+                // Create central success message
+                const successContainer = document.createElement('div');
+                successContainer.style.cssText = `
+                    background: var(--tech-gray);
+                    border: 2px solid var(--accent-green);
+                    padding: 25px 35px;
+                    text-align: center;
+                    color: var(--text-white);
+                    font-family: 'Orbitron', monospace;
+                    clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+                    opacity: 0;
+                    transform: scale(0.8);
+                    animation: messageAppear 0.6s ease-out 1.8s forwards, successPulse 2s ease-in-out 2.5s infinite;
+                    position: relative;
+                    overflow: hidden;
+                `;
+
+                // Add scanning effect to success message
+                const scanEffect = document.createElement('div');
+                scanEffect.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.3), transparent);
+                    animation: scanAcross 0.8s ease-in-out 2s forwards;
+                `;
+
+                successContainer.innerHTML = `
+                    <div style="color: var(--accent-green); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;">
+                        ◆ UPLINK ESTABLISHED ◆
+                    </div>
+                    <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">
+                        SUBSCRIPTION CONFIRMED
+                    </div>
+                    <div style="color: var(--text-gray); font-size: 12px;">
+                        Welcome to the SARGAS.AI network
+                    </div>
+                `;
+
+                successContainer.appendChild(scanEffect);
+
+                // Add newsletter animation keyframes
+                const newsletterStyle = document.createElement('style');
+                newsletterStyle.textContent = `
+                    @keyframes dataFlow {
+                        0% { top: -60px; opacity: 0; }
+                        20% { opacity: 1; }
+                        80% { opacity: 1; }
+                        100% { top: 100%; opacity: 0; }
+                    }
+                    @keyframes messageAppear {
+                        0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+                        100% { opacity: 1; transform: scale(1) translateY(0); }
+                    }
+                    @keyframes successPulse {
+                        0%, 100% { 
+                            border-color: var(--accent-green);
+                            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+                        }
+                        50% { 
+                            border-color: var(--neon-green);
+                            box-shadow: 0 0 30px rgba(0, 255, 136, 0.6), 0 0 50px rgba(0, 255, 136, 0.3);
+                        }
+                    }
+                    @keyframes scanAcross {
+                        0% { left: -100%; }
+                        100% { left: 100%; }
+                    }
+                `;
+                document.head.appendChild(newsletterStyle);
+
+                // Make newsletter section relative for positioning
+                newsletterSection.style.position = 'relative';
+
+                // Add elements
+                animationOverlay.appendChild(dataStream);
+                animationOverlay.appendChild(successContainer);
+                newsletterSection.appendChild(animationOverlay);
+
+                // Remove overlay after animation
+                setTimeout(() => {
+                    animationOverlay.style.opacity = '0';
+                    animationOverlay.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        if (animationOverlay.parentNode) {
+                            animationOverlay.remove();
+                        }
+                        if (newsletterStyle.parentNode) {
+                            newsletterStyle.remove();
+                        }
+                    }, 500);
+                }, 5500);
+            }
+
+            // Newsletter error feedback (simple)
+            function showNewsletterErrorFeedback(message) {
+                const existingFeedback = document.querySelector('.newsletter-feedback');
+                if (existingFeedback) {
+                    existingFeedback.remove();
+                }
+
+                const feedback = document.createElement('div');
+                feedback.className = 'newsletter-feedback';
+                feedback.style.cssText = `
+                    margin-top: 15px;
+                    padding: 12px 20px;
+                    text-align: center;
+                    font-size: 14px;
+                    font-weight: 600;
+                    border-radius: 4px;
+                    background: linear-gradient(45deg, #ff4757, #ff3742);
+                    color: white;
+                    transition: all 0.3s ease;
+                `;
+                feedback.textContent = message;
+
+                newsletterForm.parentNode.appendChild(feedback);
+
+                setTimeout(() => {
+                    feedback.style.opacity = '0';
+                    feedback.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        if (feedback.parentNode) {
+                            feedback.remove();
+                        }
+                    }, 300);
+                }, 4000);
+            }
+
+            // Notification function
+            function showNotification(message, type) {
+                if (type === 'success') {
+                    showScanningSuccess();
+                } else {
+                    showErrorNotification(message);
+                }
+            }
+
+            // Scanning success animation
+            function showScanningSuccess() {
+                const formContainer = document.querySelector('.contact-form');
+                
+                // Create scanning overlay
+                const scanOverlay = document.createElement('div');
+                scanOverlay.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(10, 10, 10, 0.95);
+                    z-index: 1000;
+                    pointer-events: none;
+                `;
+                
+                // Create scanning line
+                const scanLine = document.createElement('div');
+                scanLine.style.cssText = `
+                    position: absolute;
+                    top: -4px;
+                    left: 0;
+                    right: 0;
+                    height: 4px;
+                    background: linear-gradient(90deg, transparent, var(--accent-green), var(--neon-green), var(--accent-green), transparent);
+                    box-shadow: 0 0 20px var(--accent-green), 0 0 40px var(--accent-green);
+                    animation: scanDown 2s ease-in-out forwards;
+                `;
+                
+                // Add scan animation keyframes
+                const scanStyle = document.createElement('style');
+                scanStyle.textContent = `
+                    @keyframes scanDown {
+                        0% { top: -4px; opacity: 0; }
+                        10% { opacity: 1; }
+                        90% { opacity: 1; }
+                        100% { top: 100%; opacity: 0; }
+                    }
+                    @keyframes messageSlideIn {
+                        0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+                        100% { opacity: 1; transform: translateY(0) scale(1); }
+                    }
+                    @keyframes pulseGreen {
+                        0%, 100% { box-shadow: 0 0 20px var(--accent-green); }
+                        50% { box-shadow: 0 0 40px var(--accent-green), 0 0 60px var(--accent-green); }
+                    }
+                `;
+                document.head.appendChild(scanStyle);
+                
+                // Create success message
+                const successMessage = document.createElement('div');
+                successMessage.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: var(--tech-gray);
+                    border: 2px solid var(--accent-green);
+                    padding: 30px;
+                    text-align: center;
+                    color: var(--text-white);
+                    font-family: 'Orbitron', monospace;
+                    opacity: 0;
+                    animation: messageSlideIn 0.5s ease-out 2.2s forwards, pulseGreen 2s ease-in-out 2.5s infinite;
+                    clip-path: polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+                `;
+                successMessage.innerHTML = `
+                    <div style="color: var(--accent-green); font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">
+                        ◆ TRANSMISSION COMPLETE ◆
+                    </div>
+                    <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">
+                        MESSAGE RECEIVED
+                    </div>
+                    <div style="color: var(--text-gray); font-size: 14px;">
+                        We'll be in touch soon
+                    </div>
+                `;
+                
+                // Make form container relative for positioning
+                formContainer.style.position = 'relative';
+                
+                // Add elements
+                scanOverlay.appendChild(scanLine);
+                scanOverlay.appendChild(successMessage);
+                formContainer.appendChild(scanOverlay);
+                
+                // Remove overlay after animation
+                setTimeout(() => {
+                    scanOverlay.style.opacity = '0';
+                    scanOverlay.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        if (scanOverlay.parentNode) {
+                            scanOverlay.remove();
+                        }
+                        if (scanStyle.parentNode) {
+                            scanStyle.remove();
+                        }
+                    }, 500);
+                }, 6000);
+            }
+
+            // Error notification (keep simple for errors)
+            function showErrorNotification(message) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    padding: 15px 20px;
+                    border-radius: 5px;
+                    background: linear-gradient(45deg, #ff4757, #ff3742);
+                    color: white;
+                    font-weight: 600;
+                    z-index: 10000;
+                    max-width: 400px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                    transition: all 0.3s ease;
+                `;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => notification.remove(), 300);
+                }, 5000);
+            }
         });
     </script>
 </body>
