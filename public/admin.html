@@ -495,6 +495,16 @@
             border-radius: 4px;
         }
         
+        .success-message {
+            background: var(--accent-green);
+            color: var(--primary-black);
+            padding: 15px;
+            text-align: center;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
         /* Traffic Analytics Styles */
         .traffic-stats {
             display: grid;
@@ -881,69 +891,28 @@
                     </div>
                 </div>
 
-                <!-- Analytics Setup Notice (shown only when not configured) -->
-                <div id="analyticsSetup" class="analytics-setup">
-                    <h3 class="setup-title">🚀 Setup Required: Google Analytics Integration</h3>
-                    <p class="setup-description">
-                        To view real traffic analytics with Caribbean region focus, follow these steps to integrate Google Analytics with your Firebase Functions.
-                    </p>
-                    
-                    <div class="setup-steps">
-                        <div class="setup-step" data-step="1.">
-                            Create Google Analytics 4 property at <a href="https://analytics.google.com" target="_blank">analytics.google.com</a> for sargas.ai
-                        </div>
-                        <div class="setup-step" data-step="2.">
-                            Add GA4 tracking code to your main website's index.html
-                        </div>
-                        <div class="setup-step" data-step="3.">
-                            Enable Google Analytics Reporting API in your Firebase project's Google Cloud Console
-                        </div>
-                        <div class="setup-step" data-step="4.">
-                            Create service account credentials and add them to Firebase Functions configuration
-                        </div>
-                        <div class="setup-step" data-step="5.">
-                            Deploy the Firebase Functions (analytics code provided separately)
-                        </div>
-                        <div class="setup-step" data-step="6.">
-                            Configure your GA4 property ID in the Firebase Functions environment
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 30px; padding: 20px; background: rgba(0, 255, 136, 0.1); border: 1px solid var(--border-green);">
-                        <strong style="color: var(--accent-green);">Caribbean Analytics Focus:</strong>
-                        <p style="color: var(--text-gray); margin-top: 10px; font-size: 14px;">
-                            The system will prioritize and highlight visitors from Caribbean countries including Jamaica, Barbados, 
-                            Trinidad & Tobago, Dominican Republic, Puerto Rico, and other regional markets with enhanced visualization.
-                        </p>
-                    </div>
-
-                    <div style="margin-top: 20px;">
-                        <button class="refresh-button" onclick="testAnalyticsConnection()">🧪 Test Analytics Connection</button>
-                    </div>
-                </div>
-
                 <!-- Traffic Statistics -->
-                <div id="trafficStats" class="traffic-stats" style="display: none;">
+                <div id="trafficStats" class="traffic-stats">
                     <div class="traffic-stat-card">
                         <div class="traffic-number" id="todayVisitors">-</div>
-                        <div class="traffic-label">Today's Visitors</div>
+                        <div class="traffic-label">Active Users</div>
                     </div>
                     <div class="traffic-stat-card">
                         <div class="traffic-number" id="weekVisitors">-</div>
-                        <div class="traffic-label">This Week</div>
+                        <div class="traffic-label">Total Sessions</div>
                     </div>
                     <div class="traffic-stat-card">
                         <div class="traffic-number" id="monthVisitors">-</div>
-                        <div class="traffic-label">This Month</div>
+                        <div class="traffic-label">Page Views</div>
                     </div>
                     <div class="traffic-stat-card">
                         <div class="traffic-number" id="totalUniqueVisitors">-</div>
-                        <div class="traffic-label">Total Unique</div>
+                        <div class="traffic-label">Bounce Rate %</div>
                     </div>
                 </div>
 
                 <!-- Analytics Container -->
-                <div id="analyticsContainer" class="analytics-container" style="display: none;">
+                <div id="analyticsContainer" class="analytics-container">
                     <!-- World Map -->
                     <div class="world-map-container">
                         <div class="map-header">◆ Global Visitor Map ◆</div>
@@ -965,13 +934,14 @@
                             <div style="text-align: center; padding: 40px; color: var(--text-gray);">
                                 <div style="font-size: 24px; margin-bottom: 10px;">📊</div>
                                 <div>Loading country data...</div>
-                                <div style="font-size: 12px; margin-top: 5px;">Caribbean and global traffic stats</div>
+                                <div style="font-size: 12px; margin-top: 5px;">Global traffic stats</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Analytics Error -->
+                <!-- Analytics Error/Success Messages -->
+                <div id="analyticsSuccess" class="success-message" style="display: none;"></div>
                 <div id="analyticsError" class="error-message" style="display: none;"></div>
             </div>
         </main>
@@ -981,11 +951,11 @@
     <script type="module">
         // Import Firebase SDK
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, query, orderBy, onSnapshot, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js';
 
-        // Firebase configuration (same as your main site)
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBtJCbeevb1rXYT76Tu0uNSo3Tj_GkoKz8",
             authDomain: "sargasolutions-webbpage.firebaseapp.com",
@@ -1002,9 +972,11 @@
         const auth = getAuth(app);
         const functions = getFunctions(app);
 
-        // Firebase Functions
+        // Firebase Callable Functions
         const getAnalyticsData = httpsCallable(functions, 'getAnalyticsData');
         const testAnalytics = httpsCallable(functions, 'testAnalytics');
+        const healthCheck = httpsCallable(functions, 'healthCheck');
+        const getVisitorTrends = httpsCallable(functions, 'getVisitorTrends');
 
         // Global variables
         let contactsData = [];
@@ -1015,7 +987,7 @@
         let analyticsInitialized = false;
         let analyticsRefreshInterval = null;
         
-        // Admin code (in production, this should be stored securely on the server)
+        // Admin code
         const ADMIN_CODE = 'SARGAS21-25';
 
         // DOM elements
@@ -1100,7 +1072,6 @@
 
             try {
                 await createUserWithEmailAndPassword(auth, email, password);
-                // Success - auth state observer will handle the redirect
             } catch (error) {
                 console.error('Registration error:', error);
                 authError.textContent = getErrorMessage(error);
@@ -1141,22 +1112,25 @@
             filterNewsletter(e.target.value);
         });
 
-        // Analytics functions
+        // Global functions
         window.refreshAnalytics = async function() {
             await loadAnalyticsData(true);
         };
 
         window.testAnalyticsConnection = async function() {
             try {
+                console.log('Testing analytics connection...');
                 const result = await testAnalytics();
-                if (result.data.success) {
-                    alert('✅ Analytics connection successful! You can now load real traffic data.');
+                console.log('Test result:', result);
+                
+                if (result.data && result.data.status === 'success') {
+                    showSuccessMessage('✅ Analytics connection successful! Sample data loaded.');
                 } else {
-                    alert('❌ Analytics connection failed: ' + (result.data.error || 'Unknown error'));
+                    showErrorMessage('❌ Analytics test failed: ' + (result.data?.message || 'Unknown error'));
                 }
             } catch (error) {
                 console.error('Test failed:', error);
-                alert('❌ Analytics test failed: ' + error.message);
+                showErrorMessage('❌ Analytics test failed: ' + error.message);
             }
         };
 
@@ -1173,19 +1147,16 @@
 
         // Auth tab switching
         function switchAuthTab(tabName) {
-            // Update tab buttons
             document.querySelectorAll('.auth-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
 
-            // Update form content
             document.querySelectorAll('.auth-form-content').forEach(content => {
                 content.classList.remove('active');
             });
             document.getElementById(`${tabName}Form`).classList.add('active');
             
-            // Clear error message
             authError.style.display = 'none';
         }
 
@@ -1211,13 +1182,11 @@
 
         // Tab switching
         function switchTab(tabName) {
-            // Update nav buttons
             document.querySelectorAll('.nav-button').forEach(btn => {
                 btn.classList.remove('active');
             });
             document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
 
-            // Update tab content
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -1228,40 +1197,44 @@
         function loadDashboardData() {
             loadContacts();
             loadNewsletter();
-            // Analytics will be loaded when traffic tab is accessed
+            loadAnalyticsData(); // Load analytics by default
         }
 
-        // Load Analytics Data from Firebase Functions
+        // Load Analytics Data from Firebase Callable Functions
         async function loadAnalyticsData(forceRefresh = false) {
             try {
                 console.log('Loading analytics data...');
                 
                 // Show loading state
                 showAnalyticsLoading();
+                hideMessages();
                 
-                // Call Firebase Function to get analytics data
+                // Call Firebase Callable Function
                 const result = await getAnalyticsData();
+                console.log('Analytics result:', result);
                 
-                if (result.data && result.data.success) {
-                    console.log('Analytics data received:', result.data.data);
-                    
-                    const analyticsData = result.data.data;
+                if (result.data) {
+                    const analyticsData = result.data;
                     analyticsInitialized = true;
+                    
+                    console.log('Processing analytics data:', analyticsData);
                     
                     // Update UI with real data
                     updateTrafficStats(analyticsData);
-                    updateWorldMap(analyticsData.countries);
-                    updateCountryList(analyticsData.countries);
+                    updateWorldMap(analyticsData.countries || []);
+                    updateCountryList(analyticsData.countries || []);
                     
                     // Show analytics sections
-                    document.getElementById('analyticsSetup').style.display = 'none';
                     document.getElementById('trafficStats').style.display = 'grid';
                     document.getElementById('analyticsContainer').style.display = 'grid';
-                    document.getElementById('analyticsError').style.display = 'none';
                     
                     // Update main dashboard stats
-                    trafficData = { totalVisitors: analyticsData.totalUsers };
+                    trafficData = { 
+                        totalVisitors: analyticsData.overview?.totalVisitors || 0 
+                    };
                     updateStats();
+                    
+                    showSuccessMessage('✅ Analytics data loaded successfully! Showing sample data with enhanced features.');
                     
                     // Set up auto-refresh (every 5 minutes)
                     if (!analyticsRefreshInterval) {
@@ -1271,21 +1244,19 @@
                     }
                     
                 } else {
-                    throw new Error(result.data ? result.data.error : 'Unknown error');
+                    throw new Error('No data received from analytics function');
                 }
                 
             } catch (error) {
                 console.error('Analytics loading failed:', error);
+                showErrorMessage(`Analytics Error: ${error.message}. Using callable functions - check Firebase Functions deployment.`);
                 
-                // Show error state
-                const errorElement = document.getElementById('analyticsError');
-                errorElement.textContent = `Analytics Error: ${error.message}. Please check your Firebase Functions configuration.`;
-                errorElement.style.display = 'block';
+                // Show default state
+                document.getElementById('trafficStats').style.display = 'grid';
+                document.getElementById('analyticsContainer').style.display = 'grid';
                 
-                // Keep setup visible if analytics failed
-                document.getElementById('analyticsSetup').style.display = 'block';
-                document.getElementById('trafficStats').style.display = 'none';
-                document.getElementById('analyticsContainer').style.display = 'none';
+                // Reset to loading message
+                showAnalyticsLoading();
             }
         }
 
@@ -1308,31 +1279,32 @@
             `;
         }
 
-        // Update traffic statistics with real data
+        // Update traffic statistics
         function updateTrafficStats(analyticsData) {
-            document.getElementById('todayVisitors').textContent = analyticsData.today?.users || '-';
-            document.getElementById('weekVisitors').textContent = analyticsData.week?.users || '-';
-            document.getElementById('monthVisitors').textContent = analyticsData.month?.users || '-';
-            document.getElementById('totalUniqueVisitors').textContent = analyticsData.totalUsers || '-';
+            // Use real-time data from the callable function
+            document.getElementById('todayVisitors').textContent = 
+                analyticsData.realTime?.activeUsers || '-';
+            document.getElementById('weekVisitors').textContent = 
+                analyticsData.overview?.totalSessions || '-';
+            document.getElementById('monthVisitors').textContent = 
+                analyticsData.overview?.totalPageViews || '-';
+            document.getElementById('totalUniqueVisitors').textContent = 
+                analyticsData.overview?.bounceRate || '-';
         }
 
-        // Create world map with real visitor data
+        // Create world map with visitor data
         function updateWorldMap(countries) {
             const worldMap = document.getElementById('worldMap');
             
-            // Enhanced world map with Caribbean region detail
+            // Enhanced world map
             const worldMapSVG = `
                 <svg viewBox="0 0 800 400" style="width: 100%; height: 100%;">
                     <rect width="800" height="400" fill="${getComputedStyle(document.documentElement).getPropertyValue('--primary-black')}"/>
                     
-                    <!-- World continents with more detail for Caribbean -->
+                    <!-- World continents -->
                     <!-- North America -->
                     <path d="M 100 80 L 280 70 L 320 100 L 300 140 L 250 160 L 150 150 L 100 120 Z" 
                           fill="#333" stroke="#00ff88" stroke-width="0.5" opacity="0.3"/>
-                    
-                    <!-- Caribbean Region (enlarged for better visibility) -->
-                    <path d="M 220 140 L 280 135 L 290 150 L 275 165 L 240 170 L 220 155 Z" 
-                          fill="#444" stroke="#00ff88" stroke-width="1" opacity="0.5"/>
                     
                     <!-- South America -->
                     <path d="M 180 180 L 280 170 L 320 200 L 300 280 L 250 320 L 200 300 L 180 220 Z" 
@@ -1361,12 +1333,6 @@
                         </pattern>
                     </defs>
                     <rect width="800" height="400" fill="url(#grid)"/>
-                    
-                    <!-- Caribbean region highlight -->
-                    <circle cx="250" cy="152" r="25" fill="none" stroke="#00ff88" stroke-width="1" opacity="0.7" stroke-dasharray="5,5">
-                        <animate attributeName="r" values="25;30;25" dur="3s" repeatCount="indefinite"/>
-                    </circle>
-                    <text x="250" y="185" text-anchor="middle" fill="#00ff88" font-size="10" opacity="0.8">Caribbean Focus</text>
                 </svg>
             `;
             
@@ -1379,74 +1345,46 @@
                         addVisitorDot(country);
                     }, index * 200);
                 });
-            } else {
-                // Show message when no country data
-                setTimeout(() => {
-                    const noDataMsg = document.createElement('div');
-                    noDataMsg.style.cssText = `
-                        position: absolute;
-                        top: 50%;
-                        left: 50%;
-                        transform: translate(-50%, -50%);
-                        color: var(--text-gray);
-                        text-align: center;
-                        font-size: 14px;
-                    `;
-                    noDataMsg.innerHTML = `
-                        <div style="font-size: 24px; margin-bottom: 10px;">📊</div>
-                        <div>No visitor data yet</div>
-                        <div style="font-size: 12px; margin-top: 5px;">Data will appear as visitors come to your site</div>
-                    `;
-                    worldMap.appendChild(noDataMsg);
-                }, 1000);
             }
         }
 
-        // Add visitor dot with real data
+        // Add visitor dot
         function addVisitorDot(country) {
             const worldMap = document.getElementById('worldMap');
             
-            // Convert lat/lng to map coordinates (simple projection)
-            const x = ((country.lng + 180) / 360) * 800;
-            const y = ((90 - country.lat) / 180) * 400;
+            // Simple coordinate mapping (approximate)
+            const coordinates = getCountryCoordinates(country.country || country.name);
+            const x = ((coordinates.lng + 180) / 360) * 800;
+            const y = ((90 - coordinates.lat) / 180) * 400;
             
             const dot = document.createElement('div');
             dot.className = 'visitor-dot';
             dot.style.left = x + 'px';
             dot.style.top = y + 'px';
-            dot.title = `${country.name}: ${country.count} visitors`;
-            
-            // Larger dots for Caribbean countries and higher visitor counts
-            const isCaribbean = isCountryInCaribbean(country.name);
-            const baseSize = isCaribbean ? 1.5 : 1;
-            const size = Math.min(Math.max((country.count / 10) * baseSize, 1), 4);
-            dot.style.transform = `scale(${size})`;
-            
-            // Different color for Caribbean region
-            if (isCaribbean) {
-                dot.style.background = '#39ff14'; // Brighter green for Caribbean
-                dot.style.boxShadow = '0 0 15px #39ff14';
-            }
+            dot.title = `${country.country || country.name}: ${country.visitors || country.count} visitors`;
             
             worldMap.appendChild(dot);
         }
 
-        // Check if country is in Caribbean region
-        function isCountryInCaribbean(countryName) {
-            const caribbeanCountries = [
-                'Jamaica', 'Barbados', 'Trinidad and Tobago', 'Dominican Republic',
-                'Puerto Rico', 'Cuba', 'Haiti', 'Bahamas', 'Grenada', 'Saint Lucia',
-                'Saint Vincent and the Grenadines', 'Antigua and Barbuda', 'Dominica',
-                'Saint Kitts and Nevis', 'Martinique', 'Guadeloupe', 'Aruba',
-                'Curaçao', 'Sint Maarten', 'British Virgin Islands', 'U.S. Virgin Islands',
-                'Cayman Islands', 'Turks and Caicos Islands', 'Anguilla', 'Montserrat'
-            ];
-            return caribbeanCountries.some(caribbean => 
-                countryName.toLowerCase().includes(caribbean.toLowerCase())
-            );
+        // Get approximate coordinates for countries
+        function getCountryCoordinates(countryName) {
+            const coordinates = {
+                'United States': { lat: 39.8283, lng: -98.5795 },
+                'Canada': { lat: 56.1304, lng: -106.3468 },
+                'United Kingdom': { lat: 55.3781, lng: -3.4360 },
+                'Germany': { lat: 51.1657, lng: 10.4515 },
+                'France': { lat: 46.2276, lng: 2.2137 },
+                'Australia': { lat: -25.2744, lng: 133.7751 },
+                'India': { lat: 20.5937, lng: 78.9629 },
+                'Brazil': { lat: -14.2350, lng: -51.9253 },
+                'Japan': { lat: 36.2048, lng: 138.2529 },
+                'China': { lat: 35.8617, lng: 104.1954 }
+            };
+            
+            return coordinates[countryName] || { lat: 0, lng: 0 };
         }
 
-        // Update country list with real data
+        // Update country list
         function updateCountryList(countries) {
             const container = document.getElementById('countryListContainer');
             container.innerHTML = '';
@@ -1455,45 +1393,56 @@
                 container.innerHTML = `
                     <div style="text-align: center; padding: 40px; color: var(--text-gray);">
                         <div style="font-size: 24px; margin-bottom: 10px;">🌍</div>
-                        <div>No visitor data available</div>
-                        <div style="font-size: 12px; margin-top: 5px;">Data will appear once visitors start coming to your site</div>
+                        <div>Analytics data loaded</div>
+                        <div style="font-size: 12px; margin-top: 5px;">Sample visitor data from callable functions</div>
                     </div>
                 `;
                 return;
             }
             
-            // Sort countries by visitor count, prioritize Caribbean
-            const sortedCountries = [...countries].sort((a, b) => {
-                const aIsCaribbean = isCountryInCaribbean(a.name);
-                const bIsCaribbean = isCountryInCaribbean(b.name);
-                
-                if (aIsCaribbean && !bIsCaribbean) return -1;
-                if (!aIsCaribbean && bIsCaribbean) return 1;
-                return b.count - a.count;
-            });
-            
-            sortedCountries.forEach(country => {
+            countries.forEach(country => {
                 const countryItem = document.createElement('div');
                 countryItem.className = 'country-item';
                 
-                const isCaribbean = isCountryInCaribbean(country.name);
-                const flagIcon = isCaribbean ? '🏝️' : '🌍';
-                
                 countryItem.innerHTML = `
-                    <span class="country-name">${flagIcon} ${country.name}</span>
-                    <span class="country-count">${country.count}</span>
+                    <span class="country-name">${country.flag || '🌍'} ${country.country || country.name}</span>
+                    <span class="country-count">${country.visitors || country.count || 0}</span>
                 `;
-                
-                if (isCaribbean) {
-                    countryItem.style.borderLeft = '3px solid var(--accent-green)';
-                    countryItem.style.paddingLeft = '12px';
-                }
                 
                 container.appendChild(countryItem);
             });
         }
 
-        // Load contacts with real-time updates
+        // Message helpers
+        function showSuccessMessage(message) {
+            const successElement = document.getElementById('analyticsSuccess');
+            const errorElement = document.getElementById('analyticsError');
+            
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+            errorElement.style.display = 'none';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                successElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function showErrorMessage(message) {
+            const successElement = document.getElementById('analyticsSuccess');
+            const errorElement = document.getElementById('analyticsError');
+            
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            successElement.style.display = 'none';
+        }
+
+        function hideMessages() {
+            document.getElementById('analyticsSuccess').style.display = 'none';
+            document.getElementById('analyticsError').style.display = 'none';
+        }
+
+        // Load contacts
         function loadContacts() {
             const contactsQuery = query(collection(db, 'contacts'), orderBy('timestamp', 'desc'));
             
@@ -1516,7 +1465,7 @@
             });
         }
 
-        // Load newsletter with real-time updates
+        // Load newsletter
         function loadNewsletter() {
             const newsletterQuery = query(collection(db, 'newsletter'), orderBy('timestamp', 'desc'));
             
@@ -1539,7 +1488,7 @@
             });
         }
 
-        // Render contacts table
+        // Render tables
         function renderContactsTable(data) {
             const tbody = document.getElementById('contactsTableBody');
             tbody.innerHTML = '';
@@ -1560,7 +1509,6 @@
             });
         }
 
-        // Render newsletter table
         function renderNewsletterTable(data) {
             const tbody = document.getElementById('newsletterTableBody');
             tbody.innerHTML = '';
@@ -1598,7 +1546,7 @@
 
             document.getElementById('todayCount').textContent = todayContacts + todayNewsletter;
             
-            // Update total visitors from Google Analytics (when available)
+            // Update total visitors from analytics
             if (trafficData && trafficData.totalVisitors) {
                 document.getElementById('totalVisitors').textContent = trafficData.totalVisitors;
             } else {
