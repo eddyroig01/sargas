@@ -1252,6 +1252,9 @@
                 if (response.ok) {
                     const analyticsData = await response.json();
                     console.log('Analytics result:', analyticsData);
+                    
+                    // Store globally for debugging
+                    window.currentAnalyticsData = analyticsData;
                     currentAnalyticsData = analyticsData;
                     
                     // Process and display the data
@@ -1275,6 +1278,9 @@
                     
                     console.log('Fallback analytics result:', result);
                     const analyticsData = result.data || result;
+                    
+                    // Store globally for debugging
+                    window.currentAnalyticsData = analyticsData;
                     currentAnalyticsData = analyticsData;
                     
                     if (analyticsData.success) {
@@ -1293,6 +1299,9 @@
         function processAnalyticsData(data) {
             console.log('Processing analytics data:', data);
             
+            // Store data globally for debugging
+            window.currentAnalyticsData = data;
+            
             // Update traffic metrics
             if (data.realTime) {
                 document.getElementById('activeUsers').textContent = data.realTime.activeUsers || 0;
@@ -1307,11 +1316,19 @@
             // Update data source
             document.getElementById('dataSource').textContent = data.source === 'google-analytics-4' ? 'GA4 Live' : 'Sample';
             
+            // Debug countries data specifically
+            console.log('=== COUNTRIES DEBUG ===');
+            console.log('Countries in data:', data.countries);
+            console.log('Countries length:', data.countries ? data.countries.length : 'undefined');
+            console.log('Countries type:', typeof data.countries);
+            
             // Update countries list and map
             if (data.countries && data.countries.length > 0) {
+                console.log('✅ Found countries data, updating map and list...');
                 updateCountriesList(data.countries);
                 updateMapMarkers(data.countries);
             } else {
+                console.log('❌ No countries data found, showing empty state');
                 // Show empty state
                 document.getElementById('countriesList').innerHTML = `
                     <div style="text-align: center; color: var(--text-gray); padding: 20px;">
@@ -1320,6 +1337,15 @@
                         <div style="font-size: 12px; margin-top: 5px;">Check back after some website visits</div>
                     </div>
                 `;
+                
+                // Clear map markers
+                if (map) {
+                    map.eachLayer(layer => {
+                        if (layer instanceof L.Marker) {
+                            map.removeLayer(layer);
+                        }
+                    });
+                }
             }
         }
 
