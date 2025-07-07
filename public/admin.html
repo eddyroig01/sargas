@@ -512,7 +512,7 @@
         
         .countries-list {
             display: grid;
-            gap: 12px;
+            gap: 8px;
             max-height: 400px;
             overflow-y: auto;
         }
@@ -526,6 +526,7 @@
             border: 1px solid var(--border-green);
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
         }
         
         .country-item:hover {
@@ -538,16 +539,16 @@
             background: rgba(0, 255, 136, 0.05);
         }
         
-        .state-breakdown .state-item:hover {
-            background: rgba(0, 255, 136, 0.1) !important;
-            border-color: var(--accent-green) !important;
-            transform: translateX(5px);
+        .country-item.has-states {
+            border-left: 4px solid var(--accent-green);
         }
         
         .country-name {
             color: var(--text-white);
             font-weight: 500;
             font-size: 14px;
+            display: flex;
+            align-items: center;
         }
         
         .country-flag {
@@ -559,6 +560,73 @@
             color: var(--accent-green);
             font-weight: 700;
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .expand-arrow {
+            color: var(--text-gray);
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+        
+        .country-item.expanded .expand-arrow {
+            transform: rotate(180deg);
+        }
+        
+        .state-breakdown {
+            display: none;
+            margin-top: 8px;
+            padding-left: 20px;
+            border-left: 2px solid var(--border-green);
+        }
+        
+        .state-breakdown.expanded {
+            display: block;
+        }
+        
+        .state-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            margin-bottom: 4px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        
+        .state-item:hover {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--accent-green);
+            transform: translateX(5px);
+        }
+        
+        .state-name {
+            color: var(--text-white);
+            font-size: 13px;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+        }
+        
+        .state-visitors {
+            color: var(--accent-green);
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .state-badge {
+            background: var(--accent-green);
+            color: var(--primary-black);
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 2px;
+            margin-left: 8px;
+            font-weight: 700;
         }
 
         /* Traffic Stats Panel */
@@ -1622,18 +1690,23 @@
             return countryFlags[countryName] || '🏳️';
         }
 
-        // Focus map on specific country
-        window.focusCountryOnMap = function(countryName) {
-            const coords = countryCoordinates[countryName];
+        // Focus map on specific location (country or state)
+        window.focusLocationOnMap = function(countryName, regionName = null) {
+            const coords = getLocationCoordinates(countryName, regionName);
             if (coords && map) {
-                map.setView(coords, 6);
+                const zoomLevel = regionName ? 8 : 6; // Zoom closer for states
+                map.setView(coords, zoomLevel);
                 
-                // Find and open popup for this country
+                // Find and open popup for this location
                 map.eachLayer(layer => {
                     if (layer instanceof L.Marker) {
                         const popup = layer.getPopup();
-                        if (popup && popup.getContent().includes(countryName)) {
-                            layer.openPopup();
+                        if (popup) {
+                            const content = popup.getContent();
+                            const searchText = regionName ? `${regionName}, ${countryName}` : countryName;
+                            if (content.includes(searchText)) {
+                                layer.openPopup();
+                            }
                         }
                     }
                 });
@@ -1769,6 +1842,7 @@
             }
         }
 
+        // *** NEW GROUPED COUNTRIES LIST FUNCTION ***
         function updateCountriesList(countries) {
             const countriesList = document.getElementById('countriesList');
             
@@ -1805,24 +1879,119 @@
                 'Bahamas': '🇧🇸'
             };
             
-            const html = countries.map(country => {
-                const isCaribbean = caribbeanCountries.includes(country.country);
-                const flag = countryFlags[country.country] || '🏳️';
+            // Group countries and aggregate states
+            const groupedData = {};
+            
+            countries.forEach(item => {
+                const countryName = item.country;
+                const regionName = item.region;
+                const visitors = item.users || item.visitors || 0;
                 
-                return `
-                    <div class="country-item ${isCaribbean ? 'caribbean' : ''}" onclick="focusCountryOnMap('${country.country}')">
+                if (!groupedData[countryName]) {
+                    groupedData[countryName] = {
+                        country: countryName,
+                        totalVisitors: 0,
+                        states: [],
+                        isCaribbean: caribbeanCountries.includes(countryName)
+                    };
+                }
+                
+                groupedData[countryName].totalVisitors += visitors;
+                
+                if (regionName && regionName !== 'Unknown' && regionName.trim() !== '') {
+                    groupedData[countryName].states.push({
+                        name: regionName,
+                        visitors: visitors,
+                        sessions: item.sessions
+                    });
+                }
+            });
+            
+            // Sort countries: Caribbean first, then by visitor count
+            const sortedCountries = Object.values(groupedData).sort((a, b) => {
+                if (a.isCaribbean && !b.isCaribbean) return -1;
+                if (!a.isCaribbean && b.isCaribbean) return 1;
+                return b.totalVisitors - a.totalVisitors;
+            });
+            
+            // Generate HTML
+            const html = sortedCountries.map(countryData => {
+                const flag = countryFlags[countryData.country] || '🏳️';
+                const hasStates = countryData.states.length > 0;
+                const countryId = `country-${countryData.country.replace(/\s+/g, '-')}`;
+                
+                let countryHtml = `
+                    <div class="country-item ${countryData.isCaribbean ? 'caribbean' : ''} ${hasStates ? 'has-states' : ''}" 
+                         onclick="toggleCountryExpansion('${countryId}', '${countryData.country}')"
+                         data-country="${countryData.country}">
                         <div style="display: flex; align-items: center;">
                             <span class="country-flag">${flag}</span>
-                            <span class="country-name">${country.country}</span>
-                            ${isCaribbean ? '<span style="margin-left: 8px; color: var(--neon-green); font-size: 12px;">🏝️</span>' : ''}
+                            <span class="country-name">
+                                ${countryData.country}
+                                ${hasStates ? '<span class="state-badge">STATES</span>' : ''}
+                            </span>
+                            ${countryData.isCaribbean ? '<span style="margin-left: 8px; color: var(--neon-green); font-size: 12px;">🏝️</span>' : ''}
                         </div>
-                        <span class="country-visitors">${country.users} visitor${country.users !== 1 ? 's' : ''}</span>
+                        <div class="country-visitors">
+                            ${countryData.totalVisitors} visitor${countryData.totalVisitors !== 1 ? 's' : ''}
+                            ${hasStates ? '<span class="expand-arrow">▼</span>' : ''}
+                        </div>
                     </div>
                 `;
+                
+                // Add states breakdown if available
+                if (hasStates) {
+                    const statesHtml = countryData.states
+                        .sort((a, b) => b.visitors - a.visitors)
+                        .map(state => `
+                            <div class="state-item" 
+                                 onclick="event.stopPropagation(); focusLocationOnMap('${countryData.country}', '${state.name}')">
+                                <div class="state-name">
+                                    🏛️ ${state.name}
+                                </div>
+                                <div class="state-visitors">${state.visitors} visitor${state.visitors !== 1 ? 's' : ''}</div>
+                            </div>
+                        `).join('');
+                    
+                    countryHtml += `
+                        <div class="state-breakdown" id="${countryId}-breakdown">
+                            ${statesHtml}
+                        </div>
+                    `;
+                }
+                
+                return countryHtml;
             }).join('');
             
             countriesList.innerHTML = html;
         }
+
+        // Toggle country expansion function
+        window.toggleCountryExpansion = function(countryId, countryName) {
+            const countryItem = document.querySelector(`[onclick*="${countryId}"]`);
+            const breakdown = document.getElementById(`${countryId}-breakdown`);
+            const arrow = countryItem.querySelector('.expand-arrow');
+            
+            if (breakdown) {
+                // Toggle expansion
+                const isExpanded = breakdown.classList.contains('expanded');
+                
+                if (isExpanded) {
+                    // Collapse
+                    breakdown.classList.remove('expanded');
+                    countryItem.classList.remove('expanded');
+                    if (arrow) arrow.textContent = '▼';
+                } else {
+                    // Expand
+                    breakdown.classList.add('expanded');
+                    countryItem.classList.add('expanded');
+                    if (arrow) arrow.textContent = '▲';
+                }
+            }
+            
+            // Focus map on country
+            focusLocationOnMap(countryName);
+        };
 
         function updateAnalyticsStatus(message) {
             document.getElementById('analyticsStatus').textContent = message;
