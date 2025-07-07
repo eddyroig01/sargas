@@ -453,12 +453,23 @@
             height: 100%;
             width: 100%;
             background: var(--primary-black);
-            filter: grayscale(0.8) brightness(0.6);
         }
         
-        /* Custom Leaflet Styles */
+        /* Custom Leaflet Styles for bright map with dark UI */
         .leaflet-control-container {
-            filter: invert(1) hue-rotate(180deg);
+            filter: none;
+        }
+        
+        .leaflet-control-zoom a {
+            background: var(--tech-gray) !important;
+            color: var(--accent-green) !important;
+            border: 1px solid var(--border-green) !important;
+        }
+        
+        .leaflet-control-attribution {
+            background: var(--tech-gray) !important;
+            color: var(--text-gray) !important;
+            border: 1px solid var(--border-green) !important;
         }
         
         .leaflet-popup-content-wrapper {
@@ -1158,11 +1169,12 @@
                 attributionControl: false
             });
 
-            // Add dark tile layer for tech aesthetic
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '© OpenStreetMap contributors © CARTO',
-                subdomains: 'abcd',
-                maxZoom: 18
+            // Add bright, visible map tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                subdomains: 'abc',
+                maxZoom: 18,
+                opacity: 1
             }).addTo(map);
 
             // Add custom controls
