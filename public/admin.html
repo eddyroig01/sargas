@@ -1278,6 +1278,113 @@
             'Ecuador': [-1.8312, -78.1834]
         };
 
+        // US States/Regions coordinates for state-level data
+        const stateCoordinates = {
+            // United States
+            'Alabama': [32.3182, -86.9023],
+            'Alaska': [64.0685, -152.2782],
+            'Arizona': [34.2744, -111.2847],
+            'Arkansas': [34.7519, -92.1313],
+            'California': [36.7783, -119.4179],
+            'Colorado': [39.5501, -105.7821],
+            'Connecticut': [41.5834, -72.7622],
+            'Delaware': [39.1612, -75.5264],
+            'Florida': [27.7663, -81.6868],
+            'Georgia': [32.9866, -83.6487],
+            'Hawaii': [21.1098, -157.5311],
+            'Idaho': [44.2394, -114.5103],
+            'Illinois': [40.3363, -89.0022],
+            'Indiana': [39.8647, -86.2604],
+            'Iowa': [42.0046, -93.2140],
+            'Kansas': [38.5111, -96.8005],
+            'Kentucky': [37.6690, -84.6514],
+            'Louisiana': [31.1801, -91.8749],
+            'Maine': [44.6074, -69.3977],
+            'Maryland': [39.0724, -76.7902],
+            'Massachusetts': [42.2373, -71.5314],
+            'Michigan': [43.3504, -84.5603],
+            'Minnesota': [45.7326, -93.9196],
+            'Mississippi': [32.7364, -89.6678],
+            'Missouri': [38.4623, -92.302],
+            'Montana': [47.0527, -110.2148],
+            'Nebraska': [41.2405, -98.4842],
+            'Nevada': [38.4199, -117.1219],
+            'New Hampshire': [43.4108, -71.5653],
+            'New Jersey': [40.3140, -74.5089],
+            'New Mexico': [34.8375, -106.2371],
+            'New York': [42.9538, -75.5268],
+            'North Carolina': [35.6411, -79.8431],
+            'North Dakota': [47.5362, -99.793],
+            'Ohio': [40.3736, -82.7755],
+            'Oklahoma': [35.5376, -96.9247],
+            'Oregon': [44.5672, -122.1269],
+            'Pennsylvania': [40.5773, -77.264],
+            'Rhode Island': [41.6762, -71.5562],
+            'South Carolina': [33.8191, -80.9066],
+            'South Dakota': [44.2853, -99.4632],
+            'Tennessee': [35.7449, -86.7489],
+            'Texas': [31.1060, -97.6475],
+            'Utah': [40.1135, -111.8535],
+            'Vermont': [44.0407, -72.7093],
+            'Virginia': [37.7680, -78.2057],
+            'Washington': [47.3826, -121.0187],
+            'West Virginia': [38.4680, -80.9696],
+            'Wisconsin': [44.2563, -89.6385],
+            'Wyoming': [42.7475, -107.2085],
+            'District of Columbia': [38.9072, -77.0369],
+
+            // Canada Provinces/Territories
+            'Alberta': [53.9333, -116.5765],
+            'British Columbia': [53.7267, -127.6476],
+            'Manitoba': [53.7609, -98.8139],
+            'New Brunswick': [46.5653, -66.4619],
+            'Newfoundland and Labrador': [53.1355, -57.6604],
+            'Northwest Territories': [61.2181, -113.5042],
+            'Nova Scotia': [44.6820, -63.7443],
+            'Nunavut': [70.2998, -83.1076],
+            'Ontario': [51.2538, -85.3232],
+            'Prince Edward Island': [46.5107, -63.4168],
+            'Quebec': [52.9399, -73.5491],
+            'Saskatchewan': [52.9399, -106.4509],
+            'Yukon': [64.2823, -135.0000],
+
+            // Mexico States (top ones)
+            'Mexico City': [19.4326, -99.1332],
+            'Jalisco': [20.6767, -103.3475],
+            'Nuevo León': [25.5922, -99.9962],
+            'Yucatán': [20.7099, -89.0943],
+            'Quintana Roo': [19.1817, -87.4647],
+
+            // UK Regions
+            'England': [52.3555, -1.1743],
+            'Scotland': [56.4907, -4.2026],
+            'Wales': [52.1307, -3.7837],
+            'Northern Ireland': [54.7877, -6.4923],
+
+            // Caribbean Islands (already covered by country coordinates)
+        };
+
+        // Function to get coordinates for country or state
+        function getLocationCoordinates(countryName, regionName = null) {
+            // If we have a region/state, try to get state coordinates first
+            if (regionName && regionName !== 'Unknown' && regionName.trim() !== '') {
+                const stateKey = regionName.trim();
+                if (stateCoordinates[stateKey]) {
+                    console.log(`🎯 Found STATE coordinates for ${regionName}:`, stateCoordinates[stateKey]);
+                    return stateCoordinates[stateKey];
+                }
+            }
+            
+            // Fallback to country coordinates
+            if (countryCoordinates[countryName]) {
+                console.log(`🎯 Using COUNTRY coordinates for ${countryName}:`, countryCoordinates[countryName]);
+                return countryCoordinates[countryName];
+            }
+            
+            console.warn(`❌ No coordinates found for ${countryName}${regionName ? ` (${regionName})` : ''}`);
+            return null;
+        }
+
         // Caribbean countries for highlighting
         const caribbeanCountries = [
             'Jamaica', 'Barbados', 'Trinidad and Tobago', 'Puerto Rico',
@@ -1286,14 +1393,14 @@
             'Saint Kitts and Nevis', 'Dominica', 'Haiti', 'Martinique', 'Guadeloupe'
         ];
 
-        // *** FIXED MAP MARKERS FUNCTION ***
+        // *** FIXED MAP MARKERS FUNCTION WITH STATE SUPPORT ***
         function updateMapMarkers(countries) {
             if (!map) {
                 console.log('❌ Map not initialized yet');
                 return;
             }
             
-            console.log('🗺️ === UPDATING MAP MARKERS (FIXED VERSION) ===');
+            console.log('🗺️ === UPDATING MAP MARKERS WITH STATE SUPPORT ===');
             console.log('Raw countries data received:', countries);
             console.log('Type of countries data:', typeof countries);
             console.log('Is array?', Array.isArray(countries));
@@ -1311,38 +1418,38 @@
                 return;
             }
             
-            // Add markers for each country
-            countries.forEach((country, index) => {
-                console.log(`\n--- 🎯 PROCESSING COUNTRY ${index + 1} ---`);
-                console.log('Raw country object:', country);
+            // Add markers for each location (country or state)
+            countries.forEach((location, index) => {
+                console.log(`\n--- 🎯 PROCESSING LOCATION ${index + 1} ---`);
+                console.log('Raw location object:', location);
                 
-                // Handle different possible country name formats
-                let countryName = country.country || country.name || 'Unknown';
-                let visitors = country.users || country.visitors || country.sessions || 0;
+                // Handle different possible data formats
+                const countryName = location.country || location.name || 'Unknown';
+                const regionName = location.region || location.state || null;
+                const visitors = location.users || location.visitors || location.sessions || 0;
                 
-                console.log('📍 Extracted country name:', countryName);
-                console.log('👥 Extracted visitor count:', visitors);
+                console.log('📍 Country:', countryName);
+                console.log('🏛️ Region/State:', regionName || 'Not specified');
+                console.log('👥 Visitor count:', visitors);
                 
                 // Skip if no valid country name or zero visitors
                 if (!countryName || countryName === 'Unknown' || visitors === 0) {
-                    console.log('❌ Skipping invalid country data:', { countryName, visitors });
+                    console.log('❌ Skipping invalid location data:', { countryName, regionName, visitors });
                     return;
                 }
                 
-                // Check if we have coordinates for this country
-                const coords = countryCoordinates[countryName];
+                // Get coordinates (state first, then country fallback)
+                const coords = getLocationCoordinates(countryName, regionName);
                 if (!coords) {
-                    console.warn(`❌ NO COORDINATES found for country: "${countryName}"`);
-                    console.log('Available countries in database:', Object.keys(countryCoordinates).slice(0, 10), '...');
+                    console.warn(`❌ NO COORDINATES found for: ${countryName}${regionName ? ` (${regionName})` : ''}`);
                     return;
                 }
                 
-                console.log(`✅ Found coordinates for ${countryName}:`, coords);
-                console.log('📍 Latitude:', coords[0], 'Longitude:', coords[1]);
+                console.log(`✅ Found coordinates:`, coords);
                 
                 // *** CRITICAL FIX: Validate and parse coordinates properly ***
                 if (!Array.isArray(coords) || coords.length !== 2) {
-                    console.error(`❌ Invalid coordinates format for ${countryName}:`, coords);
+                    console.error(`❌ Invalid coordinates format:`, coords);
                     return;
                 }
                 
@@ -1351,24 +1458,33 @@
                 
                 // Additional coordinate validation
                 if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-                    console.error(`❌ Invalid coordinate values for ${countryName}: lat=${lat}, lng=${lng}`);
+                    console.error(`❌ Invalid coordinate values: lat=${lat}, lng=${lng}`);
                     return;
                 }
                 
-                console.log(`🎯 FIXED: Creating marker for ${countryName} at EXACT coordinates: [${lat}, ${lng}]`);
+                console.log(`🎯 CREATING MARKER at: [${lat}, ${lng}]`);
                 
                 const isCaribbean = caribbeanCountries.includes(countryName);
+                const isStateLevel = regionName && regionName !== 'Unknown' && regionName.trim() !== '';
                 
                 // Create custom marker with proper size and color
                 const markerSize = Math.max(20, Math.min(50, visitors * 8)); // Size between 20-50px
-                const markerColor = isCaribbean ? '#39ff14' : '#00ff88';
-                const borderColor = isCaribbean ? '#00ff88' : '#39ff14';
+                let markerColor = isCaribbean ? '#39ff14' : '#00ff88';
+                let borderColor = isCaribbean ? '#00ff88' : '#39ff14';
                 
-                console.log('🎨 Creating marker with:', {
+                // Different colors for state-level markers
+                if (isStateLevel) {
+                    markerColor = isCaribbean ? '#ff6b6b' : '#4ecdc4';
+                    borderColor = isCaribbean ? '#39ff14' : '#ff6b6b';
+                }
+                
+                console.log('🎨 Marker styling:', {
                     size: markerSize,
                     color: markerColor,
+                    borderColor,
                     isCaribbean,
-                    fixedCoordinates: [lat, lng]
+                    isStateLevel,
+                    coordinates: [lat, lng]
                 });
                 
                 const markerIcon = L.divIcon({
@@ -1384,64 +1500,70 @@
                         justify-content: center;
                         color: #0a0a0a;
                         font-weight: bold;
-                        font-size: ${visitors > 9 ? '12px' : '14px'};
+                        font-size: ${visitors > 9 ? '11px' : '13px'};
                         font-family: 'Orbitron', monospace;
                         box-shadow: 0 0 20px ${markerColor}, 0 0 40px ${markerColor};
                         cursor: pointer;
                         z-index: 1000;
+                        ${isStateLevel ? 'border-style: dashed;' : ''}
                     ">${visitors}</div>`,
                     iconSize: [markerSize, markerSize],
                     iconAnchor: [markerSize / 2, markerSize / 2]
                 });
                 
                 try {
-                    // *** CRITICAL FIX: Use explicit lat/lng values, not coords array ***
+                    // *** CRITICAL FIX: Use explicit lat/lng values ***
                     const marker = L.marker([lat, lng], { 
                         icon: markerIcon,
-                        // Ensure marker is properly anchored to geographic coordinates
                         interactive: true,
                         keyboard: false,
-                        zIndexOffset: 1000,
+                        zIndexOffset: isStateLevel ? 2000 : 1000, // States appear above countries
                         riseOnHover: true
                     });
                     
-                    // Add to map AFTER validation
+                    // Add to map
                     marker.addTo(map);
                     
-                    console.log(`✅ FIXED: Successfully added marker for ${countryName} at [${lat}, ${lng}]`);
+                    console.log(`✅ SUCCESSFULLY ADDED MARKER for ${countryName}${regionName ? ` (${regionName})` : ''} at [${lat}, ${lng}]`);
                     
                     // Verify the marker's actual position
                     const markerLatLng = marker.getLatLng();
                     console.log(`🔍 Marker actual position: lat=${markerLatLng.lat}, lng=${markerLatLng.lng}`);
                     
-                    // Add popup with detailed information
+                    // Create detailed popup content
                     const countryFlag = getCountryFlag(countryName);
+                    const locationDisplay = regionName ? `${regionName}, ${countryName}` : countryName;
+                    const locationIcon = isStateLevel ? '🏛️' : '🌍';
+                    
                     const popupContent = `
                         <div style="
                             font-family: 'Inter', sans-serif; 
                             text-align: center;
                             background: #2a2a2a;
                             color: #ffffff;
-                            padding: 10px;
+                            padding: 12px;
                             border-radius: 4px;
-                            border: 1px solid #00ff88;
+                            border: 1px solid ${markerColor};
+                            min-width: 180px;
                         ">
                             <div style="
                                 font-weight: bold; 
-                                color: #00ff88; 
-                                margin-bottom: 8px;
+                                color: ${markerColor}; 
+                                margin-bottom: 10px;
                                 font-size: 16px;
+                                line-height: 1.3;
                             ">
-                                ${countryFlag} ${countryName} 
-                                ${isCaribbean ? '🏝️' : ''}
+                                ${locationIcon} ${countryFlag} ${locationDisplay}
+                                ${isCaribbean ? ' 🏝️' : ''}
                             </div>
-                            <div style="font-size: 18px; margin-bottom: 4px;">
+                            <div style="font-size: 18px; margin-bottom: 6px;">
                                 <strong>${visitors}</strong> visitor${visitors !== 1 ? 's' : ''}
                             </div>
-                            ${country.sessions ? `<div style="font-size: 14px; color: #b0b0b0;">${country.sessions} sessions</div>` : ''}
+                            ${location.sessions ? `<div style="font-size: 14px; color: #b0b0b0; margin-bottom: 4px;">${location.sessions} sessions</div>` : ''}
+                            ${isStateLevel ? '<div style="font-size: 11px; color: #4ecdc4; margin-top: 6px;">📍 State-Level Data</div>' : ''}
                             ${isCaribbean ? '<div style="font-size: 12px; color: #39ff14; margin-top: 6px;">🎯 Target Market</div>' : ''}
-                            <div style="font-size: 10px; color: #666; margin-top: 4px;">
-                                🎯 FIXED at: [${lat.toFixed(4)}, ${lng.toFixed(4)}]
+                            <div style="font-size: 9px; color: #666; margin-top: 6px; border-top: 1px solid #444; padding-top: 4px;">
+                                ${isStateLevel ? '🏛️ State' : '🌍 Country'} • [${lat.toFixed(3)}, ${lng.toFixed(3)}]
                             </div>
                         </div>
                     `;
@@ -1449,11 +1571,11 @@
                     marker.bindPopup(popupContent);
                     
                 } catch (error) {
-                    console.error(`❌ Error adding marker for ${countryName}:`, error);
+                    console.error(`❌ Error adding marker:`, error);
                 }
             });
             
-            console.log('🗺️ === FINISHED UPDATING MAP MARKERS (FIXED VERSION) ===\n');
+            console.log('🗺️ === FINISHED UPDATING MAP MARKERS WITH STATE SUPPORT ===\n');
         }
 
         // Helper function to get country flags
