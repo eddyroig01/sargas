@@ -407,7 +407,7 @@
         
         .analytics-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 25px;
             padding-bottom: 15px;
@@ -470,18 +470,6 @@
             background: var(--tech-gray) !important;
             color: var(--text-gray) !important;
             border: 1px solid var(--border-green) !important;
-        }
-        
-        .leaflet-popup-content-wrapper {
-            background: var(--tech-gray);
-            border: 1px solid var(--accent-green);
-            color: var(--text-white);
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .leaflet-popup-tip {
-            background: var(--tech-gray);
-            border: 1px solid var(--accent-green);
         }
         
         .custom-marker {
@@ -1178,6 +1166,8 @@
         function initializeMap() {
             if (map) return;
             
+            console.log('🗺️ Initializing Leaflet map...');
+            
             // Initialize Leaflet map
             map = L.map('visitor-map', {
                 center: [25.0, -70.0], // Caribbean focus
@@ -1212,11 +1202,13 @@
             };
             infoControl.addTo(map);
 
+            console.log('✅ Map initialized successfully');
+            
             // Load analytics data on map initialization
             loadAnalyticsData();
         }
 
-        // Country coordinates mapping
+        // Better country coordinates mapping with accurate locations
         const countryCoordinates = {
             'United States': [39.8283, -98.5795],
             'Canada': [56.1304, -106.3468],
@@ -1241,7 +1233,49 @@
             'Antigua and Barbuda': [17.0608, -61.7964],
             'Saint Lucia': [13.9094, -60.9789],
             'Grenada': [12.1165, -61.6790],
-            'Saint Vincent and the Grenadines': [12.9843, -61.2872]
+            'Saint Vincent and the Grenadines': [12.9843, -61.2872],
+            'Saint Kitts and Nevis': [17.3578, -62.7830],
+            'Dominica': [15.4140, -61.3710],
+            'Haiti': [18.9712, -72.2852],
+            'Martinique': [14.6415, -61.0242],
+            'Guadeloupe': [16.9950, -62.0670],
+            'Netherlands': [52.1326, 5.2913],
+            'Belgium': [50.5039, 4.4699],
+            'Switzerland': [46.8182, 8.2275],
+            'Austria': [47.5162, 14.5501],
+            'Portugal': [39.3999, -8.2245],
+            'Norway': [60.4720, 8.4689],
+            'Sweden': [60.1282, 18.6435],
+            'Denmark': [56.2639, 9.5018],
+            'Finland': [61.9241, 25.7482],
+            'Poland': [51.9194, 19.1451],
+            'Czech Republic': [49.8175, 15.4730],
+            'Hungary': [47.1625, 19.5033],
+            'Romania': [45.9432, 24.9668],
+            'Bulgaria': [42.7339, 25.4858],
+            'Greece': [39.0742, 21.8243],
+            'Turkey': [38.9637, 35.2433],
+            'Russia': [61.5240, 105.3188],
+            'South Korea': [35.9078, 127.7669],
+            'Taiwan': [23.6978, 120.9605],
+            'Singapore': [1.3521, 103.8198],
+            'Thailand': [15.8700, 100.9925],
+            'Malaysia': [4.2105, 101.9758],
+            'Indonesia': [-0.7893, 113.9213],
+            'Philippines': [12.8797, 121.7740],
+            'Vietnam': [14.0583, 108.2772],
+            'South Africa': [-30.5595, 22.9375],
+            'Egypt': [26.0975, 30.0444],
+            'Israel': [31.0461, 34.8516],
+            'Saudi Arabia': [23.8859, 45.0792],
+            'United Arab Emirates': [23.4241, 53.8478],
+            'New Zealand': [-40.9006, 174.8860],
+            'Argentina': [-38.4161, -63.6167],
+            'Chile': [-35.6751, -71.5430],
+            'Colombia': [4.5709, -74.2973],
+            'Peru': [-9.1900, -75.0152],
+            'Venezuela': [6.4238, -66.5897],
+            'Ecuador': [-1.8312, -78.1834]
         };
 
         // Caribbean countries for highlighting
@@ -1252,9 +1286,235 @@
             'Saint Kitts and Nevis', 'Dominica', 'Haiti', 'Martinique', 'Guadeloupe'
         ];
 
+        // *** FIXED MAP MARKERS FUNCTION ***
+        function updateMapMarkers(countries) {
+            if (!map) {
+                console.log('❌ Map not initialized yet');
+                return;
+            }
+            
+            console.log('🗺️ === UPDATING MAP MARKERS (FIXED VERSION) ===');
+            console.log('Raw countries data received:', countries);
+            console.log('Type of countries data:', typeof countries);
+            console.log('Is array?', Array.isArray(countries));
+            
+            // Clear existing markers
+            map.eachLayer(layer => {
+                if (layer instanceof L.Marker) {
+                    console.log('🧹 Removing existing marker');
+                    map.removeLayer(layer);
+                }
+            });
+            
+            if (!countries || countries.length === 0) {
+                console.log('❌ No countries data to display');
+                return;
+            }
+            
+            // Add markers for each country
+            countries.forEach((country, index) => {
+                console.log(`\n--- 🎯 PROCESSING COUNTRY ${index + 1} ---`);
+                console.log('Raw country object:', country);
+                
+                // Handle different possible country name formats
+                let countryName = country.country || country.name || 'Unknown';
+                let visitors = country.users || country.visitors || country.sessions || 0;
+                
+                console.log('📍 Extracted country name:', countryName);
+                console.log('👥 Extracted visitor count:', visitors);
+                
+                // Skip if no valid country name or zero visitors
+                if (!countryName || countryName === 'Unknown' || visitors === 0) {
+                    console.log('❌ Skipping invalid country data:', { countryName, visitors });
+                    return;
+                }
+                
+                // Check if we have coordinates for this country
+                const coords = countryCoordinates[countryName];
+                if (!coords) {
+                    console.warn(`❌ NO COORDINATES found for country: "${countryName}"`);
+                    console.log('Available countries in database:', Object.keys(countryCoordinates).slice(0, 10), '...');
+                    return;
+                }
+                
+                console.log(`✅ Found coordinates for ${countryName}:`, coords);
+                console.log('📍 Latitude:', coords[0], 'Longitude:', coords[1]);
+                
+                // *** CRITICAL FIX: Validate and parse coordinates properly ***
+                if (!Array.isArray(coords) || coords.length !== 2) {
+                    console.error(`❌ Invalid coordinates format for ${countryName}:`, coords);
+                    return;
+                }
+                
+                const lat = parseFloat(coords[0]);
+                const lng = parseFloat(coords[1]);
+                
+                // Additional coordinate validation
+                if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+                    console.error(`❌ Invalid coordinate values for ${countryName}: lat=${lat}, lng=${lng}`);
+                    return;
+                }
+                
+                console.log(`🎯 FIXED: Creating marker for ${countryName} at EXACT coordinates: [${lat}, ${lng}]`);
+                
+                const isCaribbean = caribbeanCountries.includes(countryName);
+                
+                // Create custom marker with proper size and color
+                const markerSize = Math.max(20, Math.min(50, visitors * 8)); // Size between 20-50px
+                const markerColor = isCaribbean ? '#39ff14' : '#00ff88';
+                const borderColor = isCaribbean ? '#00ff88' : '#39ff14';
+                
+                console.log('🎨 Creating marker with:', {
+                    size: markerSize,
+                    color: markerColor,
+                    isCaribbean,
+                    fixedCoordinates: [lat, lng]
+                });
+                
+                const markerIcon = L.divIcon({
+                    className: 'custom-visitor-marker-fixed',
+                    html: `<div style="
+                        width: ${markerSize}px;
+                        height: ${markerSize}px;
+                        background: ${markerColor};
+                        border: 3px solid ${borderColor};
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: #0a0a0a;
+                        font-weight: bold;
+                        font-size: ${visitors > 9 ? '12px' : '14px'};
+                        font-family: 'Orbitron', monospace;
+                        box-shadow: 0 0 20px ${markerColor}, 0 0 40px ${markerColor};
+                        cursor: pointer;
+                        z-index: 1000;
+                    ">${visitors}</div>`,
+                    iconSize: [markerSize, markerSize],
+                    iconAnchor: [markerSize / 2, markerSize / 2]
+                });
+                
+                try {
+                    // *** CRITICAL FIX: Use explicit lat/lng values, not coords array ***
+                    const marker = L.marker([lat, lng], { 
+                        icon: markerIcon,
+                        // Ensure marker is properly anchored to geographic coordinates
+                        interactive: true,
+                        keyboard: false,
+                        zIndexOffset: 1000,
+                        riseOnHover: true
+                    });
+                    
+                    // Add to map AFTER validation
+                    marker.addTo(map);
+                    
+                    console.log(`✅ FIXED: Successfully added marker for ${countryName} at [${lat}, ${lng}]`);
+                    
+                    // Verify the marker's actual position
+                    const markerLatLng = marker.getLatLng();
+                    console.log(`🔍 Marker actual position: lat=${markerLatLng.lat}, lng=${markerLatLng.lng}`);
+                    
+                    // Add popup with detailed information
+                    const countryFlag = getCountryFlag(countryName);
+                    const popupContent = `
+                        <div style="
+                            font-family: 'Inter', sans-serif; 
+                            text-align: center;
+                            background: #2a2a2a;
+                            color: #ffffff;
+                            padding: 10px;
+                            border-radius: 4px;
+                            border: 1px solid #00ff88;
+                        ">
+                            <div style="
+                                font-weight: bold; 
+                                color: #00ff88; 
+                                margin-bottom: 8px;
+                                font-size: 16px;
+                            ">
+                                ${countryFlag} ${countryName} 
+                                ${isCaribbean ? '🏝️' : ''}
+                            </div>
+                            <div style="font-size: 18px; margin-bottom: 4px;">
+                                <strong>${visitors}</strong> visitor${visitors !== 1 ? 's' : ''}
+                            </div>
+                            ${country.sessions ? `<div style="font-size: 14px; color: #b0b0b0;">${country.sessions} sessions</div>` : ''}
+                            ${isCaribbean ? '<div style="font-size: 12px; color: #39ff14; margin-top: 6px;">🎯 Target Market</div>' : ''}
+                            <div style="font-size: 10px; color: #666; margin-top: 4px;">
+                                🎯 FIXED at: [${lat.toFixed(4)}, ${lng.toFixed(4)}]
+                            </div>
+                        </div>
+                    `;
+                    
+                    marker.bindPopup(popupContent);
+                    
+                } catch (error) {
+                    console.error(`❌ Error adding marker for ${countryName}:`, error);
+                }
+            });
+            
+            console.log('🗺️ === FINISHED UPDATING MAP MARKERS (FIXED VERSION) ===\n');
+        }
+
+        // Helper function to get country flags
+        function getCountryFlag(countryName) {
+            const countryFlags = {
+                'United States': '🇺🇸',
+                'Canada': '🇨🇦',
+                'Mexico': '🇲🇽',
+                'Brazil': '🇧🇷',
+                'United Kingdom': '🇬🇧',
+                'Germany': '🇩🇪',
+                'France': '🇫🇷',
+                'Spain': '🇪🇸',
+                'Italy': '🇮🇹',
+                'Japan': '🇯🇵',
+                'China': '🇨🇳',
+                'India': '🇮🇳',
+                'Australia': '🇦🇺',
+                'Jamaica': '🇯🇲',
+                'Barbados': '🇧🇧',
+                'Trinidad and Tobago': '🇹🇹',
+                'Puerto Rico': '🇵🇷',
+                'Dominican Republic': '🇩🇴',
+                'Cuba': '🇨🇺',
+                'Bahamas': '🇧🇸',
+                'Saint Lucia': '🇱🇨',
+                'Grenada': '🇬🇩',
+                'Netherlands': '🇳🇱',
+                'Belgium': '🇧🇪',
+                'Switzerland': '🇨🇭',
+                'Austria': '🇦🇹',
+                'Portugal': '🇵🇹',
+                'Norway': '🇳🇴',
+                'Sweden': '🇸🇪',
+                'Denmark': '🇩🇰',
+                'Finland': '🇫🇮'
+            };
+            return countryFlags[countryName] || '🏳️';
+        }
+
+        // Focus map on specific country
+        window.focusCountryOnMap = function(countryName) {
+            const coords = countryCoordinates[countryName];
+            if (coords && map) {
+                map.setView(coords, 6);
+                
+                // Find and open popup for this country
+                map.eachLayer(layer => {
+                    if (layer instanceof L.Marker) {
+                        const popup = layer.getPopup();
+                        if (popup && popup.getContent().includes(countryName)) {
+                            layer.openPopup();
+                        }
+                    }
+                });
+            }
+        };
+
         // Load analytics data
         async function loadAnalyticsData() {
-            console.log('Loading analytics data...');
+            console.log('📊 Loading analytics data...');
             
             try {
                 // Try to get real GA4 data via fetch first (your working method)
@@ -1268,7 +1528,7 @@
                 
                 if (response.ok) {
                     const analyticsData = await response.json();
-                    console.log('Analytics result:', analyticsData);
+                    console.log('📊 Analytics result:', analyticsData);
                     
                     // Store globally for debugging
                     window.currentAnalyticsData = analyticsData;
@@ -1314,7 +1574,7 @@
         }
 
         function processAnalyticsData(data) {
-            console.log('Processing analytics data:', data);
+            console.log('📊 Processing analytics data:', data);
             
             // Store data globally for debugging
             window.currentAnalyticsData = data;
@@ -1334,7 +1594,7 @@
             document.getElementById('dataSource').textContent = data.source === 'google-analytics-4' ? 'GA4 Live' : 'Sample';
             
             // Debug countries data specifically
-            console.log('=== COUNTRIES DEBUG ===');
+            console.log('🌍 === COUNTRIES DEBUG ===');
             console.log('Countries in data:', data.countries);
             console.log('Countries length:', data.countries ? data.countries.length : 'undefined');
             console.log('Countries type:', typeof data.countries);
@@ -1347,17 +1607,17 @@
                 // Initialize map if not already done and we're on traffic tab
                 const trafficTab = document.getElementById('traffic');
                 if (trafficTab && trafficTab.classList.contains('active') && !map) {
-                    console.log('Initializing map because traffic tab is active...');
+                    console.log('🗺️ Initializing map because traffic tab is active...');
                     initializeMap();
                     // Add slight delay to ensure map is fully initialized
                     setTimeout(() => {
                         updateMapMarkers(data.countries);
                     }, 500);
                 } else if (map) {
-                    console.log('Map already exists, updating markers...');
+                    console.log('🗺️ Map already exists, updating markers...');
                     updateMapMarkers(data.countries);
                 } else {
-                    console.log('Traffic tab not active, storing data for later map update');
+                    console.log('🗺️ Traffic tab not active, storing data for later map update');
                 }
             } else {
                 console.log('❌ No countries data found, showing empty state');
@@ -1435,82 +1695,6 @@
             
             countriesList.innerHTML = html;
         }
-
-        function updateMapMarkers(countries) {
-            if (!map) return;
-            
-            // Clear existing markers
-            map.eachLayer(layer => {
-                if (layer instanceof L.Marker) {
-                    map.removeLayer(layer);
-                }
-            });
-            
-            // Add markers for each country
-            countries.forEach(country => {
-                const coords = countryCoordinates[country.country];
-                if (coords) {
-                    const isCaribbean = caribbeanCountries.includes(country.country);
-                    
-                    // Create custom marker
-                    const markerIcon = L.divIcon({
-                        className: 'custom-marker',
-                        html: `<div style="
-                            width: ${Math.max(12, country.users * 4)}px;
-                            height: ${Math.max(12, country.users * 4)}px;
-                            background: ${isCaribbean ? 'var(--neon-green)' : 'var(--accent-green)'};
-                            border: 2px solid ${isCaribbean ? 'var(--accent-green)' : 'var(--neon-green)'};
-                            border-radius: 50%;
-                            box-shadow: 0 0 15px ${isCaribbean ? 'var(--neon-green)' : 'var(--accent-green)'};
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            color: var(--primary-black);
-                            font-weight: bold;
-                            font-size: ${country.users > 5 ? '10px' : '8px'};
-                        ">${country.users}</div>`,
-                        iconSize: [Math.max(12, country.users * 4), Math.max(12, country.users * 4)],
-                        iconAnchor: [Math.max(6, country.users * 2), Math.max(6, country.users * 2)]
-                    });
-                    
-                    const marker = L.marker(coords, { icon: markerIcon }).addTo(map);
-                    
-                    // Add popup
-                    const popupContent = `
-                        <div style="font-family: 'Inter', sans-serif; text-align: center;">
-                            <div style="font-weight: bold; color: var(--accent-green); margin-bottom: 5px;">
-                                ${country.country} ${isCaribbean ? '🏝️' : ''}
-                            </div>
-                            <div style="font-size: 14px;">
-                                ${country.users} visitor${country.users !== 1 ? 's' : ''}
-                            </div>
-                            ${country.sessions ? `<div style="font-size: 12px; color: var(--text-gray);">${country.sessions} sessions</div>` : ''}
-                            ${isCaribbean ? '<div style="font-size: 11px; color: var(--neon-green); margin-top: 3px;">🎯 Target Market</div>' : ''}
-                        </div>
-                    `;
-                    
-                    marker.bindPopup(popupContent);
-                }
-            });
-        }
-
-        // Focus map on specific country
-        window.focusCountryOnMap = function(countryName) {
-            const coords = countryCoordinates[countryName];
-            if (coords && map) {
-                map.setView(coords, 6);
-                
-                // Find and open popup for this country
-                map.eachLayer(layer => {
-                    if (layer instanceof L.Marker) {
-                        const popup = layer.getPopup();
-                        if (popup && popup.getContent().includes(countryName)) {
-                            layer.openPopup();
-                        }
-                    }
-                });
-            }
-        };
 
         function updateAnalyticsStatus(message) {
             document.getElementById('analyticsStatus').textContent = message;
