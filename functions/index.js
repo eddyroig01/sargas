@@ -1,29 +1,27 @@
-// Firebase Callable Functions - Bypasses Organization Policy
+// FIXED Firebase Functions Gen 2 - Proper Cloud Run Structure
 const { onCall } = require('firebase-functions/v2/https');
 const { setGlobalOptions } = require('firebase-functions/v2');
-const admin = require('firebase-admin');
 
 // Set global options for all functions
 setGlobalOptions({
   region: 'us-central1',
   memory: '256MiB',
   timeoutSeconds: 60,
+  maxInstances: 10
 });
 
-// Initialize Firebase Admin SDK
-if (!admin.apps.length) {
-  admin.initializeApp();
-}
-
-// Health Check Function - Callable
-exports.healthCheck = onCall((request) => {
+// Health Check Function - Gen 2 Callable (FIXED)
+exports.healthCheck = onCall({
+  cors: true,
+  invoker: 'public'
+}, async (request) => {
   try {
     const response = {
       status: 'healthy',
       timestamp: new Date().toISOString(),
       message: 'SargaSolutions Firebase Functions are running successfully!',
-      version: '2.0.0',
-      method: 'callable'
+      version: '2.1.0',
+      method: 'callable-gen2-fixed'
     };
     
     return response;
@@ -33,8 +31,11 @@ exports.healthCheck = onCall((request) => {
   }
 });
 
-// Test Analytics Function - Callable
-exports.testAnalytics = onCall((request) => {
+// Test Analytics Function - Gen 2 Callable (FIXED)
+exports.testAnalytics = onCall({
+  cors: true,
+  invoker: 'public'
+}, async (request) => {
   try {
     const testData = {
       message: 'Analytics test successful!',
@@ -45,7 +46,7 @@ exports.testAnalytics = onCall((request) => {
         bounceRate: 45.2,
         avgSessionDuration: '2m 34s'
       },
-      method: 'callable',
+      method: 'callable-gen2-fixed',
       status: 'success'
     };
     
@@ -56,8 +57,11 @@ exports.testAnalytics = onCall((request) => {
   }
 });
 
-// Enhanced Analytics Data Function - Callable
-exports.getAnalyticsData = onCall((request) => {
+// Enhanced Analytics Data Function - Gen 2 Callable (FIXED)
+exports.getAnalyticsData = onCall({
+  cors: true,
+  invoker: 'public'
+}, async (request) => {
   try {
     // Enhanced sample analytics data
     const analyticsData = {
@@ -108,13 +112,13 @@ exports.getAnalyticsData = onCall((request) => {
         { source: 'medium.com', visitors: 459, percentage: 2.9 }
       ],
       countries: [
-        { country: 'United States', code: 'US', visitors: 7234, flag: '🇺🇸' },
-        { country: 'Canada', code: 'CA', visitors: 2156, flag: '🇨🇦' },
-        { country: 'United Kingdom', code: 'GB', visitors: 1891, flag: '🇬🇧' },
-        { country: 'Germany', code: 'DE', visitors: 1456, flag: '🇩🇪' },
-        { country: 'France', code: 'FR', visitors: 1234, flag: '🇫🇷' },
-        { country: 'Australia', code: 'AU', visitors: 987, flag: '🇦🇺' },
-        { country: 'India', code: 'IN', visitors: 889, flag: '🇮🇳' }
+        { country: 'United States', code: 'US', visitors: 7234, flag: '🇺🇸', lat: 39.8283, lng: -98.5795 },
+        { country: 'Canada', code: 'CA', visitors: 2156, flag: '🇨🇦', lat: 56.1304, lng: -106.3468 },
+        { country: 'United Kingdom', code: 'GB', visitors: 1891, flag: '🇬🇧', lat: 55.3781, lng: -3.4360 },
+        { country: 'Germany', code: 'DE', visitors: 1456, flag: '🇩🇪', lat: 51.1657, lng: 10.4515 },
+        { country: 'France', code: 'FR', visitors: 1234, flag: '🇫🇷', lat: 46.2276, lng: 2.2137 },
+        { country: 'Australia', code: 'AU', visitors: 987, flag: '🇦🇺', lat: -25.2744, lng: 133.7751 },
+        { country: 'India', code: 'IN', visitors: 889, flag: '🇮🇳', lat: 20.5937, lng: 78.9629 }
       ],
       devices: {
         desktop: { visitors: 9234, percentage: 58.2 },
@@ -148,7 +152,7 @@ exports.getAnalyticsData = onCall((request) => {
         cumulativeLayoutShift: 0.09
       },
       lastUpdated: new Date().toISOString(),
-      method: 'callable',
+      method: 'callable-gen2-fixed',
       status: 'success'
     };
 
@@ -159,8 +163,11 @@ exports.getAnalyticsData = onCall((request) => {
   }
 });
 
-// Visitor Trends Function - Callable
-exports.getVisitorTrends = onCall((request) => {
+// Visitor Trends Function - Gen 2 Callable (FIXED)
+exports.getVisitorTrends = onCall({
+  cors: true,
+  invoker: 'public'
+}, async (request) => {
   try {
     const trends = {
       hourlyTrends: Array.from({ length: 24 }, (_, i) => ({
@@ -178,7 +185,7 @@ exports.getVisitorTrends = onCall((request) => {
       ],
       monthlyGrowth: +23.4,
       yearlyGrowth: +156.7,
-      method: 'callable',
+      method: 'callable-gen2-fixed',
       status: 'success'
     };
 
