@@ -5,6 +5,28 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/health",
+        "function": "healthCheck"
+      },
+      {
+        "source": "/api/test-analytics", 
+        "function": "testAnalytics"
+      },
+      {
+        "source": "/api/analytics-data",
+        "function": "getAnalyticsData"
+      },
+      {
+        "source": "/api/visitor-trends",
+        "function": "getVisitorTrends"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
     ]
   },
   "functions": [
