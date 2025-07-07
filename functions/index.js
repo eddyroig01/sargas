@@ -1,4 +1,4 @@
-// Firebase Functions Gen 2 with Real Google Analytics 4 Integration
+// Firebase Functions Gen 2 with Real Google Analytics 4 Integration - CORS FIXED
 const { onCall } = require('firebase-functions/v2/https');
 const { setGlobalOptions } = require('firebase-functions/v2');
 const { BetaAnalyticsDataClient } = require('@google-analytics/data');
@@ -8,6 +8,12 @@ setGlobalOptions({
   region: 'us-central1',
   memory: '256MiB',
   timeoutSeconds: 60,
+  cors: {
+    origin: ['https://sargas.ai', 'https://sargasolutions-webbpage.web.app'],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  }
 });
 
 // Initialize Google Analytics Data API client
@@ -20,8 +26,12 @@ const GA4_PROPERTY_ID = '495789768'; // Your actual property ID
 
 // Health Check Function
 exports.healthCheck = onCall({
-  invoker: 'public',
-  cors: true,
+  cors: {
+    origin: ['https://sargas.ai', 'https://sargasolutions-webbpage.web.app'],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  },
   maxInstances: 10
 }, async (request) => {
   try {
@@ -31,7 +41,8 @@ exports.healthCheck = onCall({
       message: 'Firebase Functions with GA4 integration operational',
       version: '2.0',
       propertyId: GA4_PROPERTY_ID,
-      features: ['real-time-analytics', 'ga4-integration', 'caribbean-focus']
+      features: ['real-time-analytics', 'ga4-integration', 'caribbean-focus'],
+      cors: 'enabled'
     };
   } catch (error) {
     console.error('Health check error:', error);
@@ -41,8 +52,12 @@ exports.healthCheck = onCall({
 
 // Test Analytics Connection Function
 exports.testAnalytics = onCall({
-  invoker: 'public',
-  cors: true,
+  cors: {
+    origin: ['https://sargas.ai', 'https://sargasolutions-webbpage.web.app'],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  },
   maxInstances: 10
 }, async (request) => {
   try {
@@ -67,7 +82,8 @@ exports.testAnalytics = onCall({
       propertyId: GA4_PROPERTY_ID,
       dataAvailable: response.rows?.length > 0,
       activeUsers: response.rows?.[0]?.metricValues?.[0]?.value || '0',
-      testConnection: 'PASSED'
+      testConnection: 'PASSED',
+      cors: 'enabled'
     };
   } catch (error) {
     console.error('Analytics test error:', error);
@@ -76,15 +92,20 @@ exports.testAnalytics = onCall({
       message: `GA4 connection failed: ${error.message}`,
       timestamp: new Date().toISOString(),
       error: error.code || 'UNKNOWN_ERROR',
-      testConnection: 'FAILED'
+      testConnection: 'FAILED',
+      cors: 'enabled'
     };
   }
 });
 
 // Enhanced Analytics Data Function with Real GA4 Data
 exports.getAnalyticsData = onCall({
-  invoker: 'public',
-  cors: true,
+  cors: {
+    origin: ['https://sargas.ai', 'https://sargasolutions-webbpage.web.app'],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  },
   maxInstances: 10
 }, async (request) => {
   try {
@@ -186,7 +207,8 @@ exports.getAnalyticsData = onCall({
         totalUsers: countries.filter(c => c.isCaribbean).reduce((sum, c) => sum + c.users, 0)
       },
       dataRange: '7 days',
-      message: 'Real Google Analytics 4 data retrieved successfully'
+      message: 'Real Google Analytics 4 data retrieved successfully',
+      cors: 'enabled'
     };
   } catch (error) {
     console.error('Analytics data error:', error);
@@ -211,15 +233,20 @@ exports.getAnalyticsData = onCall({
         { country: 'Barbados', sessions: 1876, users: 1534, isCaribbean: true },
         { country: 'Trinidad and Tobago', sessions: 1654, users: 1398, isCaribbean: true },
         { country: 'Canada', sessions: 1243, users: 1087, isCaribbean: false },
-      ]
+      ],
+      cors: 'enabled'
     };
   }
 });
 
 // Visitor Trends Function with Real GA4 Data
 exports.getVisitorTrends = onCall({
-  invoker: 'public',
-  cors: true,
+  cors: {
+    origin: ['https://sargas.ai', 'https://sargasolutions-webbpage.web.app'],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  },
   maxInstances: 10
 }, async (request) => {
   try {
@@ -267,7 +294,8 @@ exports.getVisitorTrends = onCall({
         avgUsersPerDay: trends.reduce((sum, day) => sum + day.users, 0) / (trends.length || 1),
         peakDay: trends.reduce((peak, day) => day.sessions > peak.sessions ? day : peak, trends[0] || { sessions: 0 })
       },
-      message: 'Real visitor trends data retrieved successfully'
+      message: 'Real visitor trends data retrieved successfully',
+      cors: 'enabled'
     };
   } catch (error) {
     console.error('Visitor trends error:', error);
