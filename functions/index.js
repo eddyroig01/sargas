@@ -1,5 +1,5 @@
-// Firebase Functions Gen 2 with Real Google Analytics 4 Integration - CORS FIXED
-const { onCall } = require('firebase-functions/v2/https');
+// Firebase Functions Gen 2 with HTTP endpoints and CORS - ACTUALLY WORKING
+const { onRequest } = require('firebase-functions/v2/https');
 const { setGlobalOptions } = require('firebase-functions/v2');
 const { BetaAnalyticsDataClient } = require('@google-analytics/data');
 
@@ -8,34 +8,35 @@ setGlobalOptions({
   region: 'us-central1',
   memory: '256MiB',
   timeoutSeconds: 60,
-  cors: {
-    origin: ['https://sargas.ai', 'https://sargasolutions-webbpage.web.app'],
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-  }
 });
 
 // Initialize Google Analytics Data API client
 const analyticsDataClient = new BetaAnalyticsDataClient({
-  keyFilename: './service-account-key.json', // The JSON file you downloaded
+  keyFilename: './service-account-key.json',
 });
 
 // Your GA4 Property ID
-const GA4_PROPERTY_ID = '495789768'; // Your actual property ID
+const GA4_PROPERTY_ID = '495789768';
+
+// CORS helper function
+function setCORSHeaders(res) {
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.set('Access-Control-Max-Age', '3600');
+}
 
 // Health Check Function
-exports.healthCheck = onCall({
-  cors: {
-    origin: ['https://sargas.ai', 'https://sargasolutions-webbpage.web.app'],
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-  },
-  maxInstances: 10
-}, async (request) => {
+exports.healthCheck = onRequest({ invoker: 'public' }, async (req, res) => {
+  setCORSHeaders(res);
+  
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+
   try {
-    return {
+    const result = {
       status: 'healthy',
       timestamp: new Date().toISOString(),
       message: 'Firebase Functions with GA4 integration operational',
@@ -44,22 +45,23 @@ exports.healthCheck = onCall({
       features: ['real-time-analytics', 'ga4-integration', 'caribbean-focus'],
       cors: 'enabled'
     };
+    
+    res.json(result);
   } catch (error) {
     console.error('Health check error:', error);
-    throw new Error(`Health check failed: ${error.message}`);
+    res.status(500).json({ error: `Health check failed: ${error.message}` });
   }
 });
 
 // Test Analytics Connection Function
-exports.testAnalytics = onCall({
-  cors: {
-    origin: ['https://sargas.ai', 'https://sargasolutions-webbpage.web.app'],
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-  },
-  maxInstances: 10
-}, async (request) => {
+exports.testAnalytics = onRequest({ invoker: 'public' }, async (req, res) => {
+  setCORSHeaders(res);
+  
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+
   try {
     // Test GA4 connection with a simple request
     const [response] = await analyticsDataClient.runReport({
@@ -75,7 +77,7 @@ exports.testAnalytics = onCall({
       ],
     });
 
-    return {
+    const result = {
       success: true,
       message: 'Google Analytics 4 connection successful!',
       timestamp: new Date().toISOString(),
@@ -85,29 +87,30 @@ exports.testAnalytics = onCall({
       testConnection: 'PASSED',
       cors: 'enabled'
     };
+    
+    res.json(result);
   } catch (error) {
     console.error('Analytics test error:', error);
-    return {
+    res.json({
       success: false,
       message: `GA4 connection failed: ${error.message}`,
       timestamp: new Date().toISOString(),
       error: error.code || 'UNKNOWN_ERROR',
       testConnection: 'FAILED',
       cors: 'enabled'
-    };
+    });
   }
 });
 
 // Enhanced Analytics Data Function with Real GA4 Data
-exports.getAnalyticsData = onCall({
-  cors: {
-    origin: ['https://sargas.ai', 'https://sargasolutions-webbpage.web.app'],
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-  },
-  maxInstances: 10
-}, async (request) => {
+exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => {
+  setCORSHeaders(res);
+  
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+
   try {
     // Get real-time active users
     const [realtimeResponse] = await analyticsDataClient.runRealtimeReport({
@@ -186,7 +189,7 @@ exports.getAnalyticsData = onCall({
     const bounceRate = parseFloat(weeklyResponse.rows?.[0]?.metricValues?.[2]?.value || '0');
     const totalUsers = parseInt(weeklyResponse.rows?.[0]?.metricValues?.[4]?.value || '0');
 
-    return {
+    const result = {
       success: true,
       timestamp: new Date().toISOString(),
       source: 'google-analytics-4',
@@ -197,10 +200,10 @@ exports.getAnalyticsData = onCall({
       traffic: {
         sessions: totalSessions,
         pageViews: totalPageViews,
-        bounceRate: Math.round(bounceRate * 100), // Convert to percentage
+        bounceRate: Math.round(bounceRate * 100),
         users: totalUsers
       },
-      countries: countries.slice(0, 15), // Top 15 countries
+      countries: countries.slice(0, 15),
       caribbeanMetrics: {
         countries: countries.filter(c => c.isCaribbean),
         totalSessions: countries.filter(c => c.isCaribbean).reduce((sum, c) => sum + c.sessions, 0),
@@ -210,11 +213,13 @@ exports.getAnalyticsData = onCall({
       message: 'Real Google Analytics 4 data retrieved successfully',
       cors: 'enabled'
     };
+    
+    res.json(result);
   } catch (error) {
     console.error('Analytics data error:', error);
     
     // Fallback to sample data if GA4 fails
-    return {
+    const fallbackResult = {
       success: false,
       timestamp: new Date().toISOString(),
       source: 'sample-data-fallback',
@@ -236,19 +241,20 @@ exports.getAnalyticsData = onCall({
       ],
       cors: 'enabled'
     };
+    
+    res.json(fallbackResult);
   }
 });
 
 // Visitor Trends Function with Real GA4 Data
-exports.getVisitorTrends = onCall({
-  cors: {
-    origin: ['https://sargas.ai', 'https://sargasolutions-webbpage.web.app'],
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-  },
-  maxInstances: 10
-}, async (request) => {
+exports.getVisitorTrends = onRequest({ invoker: 'public' }, async (req, res) => {
+  setCORSHeaders(res);
+  
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+
   try {
     // Get daily data for the last 30 days
     const [response] = await analyticsDataClient.runReport({
@@ -282,7 +288,7 @@ exports.getVisitorTrends = onCall({
       pageviews: parseInt(row.metricValues[2].value) || 0
     })) || [];
 
-    return {
+    const result = {
       success: true,
       timestamp: new Date().toISOString(),
       source: 'google-analytics-4',
@@ -297,8 +303,10 @@ exports.getVisitorTrends = onCall({
       message: 'Real visitor trends data retrieved successfully',
       cors: 'enabled'
     };
+    
+    res.json(result);
   } catch (error) {
     console.error('Visitor trends error:', error);
-    throw new Error(`Failed to get visitor trends: ${error.message}`);
+    res.status(500).json({ error: `Failed to get visitor trends: ${error.message}` });
   }
 });
