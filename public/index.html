@@ -57,7 +57,7 @@
             100% { transform: translate(50px, 50px); }
         }
         
-        /* Sleek Header */
+        /* Header */
         .header {
             position: fixed;
             top: 0;
@@ -99,6 +99,7 @@
             text-shadow: 0 0 20px var(--glow-green);
         }
         
+        /* Desktop Navigation */
         .nav-menu {
             display: flex;
             list-style: none;
@@ -159,8 +160,100 @@
         .nav-menu a:hover::after {
             opacity: 0;
         }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px;
+            background: transparent;
+            border: none;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .mobile-menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--accent-green);
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .mobile-menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        /* Mobile Menu Overlay */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .mobile-menu-overlay.active {
+            display: flex;
+        }
+
+        .mobile-menu-overlay a {
+            color: var(--text-white);
+            text-decoration: none;
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 20px 40px;
+            border: 2px solid var(--border-green);
+            background: var(--tech-gray);
+            transition: all 0.3s ease;
+            clip-path: polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mobile-menu-overlay a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .mobile-menu-overlay a:hover {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .mobile-menu-overlay a:hover::before {
+            left: 100%;
+        }
         
-        /* Hero Section with Visual Focus */
+        /* Hero Section */
         .hero-section {
             height: 100vh;
             display: flex;
@@ -170,7 +263,6 @@
             overflow: hidden;
         }
         
-        /* Hero Section Patterns */
         .hero-section::before {
             content: '';
             position: absolute;
@@ -183,17 +275,6 @@
                 radial-gradient(circle at 85% 75%, var(--glow-green) 0%, transparent 30%);
             opacity: 0.08;
             z-index: 0;
-        }
-        
-        .hero-section::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
         }
         
         /* Circuit Pattern Animations */
@@ -221,7 +302,6 @@
             animation: nodePulse 2s ease-in-out infinite;
         }
         
-        /* Floating Data Points */
         .data-points {
             position: absolute;
             width: 100%;
@@ -238,7 +318,6 @@
             animation: floatUpDown 4s ease-in-out infinite;
         }
         
-        /* Scan Lines */
         .scan-line {
             position: absolute;
             width: 100%;
@@ -246,18 +325,6 @@
             background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
             opacity: 0;
             animation: scanMove 6s linear infinite;
-        }
-        
-        /* Animations */
-        @keyframes pulseGlow {
-            0%, 100% {
-                opacity: 0.3;
-                box-shadow: 0 0 5px var(--accent-green);
-            }
-            50% {
-                opacity: 0.8;
-                box-shadow: 0 0 20px var(--accent-green);
-            }
         }
         
         @keyframes nodePulse {
@@ -295,102 +362,18 @@
                 opacity: 0;
             }
         }
-        
-        .horizontal-1 {
-            width: 200px;
-            height: 2px;
-            top: 25%;
-            left: 15%;
-            animation: pulseGlow 3s ease-in-out infinite;
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                opacity: 0.3;
+                box-shadow: 0 0 5px var(--accent-green);
+            }
+            50% {
+                opacity: 0.8;
+                box-shadow: 0 0 20px var(--accent-green);
+            }
         }
         
-        .horizontal-2 {
-            width: 150px;
-            height: 2px;
-            top: 75%;
-            right: 20%;
-            animation: pulseGlow 3s ease-in-out infinite 1.5s;
-        }
-        
-        .vertical-1 {
-            width: 2px;
-            height: 120px;
-            top: 30%;
-            left: 35%;
-            animation: pulseGlow 3s ease-in-out infinite 0.5s;
-        }
-        
-        .vertical-2 {
-            width: 2px;
-            height: 80px;
-            top: 20%;
-            right: 25%;
-            animation: pulseGlow 3s ease-in-out infinite 2s;
-        }
-        
-        .node-1 {
-            top: 25%;
-            left: 35%;
-            animation-delay: 0s;
-        }
-        
-        .node-2 {
-            top: 25%;
-            left: 33%;
-            animation-delay: 0.3s;
-        }
-        
-        .node-3 {
-            top: 75%;
-            right: 20%;
-            animation-delay: 0.6s;
-        }
-        
-        .node-4 {
-            top: 50%;
-            left: 50%;
-            animation-delay: 0.9s;
-        }
-        
-        .point-1 {
-            top: 20%;
-            left: 60%;
-            animation-delay: 0s;
-        }
-        
-        .point-2 {
-            top: 40%;
-            left: 25%;
-            animation-delay: 0.8s;
-        }
-        
-        .point-3 {
-            top: 60%;
-            right: 30%;
-            animation-delay: 1.6s;
-        }
-        
-        .point-4 {
-            top: 80%;
-            left: 45%;
-            animation-delay: 2.4s;
-        }
-        
-        .point-5 {
-            top: 35%;
-            right: 15%;
-            animation-delay: 3.2s;
-        }
-        
-        .scan-1 {
-            animation-delay: 0s;
-        }
-        
-        .scan-2 {
-            animation-delay: 3s;
-        }
-        
-        /* Left Side Patterns */
         .hero-left-patterns {
             position: absolute;
             top: 0;
@@ -401,7 +384,6 @@
             pointer-events: none;
         }
         
-        /* Right Side Patterns */
         .hero-right-patterns {
             position: absolute;
             top: 0;
@@ -411,186 +393,35 @@
             z-index: 2;
             pointer-events: none;
         }
-        
-        .right-pattern {
-            width: 100%;
-            height: 100%;
-        }
-        
-        .right-h1 {
-            width: 180px;
-            height: 2px;
-            top: 35%;
-            right: 20%;
-            animation: pulseGlow 3s ease-in-out infinite 0.8s;
-        }
-        
-        .right-h2 {
-            width: 120px;
-            height: 2px;
-            top: 65%;
-            right: 15%;
-            animation: pulseGlow 3s ease-in-out infinite 2.3s;
-        }
-        
-        .right-v1 {
-            width: 2px;
-            height: 100px;
-            top: 20%;
-            right: 30%;
-            animation: pulseGlow 3s ease-in-out infinite 1.3s;
-        }
-        
-        .right-v2 {
-            width: 2px;
-            height: 80px;
-            top: 50%;
-            right: 40%;
-            animation: pulseGlow 3s ease-in-out infinite 2.1s;
-        }
-        
-        .right-node-1 {
-            top: 35%;
-            right: 30%;
-            animation-delay: 0.5s;
-        }
-        
-        .right-node-2 {
-            top: 50%;
-            right: 40%;
-            animation-delay: 1s;
-        }
-        
-        .right-node-3 {
-            top: 65%;
-            right: 25%;
-            animation-delay: 1.5s;
-        }
-        
-        .right-data .right-point-1 {
-            top: 25%;
-            right: 45%;
-            animation-delay: 0.6s;
-        }
-        
-        .right-data .right-point-2 {
-            top: 45%;
-            right: 20%;
-            animation-delay: 1.4s;
-        }
-        
-        .right-data .right-point-3 {
-            top: 70%;
-            right: 35%;
-            animation-delay: 2.2s;
-        }
-        
-        .right-data .right-point-4 {
-            top: 80%;
-            right: 50%;
-            animation-delay: 3s;
-        }
-        
-        .right-data .right-point-5 {
-            top: 30%;
-            right: 15%;
-            animation-delay: 3.8s;
-        }
-        
-        .right-scan-1 {
-            animation-delay: 2s;
-        }
-        
-        .right-scan-2 {
-            animation-delay: 5s;
-        }
-        
-        .left-pattern {
-            width: 100%;
-            height: 100%;
-        }
-        
-        .left-h1 {
-            width: 180px;
-            height: 2px;
-            top: 35%;
-            left: 20%;
-            animation: pulseGlow 3s ease-in-out infinite 0.5s;
-        }
-        
-        .left-h2 {
-            width: 120px;
-            height: 2px;
-            top: 65%;
-            left: 15%;
-            animation: pulseGlow 3s ease-in-out infinite 2s;
-        }
-        
-        .left-v1 {
-            width: 2px;
-            height: 100px;
-            top: 20%;
-            left: 30%;
-            animation: pulseGlow 3s ease-in-out infinite 1s;
-        }
-        
-        .left-v2 {
-            width: 2px;
-            height: 80px;
-            top: 50%;
-            left: 40%;
-            animation: pulseGlow 3s ease-in-out infinite 1.8s;
-        }
-        
-        .left-node-1 {
-            top: 35%;
-            left: 30%;
-            animation-delay: 0.2s;
-        }
-        
-        .left-node-2 {
-            top: 50%;
-            left: 40%;
-            animation-delay: 0.7s;
-        }
-        
-        .left-node-3 {
-            top: 65%;
-            left: 25%;
-            animation-delay: 1.2s;
-        }
-        
-        .left-data .left-point-1 {
-            top: 25%;
-            left: 45%;
-            animation-delay: 0.3s;
-        }
-        
-        .left-data .left-point-2 {
-            top: 45%;
-            left: 20%;
-            animation-delay: 1.1s;
-        }
-        
-        .left-data .left-point-3 {
-            top: 70%;
-            left: 35%;
-            animation-delay: 1.9s;
-        }
-        
-        .left-data .left-point-4 {
-            top: 80%;
-            left: 50%;
-            animation-delay: 2.7s;
-        }
-        
-        .left-scan-1 {
-            animation-delay: 1s;
-        }
-        
-        .left-scan-2 {
-            animation-delay: 4s;
-        }
+
+        .left-h1 { width: 180px; height: 2px; top: 35%; left: 20%; animation: pulseGlow 3s ease-in-out infinite 0.5s; }
+        .left-h2 { width: 120px; height: 2px; top: 65%; left: 15%; animation: pulseGlow 3s ease-in-out infinite 2s; }
+        .left-v1 { width: 2px; height: 100px; top: 20%; left: 30%; animation: pulseGlow 3s ease-in-out infinite 1s; }
+        .left-v2 { width: 2px; height: 80px; top: 50%; left: 40%; animation: pulseGlow 3s ease-in-out infinite 1.8s; }
+        .left-node-1 { top: 35%; left: 30%; animation-delay: 0.2s; }
+        .left-node-2 { top: 50%; left: 40%; animation-delay: 0.7s; }
+        .left-node-3 { top: 65%; left: 25%; animation-delay: 1.2s; }
+        .left-point-1 { top: 25%; left: 45%; animation-delay: 0.3s; }
+        .left-point-2 { top: 45%; left: 20%; animation-delay: 1.1s; }
+        .left-point-3 { top: 70%; left: 35%; animation-delay: 1.9s; }
+        .left-point-4 { top: 80%; left: 50%; animation-delay: 2.7s; }
+        .left-scan-1 { animation-delay: 1s; }
+        .left-scan-2 { animation-delay: 4s; }
+
+        .right-h1 { width: 180px; height: 2px; top: 35%; right: 20%; animation: pulseGlow 3s ease-in-out infinite 0.8s; }
+        .right-h2 { width: 120px; height: 2px; top: 65%; right: 15%; animation: pulseGlow 3s ease-in-out infinite 2.3s; }
+        .right-v1 { width: 2px; height: 100px; top: 20%; right: 30%; animation: pulseGlow 3s ease-in-out infinite 1.3s; }
+        .right-v2 { width: 2px; height: 80px; top: 50%; right: 40%; animation: pulseGlow 3s ease-in-out infinite 2.1s; }
+        .right-node-1 { top: 35%; right: 30%; animation-delay: 0.5s; }
+        .right-node-2 { top: 50%; right: 40%; animation-delay: 1s; }
+        .right-node-3 { top: 65%; right: 25%; animation-delay: 1.5s; }
+        .right-point-1 { top: 25%; right: 45%; animation-delay: 0.6s; }
+        .right-point-2 { top: 45%; right: 20%; animation-delay: 1.4s; }
+        .right-point-3 { top: 70%; right: 35%; animation-delay: 2.2s; }
+        .right-point-4 { top: 80%; right: 50%; animation-delay: 3s; }
+        .right-point-5 { top: 30%; right: 15%; animation-delay: 3.8s; }
+        .right-scan-1 { animation-delay: 2s; }
+        .right-scan-2 { animation-delay: 5s; }
         
         .hero-content {
             max-width: 1400px;
@@ -600,21 +431,6 @@
             z-index: 3;
             width: 100%;
             text-align: center;
-        }
-        
-        /* Hero Content Patterns */
-        .hero-content::before {
-            content: '';
-            position: absolute;
-            top: -50px;
-            left: -50px;
-            right: -50px;
-            bottom: -50px;
-            background: 
-                radial-gradient(circle at 20% 30%, var(--glow-green) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, var(--glow-green) 0%, transparent 40%);
-            opacity: 0.05;
-            z-index: -1;
         }
         
         .tech-badge {
@@ -689,13 +505,7 @@
             transform: translateY(-2px);
         }
         
-        /* Problem Section */
-        .problem-section {
-            padding: 120px 0;
-            background: var(--secondary-black);
-            position: relative;
-        }
-        
+        /* Sections */
         .section-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -737,6 +547,13 @@
             margin: 0 auto;
             line-height: 1.7;
         }
+
+        /* Problem Section */
+        .problem-section {
+            padding: 120px 0;
+            background: var(--secondary-black);
+            position: relative;
+        }
         
         .section-image {
             width: 100%;
@@ -750,7 +567,6 @@
             height: 300px;
             object-fit: cover;
             border: 2px solid var(--border-green);
-            border-radius: 0;
             position: relative;
             overflow: hidden;
             transition: all 0.4s ease;
@@ -763,34 +579,12 @@
             box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
         }
         
-        .sargassum-image::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
-            animation: scanImage 4s linear infinite;
-            z-index: 1;
-            pointer-events: none;
-        }
-        
         @keyframes imageGlow {
             0%, 100% {
                 box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
             }
             50% {
                 box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
-            }
-        }
-        
-        @keyframes scanImage {
-            0% {
-                left: -100%;
-            }
-            100% {
-                left: 100%;
             }
         }
         
@@ -853,16 +647,16 @@
         }
         
         .solution-card {
-    background: linear-gradient(135deg, var(--tech-gray) 0%, var(--secondary-black) 100%);
-    border: 1px solid var(--border-green);
-    padding: 50px;
-    display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: 50px;
-    align-items: end; /* This will align both items to the bottom */
-    position: relative;
-    overflow: hidden;
-}
+            background: linear-gradient(135deg, var(--tech-gray) 0%, var(--secondary-black) 100%);
+            border: 1px solid var(--border-green);
+            padding: 50px;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 50px;
+            align-items: end;
+            position: relative;
+            overflow: hidden;
+        }
         
         .solution-card.mirrored {
             grid-template-columns: 400px 1fr;
@@ -895,12 +689,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            border-radius: 0;
             display: block;
-        }
-        
-        @keyframes spin {
-            to { transform: translate(-50%, -50%) rotate(360deg); }
         }
         
         .solution-info h3 {
@@ -1043,23 +832,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 0;
             display: block;
-        }
-        
-        .lidar-video-placeholder::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 25% 25%, var(--glow-green) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, var(--glow-green) 0%, transparent 50%);
-            opacity: 0.1;
-            pointer-events: none;
-            z-index: 1;
         }
         
         /* About Section */
@@ -1119,10 +892,63 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 0;
             display: block;
         }
         
+        /* Newsletter Section */
+        .newsletter-section {
+            padding: 80px 0;
+            background: var(--tech-gray);
+            border-top: 1px solid var(--border-green);
+            border-bottom: 1px solid var(--border-green);
+        }
+        
+        .newsletter-content {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: 0;
+            max-width: 400px;
+            margin: 30px auto 0;
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            background: var(--primary-black);
+            border: 1px solid var(--border-green);
+            color: var(--text-white);
+            padding: 15px 20px;
+            font-family: 'Inter', sans-serif;
+            border-right: none;
+        }
+        
+        .newsletter-button {
+            background: linear-gradient(45deg, var(--accent-green), var(--secondary-green));
+            border: 1px solid var(--accent-green);
+            color: var(--primary-black);
+            padding: 15px 25px;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .newsletter-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+        }
+        
+        .newsletter-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         /* Contact Section */
         .contact-section {
             padding: 120px 0;
@@ -1269,116 +1095,558 @@
             color: var(--text-gray);
             font-size: 12px;
         }
-        
-        /* Newsletter Section */
-        .newsletter-section {
-            padding: 80px 0;
-            background: var(--tech-gray);
-            border-top: 1px solid var(--border-green);
-            border-bottom: 1px solid var(--border-green);
-        }
-        
-        .newsletter-content {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .newsletter-form {
-            display: flex;
-            gap: 0;
-            max-width: 400px;
-            margin: 30px auto 0;
-        }
-        
-        .newsletter-input {
-            flex: 1;
-            background: var(--primary-black);
-            border: 1px solid var(--border-green);
-            color: var(--text-white);
-            padding: 15px 20px;
-            font-family: 'Inter', sans-serif;
-            border-right: none;
-        }
-        
-        .newsletter-button {
-            background: linear-gradient(45deg, var(--accent-green), var(--secondary-green));
-            border: 1px solid var(--accent-green);
-            color: var(--primary-black);
-            padding: 15px 25px;
-            font-weight: 700;
-            font-size: 12px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .newsletter-button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
-        }
-        
-        .newsletter-button:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .hero-content {
-                width: 100%;
-            }
-            
-            .about-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .contact-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .lidar-video-placeholder {
-                height: 300px;
-            }
-        }
-        
+
+        /* MOBILE RESPONSIVE DESIGN */
         @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
-            
+            /* Header Mobile */
             .nav-container {
                 padding: 15px 20px;
             }
-            
-            .section-container {
-                padding: 0 20px;
+
+            .nav-menu {
+                display: none;
             }
-            
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .logo {
+                font-size: 18px;
+                letter-spacing: 1px;
+            }
+
+            .logo-image {
+                height: 30px;
+            }
+
+            .logo-section {
+                gap: 10px;
+            }
+
+            /* Mobile Menu */
+            .mobile-menu-overlay a {
+                font-size: 20px;
+                padding: 15px 30px;
+                margin: 0 20px;
+                width: calc(100% - 40px);
+                max-width: 300px;
+            }
+
+            /* Hero Section Mobile */
+            .hero-section {
+                min-height: 100vh;
+                padding: 100px 0 60px;
+            }
+
             .hero-content {
                 padding: 0 20px;
             }
-            
-            .problem-grid,
-            .tech-grid {
+
+            .hero-title {
+                font-size: clamp(2rem, 12vw, 3rem);
+                line-height: 1;
+                margin-bottom: 20px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+                margin-bottom: 30px;
+                line-height: 1.6;
+            }
+
+            .tech-badge {
+                font-size: 10px;
+                padding: 6px 16px;
+                margin-bottom: 20px;
+                letter-spacing: 1px;
+            }
+
+            /* Hide complex patterns on mobile */
+            .hero-left-patterns,
+            .hero-right-patterns {
+                opacity: 0.2;
+            }
+
+            /* Sections Mobile */
+            .section-container {
+                padding: 0 20px;
+            }
+
+            .section-title {
+                font-size: clamp(2rem, 10vw, 2.8rem);
+                margin-bottom: 15px;
+                line-height: 1.1;
+            }
+
+            .section-subtitle {
+                font-size: 16px;
+                line-height: 1.6;
+            }
+
+            .section-header {
+                margin-bottom: 60px;
+            }
+
+            .section-badge {
+                font-size: 10px;
+                padding: 6px 16px;
+                margin-bottom: 15px;
+            }
+
+            .problem-section,
+            .solutions-section,
+            .tech-section,
+            .about-section,
+            .contact-section {
+                padding: 80px 0;
+            }
+
+            /* Problem Grid Mobile */
+            .problem-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                margin-top: 50px;
+            }
+
+            .problem-card {
+                padding: 30px 20px;
+                text-align: left;
+            }
+
+            .problem-card h3 {
+                font-size: 18px;
+                margin-bottom: 15px;
+            }
+
+            .problem-card p {
+                font-size: 15px;
+                line-height: 1.6;
+            }
+
+            /* Solutions Mobile */
+            .solutions-grid {
+                gap: 50px;
+                margin-top: 60px;
+            }
+
+            .solution-card {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 30px 20px;
+                align-items: stretch;
+            }
+
+            .solution-card.mirrored {
                 grid-template-columns: 1fr;
             }
-            
+
+            .solution-visual {
+                height: 250px;
+                order: -1;
+            }
+
+            .solution-info h3 {
+                font-size: 24px;
+                margin-bottom: 15px;
+                line-height: 1.2;
+            }
+
+            .solution-description {
+                font-size: 15px;
+                margin-bottom: 20px;
+                line-height: 1.6;
+            }
+
+            .features-list {
+                gap: 10px;
+            }
+
+            .features-list li {
+                font-size: 14px;
+                padding: 10px 0;
+                padding-left: 20px;
+                line-height: 1.4;
+            }
+
+            .features-list li::before {
+                left: 0;
+                top: 12px;
+                font-size: 10px;
+            }
+
+            /* Tech Grid Mobile */
+            .tech-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                margin-top: 60px;
+            }
+
+            .tech-card {
+                padding: 30px 20px;
+            }
+
+            .tech-icon {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 20px;
+            }
+
+            .tech-icon svg {
+                width: 24px;
+                height: 24px;
+            }
+
+            .tech-card h3 {
+                font-size: 16px;
+                margin-bottom: 12px;
+            }
+
+            .tech-card p {
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            /* LIDAR Section Mobile */
+            .lidar-section {
+                padding: 60px 0;
+            }
+
             .lidar-video-placeholder {
                 height: 250px;
+            }
+
+            /* About Section Mobile */
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                margin-top: 50px;
+            }
+
+            .about-text {
+                font-size: 15px;
+                line-height: 1.6;
+            }
+
+            .about-text p {
+                margin-bottom: 20px;
+            }
+
+            .live-feed {
+                padding: 25px 20px;
+            }
+
+            .feed-header {
+                font-size: 12px;
+                margin-bottom: 15px;
+            }
+
+            .feed-display {
+                height: 200px;
+                margin-bottom: 15px;
+            }
+
+            /* Contact Section Mobile */
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 50px;
+                margin-top: 60px;
+            }
+
+            .contact-form {
+                padding: 30px 20px;
+            }
+
+            .form-header {
+                font-size: 12px;
+                margin-bottom: 25px;
+                padding-bottom: 12px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-group label {
+                font-size: 11px;
+                margin-bottom: 6px;
+            }
+
+            .contact-cards {
+                gap: 25px;
+            }
+
+            .contact-card {
+                padding: 25px 20px;
+            }
+
+            .contact-card h3 {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .contact-card p {
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            /* Newsletter Mobile */
+            .newsletter-section {
+                padding: 60px 0;
+            }
+
+            .newsletter-content h3 {
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+
+            .newsletter-content p {
+                font-size: 15px;
+                margin-bottom: 15px;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+                max-width: 100%;
+                margin: 20px auto 0;
+            }
+
+            .newsletter-input {
+                border-right: 1px solid var(--border-green);
+                margin-bottom: 10px;
+                padding: 12px 15px;
+                font-size: 16px;
+            }
+
+            .newsletter-button {
+                width: 100%;
+                padding: 12px 20px;
+                font-size: 11px;
+            }
+
+            /* Footer Mobile */
+            .footer {
+                padding: 60px 0 30px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+
+            .footer-section h4 {
+                font-size: 14px;
+                margin-bottom: 15px;
+            }
+
+            .footer-section p {
+                font-size: 13px;
+                margin-bottom: 15px;
+            }
+
+            .footer-section a {
+                font-size: 13px;
+            }
+
+            .footer-section li {
+                margin-bottom: 8px;
+            }
+
+            .footer-bottom {
+                font-size: 11px;
+                padding-top: 25px;
+            }
+
+            /* Images Mobile */
+            .sargassum-image {
+                height: 200px;
+            }
+
+            .section-image {
+                margin: 30px auto;
+            }
+
+            /* CTA Button Mobile */
+            .cta-button {
+                padding: 16px 30px;
+                font-size: 13px;
+                letter-spacing: 0.5px;
+            }
+
+            /* Form elements mobile */
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 12px;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            /* Better mobile grid */
+            body::before {
+                background-size: 30px 30px;
+            }
+
+            /* Mobile menu animations */
+            .mobile-menu-overlay a {
+                animation: slideInFromRight 0.3s ease-out forwards;
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            .mobile-menu-overlay a:nth-child(1) { animation-delay: 0.1s; }
+            .mobile-menu-overlay a:nth-child(2) { animation-delay: 0.15s; }
+            .mobile-menu-overlay a:nth-child(3) { animation-delay: 0.2s; }
+            .mobile-menu-overlay a:nth-child(4) { animation-delay: 0.25s; }
+            .mobile-menu-overlay a:nth-child(5) { animation-delay: 0.3s; }
+            .mobile-menu-overlay a:nth-child(6) { animation-delay: 0.35s; }
+
+            @keyframes slideInFromRight {
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+        }
+
+        /* Small Mobile */
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 12px 15px;
+            }
+
+            .logo {
+                font-size: 16px;
+            }
+
+            .logo-image {
+                height: 26px;
+            }
+
+            .hero-title {
+                font-size: clamp(1.8rem, 14vw, 2.5rem);
+            }
+
+            .hero-subtitle {
+                font-size: 14px;
+            }
+
+            .section-container {
+                padding: 0 15px;
+            }
+
+            .section-title {
+                font-size: clamp(1.8rem, 12vw, 2.4rem);
+            }
+
+            .problem-card,
+            .solution-card,
+            .tech-card,
+            .contact-form,
+            .contact-card {
+                padding: 25px 15px;
+            }
+
+            .mobile-menu-overlay a {
+                font-size: 18px;
+                padding: 12px 25px;
+                margin: 0 15px;
+            }
+        }
+
+        /* Tablet */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .nav-container {
+                padding: 15px 30px;
+            }
+
+            .section-container {
+                padding: 0 30px;
+            }
+
+            .hero-content {
+                padding: 0 30px;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 50px;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+
+            .solution-card {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 40px 30px;
+            }
+
+            .solution-card.mirrored {
+                grid-template-columns: 1fr;
+            }
+
+            .solution-visual {
+                height: 280px;
+                order: -1;
+            }
+
+            .lidar-video-placeholder {
+                height: 350px;
+            }
+
+            .problem-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 35px;
+            }
+
+            .tech-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 35px;
+            }
+        }
+
+        /* Landscape Mobile */
+        @media (max-width: 896px) and (orientation: landscape) and (max-height: 500px) {
+            .hero-section {
+                height: auto;
+                min-height: 100vh;
+                padding: 100px 0 60px;
+            }
+
+            .hero-title {
+                font-size: clamp(2rem, 8vw, 2.8rem);
+                margin-bottom: 15px;
+            }
+
+            .hero-subtitle {
+                font-size: 14px;
+                margin-bottom: 25px;
+            }
+
+            .problem-section,
+            .solutions-section,
+            .tech-section,
+            .about-section,
+            .contact-section {
+                padding: 60px 0;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Sleek Header -->
+    <!-- Header -->
     <header class="header">
         <nav class="nav-container">
             <div class="logo-section">
                 <img src="Assets/logo.png" alt="SargaSolutions Logo" class="logo-image">
                 <div class="logo">SARGAS.AI</div>
             </div>
+            
+            <!-- Desktop Menu -->
             <ul class="nav-menu">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#problem">Problem</a></li>
@@ -1387,14 +1655,31 @@
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </nav>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay">
+            <a href="#home">Home</a>
+            <a href="#problem">Problem</a>
+            <a href="#solutions">Solutions</a>
+            <a href="#technology">Technology</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </div>
     </header>
 
-    <!-- Hero Section with Visual Focus -->
+    <!-- Hero Section -->
     <section id="home" class="hero-section">
         <!-- Left side circuit patterns -->
         <div class="hero-left-patterns">
-            <div class="circuit-pattern left-pattern">
+            <div class="circuit-pattern">
                 <div class="circuit-line left-h1"></div>
                 <div class="circuit-line left-h2"></div>
                 <div class="circuit-line left-v1"></div>
@@ -1404,7 +1689,7 @@
                 <div class="circuit-node left-node-3"></div>
             </div>
             
-            <div class="data-points left-data">
+            <div class="data-points">
                 <div class="data-point left-point-1">◆</div>
                 <div class="data-point left-point-2">●</div>
                 <div class="data-point left-point-3">▲</div>
@@ -1417,7 +1702,7 @@
         
         <!-- Right side circuit patterns -->
         <div class="hero-right-patterns">
-            <div class="circuit-pattern right-pattern">
+            <div class="circuit-pattern">
                 <div class="circuit-line right-h1"></div>
                 <div class="circuit-line right-h2"></div>
                 <div class="circuit-line right-v1"></div>
@@ -1427,7 +1712,7 @@
                 <div class="circuit-node right-node-3"></div>
             </div>
             
-            <div class="data-points right-data">
+            <div class="data-points">
                 <div class="data-point right-point-1">◆</div>
                 <div class="data-point right-point-2">●</div>
                 <div class="data-point right-point-3">▲</div>
@@ -1796,7 +2081,7 @@
                         <li><a href="#solutions">ISAC Platform</a></li>
                         <li><a href="#solutions">ISAC Scout</a></li>
                         <li><a href="#solutions">SargaScan Network</a></li>
-                        <li><a href="#products">Web Application</a></li>
+                        <li><a href="#solutions">Web Application</a></li>
                     </ul>
                 </div>
                 
@@ -1828,6 +2113,38 @@
     </footer>
 
     <script>
+        // Mobile menu toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.querySelector('.mobile-menu-toggle');
+            const mobileOverlay = document.querySelector('.mobile-menu-overlay');
+            const mobileMenuLinks = document.querySelectorAll('.mobile-menu-overlay a');
+
+            // Toggle mobile menu
+            mobileToggle.addEventListener('click', function() {
+                mobileToggle.classList.toggle('active');
+                mobileOverlay.classList.toggle('active');
+                document.body.style.overflow = mobileOverlay.classList.contains('active') ? 'hidden' : '';
+            });
+
+            // Close mobile menu when clicking on a link
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileToggle.classList.remove('active');
+                    mobileOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            });
+
+            // Close mobile menu when clicking outside
+            mobileOverlay.addEventListener('click', function(e) {
+                if (e.target === mobileOverlay) {
+                    mobileToggle.classList.remove('active');
+                    mobileOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
         // Smooth scrolling for navigation
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -1840,15 +2157,6 @@
                     });
                 }
             });
-        });
-
-        // Parallax effect for hero section
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const heroVisual = document.querySelector('.hero-visual');
-            if (heroVisual && scrolled < window.innerHeight) {
-                heroVisual.style.transform = `translateY(${scrolled * 0.3}px)`;
-            }
         });
 
         // Intersection Observer for animations
@@ -1898,28 +2206,14 @@
 
         // Contact form handler
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, setting up form handlers...');
-            
             const contactForm = document.querySelector('#contact form');
             const submitButton = contactForm.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.textContent;
 
-            // Newsletter form handler - FIXED
+            // Newsletter form handler
             const newsletterForm = document.querySelector('.newsletter-form');
             const newsletterInput = document.querySelector('.newsletter-input');
             const newsletterButton = document.querySelector('.newsletter-button');
-            
-            console.log('Newsletter elements found:', {
-                form: !!newsletterForm,
-                input: !!newsletterInput, 
-                button: !!newsletterButton
-            });
-
-            if (!newsletterForm || !newsletterInput || !newsletterButton) {
-                console.error('Newsletter form elements not found!');
-                return;
-            }
-
             const originalNewsletterText = newsletterButton.textContent;
 
             // Contact form submission
