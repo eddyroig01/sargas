@@ -919,7 +919,7 @@
         </header>
 
         <!-- Dashboard Content -->
-        <div class="dashboard-header">
+        <div class="dashboard-header" style="display: none;">
             <h1 class="dashboard-title">Admin Dashboard</h1>
             <p class="dashboard-subtitle">Monitor website activity, manage contacts, and track analytics</p>
         </div>
@@ -1014,8 +1014,8 @@
                 <div class="analytics-container">
                     <div class="analytics-main">
                         <div class="analytics-header">
-                            <h3 class="analytics-title">🌍 Global Visitor Map</h3>
-                            <button class="refresh-btn" id="refreshAnalytics">🔄 Refresh Data</button>
+                            <h3 class="analytics-title">Global Visitor Map</h3>
+                            <button class="refresh-btn" id="refreshAnalytics">Refresh Data</button>
                         </div>
                         
                         <!-- Real Interactive Map -->
@@ -1031,7 +1031,7 @@
                     <div class="analytics-sidebar">
                         <!-- Countries Panel -->
                         <div class="countries-panel">
-                            <div class="countries-header">🌍 Visitor Countries</div>
+                            <div class="countries-header">Visitor Countries</div>
                             <div id="countriesList" class="countries-list">
                                 <div class="loading">Loading countries data...</div>
                             </div>
@@ -1039,7 +1039,7 @@
                         
                         <!-- Traffic Stats Panel -->
                         <div class="traffic-stats">
-                            <div class="traffic-stats-header">📊 Traffic Metrics</div>
+                            <div class="traffic-stats-header">Traffic Metrics</div>
                             <div class="traffic-metrics">
                                 <div class="traffic-metric">
                                     <span class="metric-label">Active Visitors</span>
@@ -1271,7 +1271,7 @@
                     font-size: 12px;
                     text-align: center;
                 `;
-                div.innerHTML = '🌍 SARGAS.AI<br>Global Visitor Tracking';
+                div.innerHTML = 'SARGAS.AI<br>Global Visitor Tracking';
                 return div;
             };
             infoControl.addTo(map);
@@ -1825,7 +1825,7 @@
                 // Show empty state
                 document.getElementById('countriesList').innerHTML = `
                     <div style="text-align: center; color: var(--text-gray); padding: 20px;">
-                        <div style="font-size: 24px; margin-bottom: 10px;">🌍</div>
+                        <div style="font-size: 24px; margin-bottom: 10px;">No data</div>
                         <div>No visitor data yet</div>
                         <div style="font-size: 12px; margin-top: 5px;">Check back after some website visits</div>
                     </div>
@@ -1849,7 +1849,7 @@
             if (!countries || countries.length === 0) {
                 countriesList.innerHTML = `
                     <div style="text-align: center; color: var(--text-gray); padding: 20px;">
-                        <div style="font-size: 24px; margin-bottom: 10px;">🌍</div>
+                        <div style="font-size: 24px; margin-bottom: 10px;">No data</div>
                         <div>No visitor data yet</div>
                     </div>
                 `;
@@ -1928,7 +1928,6 @@
                             <span class="country-flag">${flag}</span>
                             <span class="country-name">
                                 ${countryData.country}
-                                ${hasStates ? '<span class="state-badge">STATES</span>' : ''}
                             </span>
                             ${countryData.isCaribbean ? '<span style="margin-left: 8px; color: var(--neon-green); font-size: 12px;">🏝️</span>' : ''}
                         </div>
@@ -2002,7 +2001,7 @@
             const button = document.getElementById('refreshAnalytics');
             const originalText = button.textContent;
             
-            button.textContent = '🔄 Refreshing...';
+            button.textContent = 'Refreshing...';
             button.disabled = true;
             
             loadAnalyticsData().finally(() => {
