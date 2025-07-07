@@ -67,3 +67,8 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# Service Account Keys (SECURITY: Never commit these!)
+functions/service-account-key.json
+service-account-key.json
+*.json
