@@ -1151,8 +1151,25 @@
                 document.getElementById(tabName).classList.add('active');
                 
                 // Initialize map if traffic tab is selected
-                if (tabName === 'traffic' && !map) {
-                    initializeMap();
+                if (tabName === 'traffic') {
+                    if (!map) {
+                        console.log('Traffic tab selected, initializing map...');
+                        initializeMap();
+                        
+                        // If we have analytics data, update the map after initialization
+                        if (window.currentAnalyticsData && window.currentAnalyticsData.countries) {
+                            setTimeout(() => {
+                                console.log('Updating map with existing analytics data...');
+                                updateMapMarkers(window.currentAnalyticsData.countries);
+                            }, 500);
+                        }
+                    } else {
+                        console.log('Map already exists');
+                        // If we have analytics data, update the map
+                        if (window.currentAnalyticsData && window.currentAnalyticsData.countries) {
+                            updateMapMarkers(window.currentAnalyticsData.countries);
+                        }
+                    }
                 }
             });
         });
@@ -1326,7 +1343,22 @@
             if (data.countries && data.countries.length > 0) {
                 console.log('✅ Found countries data, updating map and list...');
                 updateCountriesList(data.countries);
-                updateMapMarkers(data.countries);
+                
+                // Initialize map if not already done and we're on traffic tab
+                const trafficTab = document.getElementById('traffic');
+                if (trafficTab && trafficTab.classList.contains('active') && !map) {
+                    console.log('Initializing map because traffic tab is active...');
+                    initializeMap();
+                    // Add slight delay to ensure map is fully initialized
+                    setTimeout(() => {
+                        updateMapMarkers(data.countries);
+                    }, 500);
+                } else if (map) {
+                    console.log('Map already exists, updating markers...');
+                    updateMapMarkers(data.countries);
+                } else {
+                    console.log('Traffic tab not active, storing data for later map update');
+                }
             } else {
                 console.log('❌ No countries data found, showing empty state');
                 // Show empty state
@@ -1338,7 +1370,7 @@
                     </div>
                 `;
                 
-                // Clear map markers
+                // Clear map markers if map exists
                 if (map) {
                     map.eachLayer(layer => {
                         if (layer instanceof L.Marker) {
