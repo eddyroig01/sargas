@@ -922,7 +922,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app, 'sargasolutions-db');
         const auth = getAuth(app);
-        const functions = getFunctions(app);
+        const functions = getFunctions(app, 'us-central1'); // Force region
 
         // Firebase Callable Functions will be created when needed
 
@@ -1140,8 +1140,11 @@
                 showAnalyticsLoading();
                 hideMessages();
                 
-                // Create callable function here
-                const getAnalyticsData = httpsCallable(functions, 'getAnalyticsData');
+                // Create callable function here with explicit region
+                const getAnalyticsData = httpsCallable(functions, 'getAnalyticsData', {
+                    timeout: 30000,
+                    limitedUseAppCheckTokens: false
+                });
                 
                 // Call Firebase Callable Function
                 const result = await getAnalyticsData();
