@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to SARGAS.AI</title>
+    <style>
+        /* Email-safe CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            position: relative;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(10, 10, 10, 0.95);
+            border-bottom: 2px solid #00ff8844;
+            padding: 30px 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo-section {
+            display: inline-block;
+        }
+        
+        .logo {
+            font-family: 'Courier New', monospace;
+            font-size: 28px;
+            font-weight: bold;
+            color: #00ff88;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+        
+        .tagline {
+            color: #b0b0b0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 50px 40px;
+            position: relative;
+        }
+        
+        /* Animated grid background effect */
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+        }
+        
+        .welcome-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #0a0a0a;
+            padding: 8px 20px;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            clip-path: polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+        }
+        
+        .welcome-title {
+            font-family: 'Courier New', monospace;
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            line-height: 1.1;
+        }
+        
+        .welcome-subtitle {
+            color: #b0b0b0;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .content-text {
+            color: #b0b0b0;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+        
+        /* Features Grid */
+        .features-grid {
+            margin: 40px 0;
+        }
+        
+        .feature-item {
+            background: #2a2a2a;
+            border: 1px solid #00ff8844;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #00ff88, #00cc6a);
+        }
+        
+        .feature-title {
+            font-family: 'Courier New', monospace;
+            color: #00ff88;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        
+        .feature-description {
+            color: #b0b0b0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* CTA Button */
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #0a0a0a;
+            padding: 15px 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            clip-path: polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background: linear-gradient(45deg, #00cc6a, #00ff88);
+            transform: translateY(-1px);
+        }
+        
+        /* Tech Stats */
+        .stats-section {
+            background: #1a1a1a;
+            border: 1px solid #00ff8844;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .stats-title {
+            font-family: 'Courier New', monospace;
+            color: #00ff88;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        
+        .stats-grid {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+        
+        .stat-item {
+            display: table-cell;
+            text-align: center;
+            vertical-align: top;
+            padding: 0 10px;
+        }
+        
+        .stat-number {
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff88;
+            display: block;
+        }
+        
+        .stat-label {
+            color: #b0b0b0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            border-top: 1px solid #00ff8844;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            color: #666666;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        .footer-link {
+            color: #00ff88;
+            text-decoration: none;
+        }
+        
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+        
+        .social-links {
+            margin: 20px 0;
+        }
+        
+        .social-link {
+            display: inline-block;
+            margin: 0 10px;
+            color: #00ff88;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media only screen and (max-width: 600px) {
+            .main-content {
+                padding: 30px 20px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .welcome-title {
+                font-size: 24px;
+            }
+            
+            .stats-grid {
+                display: block;
+            }
+            
+            .stat-item {
+                display: block;
+                margin-bottom: 15px;
+            }
+            
+            .feature-item {
+                padding: 15px;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Grid overlay for tech effect -->
+        <div class="grid-overlay"></div>
+        
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo">SARGAS.AI</div>
+                <div class="tagline">Autonomous Maritime Solutions</div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="welcome-badge">◆ UPLINK ESTABLISHED ◆</div>
+            
+            <h1 class="welcome-title">Welcome to the Network</h1>
+            
+            <p class="welcome-subtitle">
+                Your subscription to SARGAS.AI updates has been confirmed. You're now connected to the future of autonomous maritime technology.
+            </p>
+            
+            <p class="content-text">
+                Thank you for joining our mission to protect coastlines and marine ecosystems through cutting-edge autonomous vessels, AI-powered detection systems, and sustainable technology solutions.
+            </p>
+            
+            <!-- Features -->
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-title">🚢 Exclusive Updates</div>
+                    <div class="feature-description">
+                        Be the first to know about ISAC fleet deployments, technology breakthroughs, and pilot program results.
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-title">🌊 Impact Reports</div>
+                    <div class="feature-description">
+                        Quarterly updates on sargassum collection volumes, coastline protection metrics, and environmental impact data.
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-title">🤖 Tech Insights</div>
+                    <div class="feature-description">
+                        Deep dives into AI navigation algorithms, fleet coordination systems, and autonomous operation capabilities.
+                    </div>
+                </div>
+            </div>
+            
+
+            
+            <p class="content-text">
+                Stay tuned for updates on our autonomous fleet operations, partnership announcements, and the latest developments in maritime AI technology. Together, we're building a sustainable future for our oceans.
+            </p>
+            
+            <!-- CTA -->
+            <div class="cta-section">
+                <a href="https://sargas.ai" class="cta-button">Explore Our Technology</a>
+                
+                <!-- Logo underneath CTA -->
+                <div style="margin-top: 30px;">
+                    <img src="https://sargas.ai/Assets/logo.png" alt="SARGAS.AI Logo" style="width: 60px; height: auto; opacity: 0.8;">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-content">
+                <p>
+                    You're receiving this email because you subscribed to SARGAS.AI updates.<br>
+                    <a href="https://sargas.ai/unsubscribe.html?email={{EMAIL}}" class="footer-link">Unsubscribe</a> | 
+                    <a href="https://sargas.ai" class="footer-link">Visit Website</a> | 
+                    <a href="mailto:info@sargas.ai" class="footer-link">Contact</a> | 
+                    <a href="https://www.linkedin.com/company/sargasai/" class="footer-link">LinkedIn</a>
+                </p>
+                <p style="margin-top: 15px;">
+                    © 2025 SargaSolutions. All rights reserved.<br>
+                    Protecting coastlines through autonomous technology.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

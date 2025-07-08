@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsubscribed - SARGAS.AI</title>
+    <style>
+        /* Email-safe CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            position: relative;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(10, 10, 10, 0.95);
+            border-bottom: 2px solid #00ff8844;
+            padding: 30px 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo-section {
+            display: inline-block;
+        }
+        
+        .logo {
+            font-family: 'Courier New', monospace;
+            font-size: 28px;
+            font-weight: bold;
+            color: #00ff88;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+        
+        .tagline {
+            color: #b0b0b0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 50px 40px;
+            position: relative;
+            text-align: center;
+        }
+        
+        /* Animated grid background effect */
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+        }
+        
+        .unsubscribe-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b7d, #ff4757);
+            color: #ffffff;
+            padding: 8px 20px;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            clip-path: polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+        }
+        
+        .unsubscribe-title {
+            font-family: 'Courier New', monospace;
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            line-height: 1.1;
+        }
+        
+        .unsubscribe-subtitle {
+            color: #b0b0b0;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .content-text {
+            color: #b0b0b0;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        /* Confirmation Box */
+        .confirmation-box {
+            background: #2a2a2a;
+            border: 1px solid #ff675744;
+            padding: 25px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .confirmation-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b7d, #ff4757);
+        }
+        
+        .confirmation-title {
+            font-family: 'Courier New', monospace;
+            color: #ff6b7d;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+        
+        .confirmation-text {
+            color: #b0b0b0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .confirmation-email {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        
+        /* Resubscribe Section */
+        .resubscribe-section {
+            background: #1a1a1a;
+            border: 1px solid #00ff8844;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .resubscribe-title {
+            font-family: 'Courier New', monospace;
+            color: #00ff88;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+        
+        .resubscribe-text {
+            color: #b0b0b0;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .resubscribe-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #0a0a0a;
+            padding: 12px 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            clip-path: polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .resubscribe-button:hover {
+            background: linear-gradient(45deg, #00cc6a, #00ff88);
+            transform: translateY(-1px);
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            border-top: 1px solid #00ff8844;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            color: #666666;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        .footer-link {
+            color: #00ff88;
+            text-decoration: none;
+        }
+        
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive */
+        @media only screen and (max-width: 600px) {
+            .main-content {
+                padding: 30px 20px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .unsubscribe-title {
+                font-size: 24px;
+            }
+            
+            .confirmation-box,
+            .resubscribe-section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Grid overlay for tech effect -->
+        <div class="grid-overlay"></div>
+        
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo">SARGAS.AI</div>
+                <div class="tagline">Autonomous Maritime Solutions</div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="unsubscribe-badge">◆ CONNECTION TERMINATED ◆</div>
+            
+            <h1 class="unsubscribe-title">Unsubscribed Successfully</h1>
+            
+            <p class="unsubscribe-subtitle">
+                Your email has been removed from our mailing list. You will no longer receive updates from SARGAS.AI.
+            </p>
+            
+            <!-- Confirmation Box -->
+            <div class="confirmation-box">
+                <div class="confirmation-title">◆ UNSUBSCRIBE CONFIRMED ◆</div>
+                <div class="confirmation-text">
+                    The email address <span class="confirmation-email">{{EMAIL}}</span> has been successfully removed from our newsletter database on {{UNSUBSCRIBE_DATE}}.
+                </div>
+            </div>
+            
+            <p class="content-text">
+                We're sorry to see you go! We respect your decision and appreciate the time you spent as part of our community. Your email will not receive any further communications from SARGAS.AI.
+            </p>
+            
+            <p class="content-text">
+                If you have any feedback about our emails or services, we'd love to hear from you. Your input helps us improve our communications and better serve our community.
+            </p>
+            
+            <!-- Resubscribe Section -->
+            <div class="resubscribe-section">
+                <div class="resubscribe-title">◆ CHANGED YOUR MIND? ◆</div>
+                <div class="resubscribe-text">
+                    If you unsubscribed by mistake or would like to receive our updates again in the future, you can easily resubscribe at any time.
+                </div>
+                <a href="https://sargas.ai" class="resubscribe-button">Resubscribe</a>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-content">
+                <p>
+                    This is an automated confirmation. You will not receive any further emails from SARGAS.AI.<br>
+                    <a href="https://sargas.ai" class="footer-link">Visit Website</a> | 
+                    <a href="mailto:info@sargas.ai" class="footer-link">Contact</a> | 
+                    <a href="https://www.linkedin.com/company/sargasai/" class="footer-link">LinkedIn</a>
+                </p>
+                <p style="margin-top: 15px;">
+                    © 2025 SargaSolutions. All rights reserved.<br>
+                    Protecting coastlines through autonomous technology.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
