@@ -1,10 +1,15 @@
 // Firebase Functions Gen 2 for Email Automation with Gmail
 const { onRequest } = require('firebase-functions/v2/https');
 const { onDocumentCreated, onDocumentUpdated } = require('firebase-functions/v2/firestore');
+const { defineSecret } = require('firebase-functions/params');
 const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
+
+// Define secrets for Gmail credentials
+const gmailEmail = defineSecret('GMAIL_EMAIL');
+const gmailPassword = defineSecret('GMAIL_PASSWORD');
 
 // Initialize Firebase Admin if not already initialized
 if (!admin.apps.length) {
@@ -15,13 +20,11 @@ const db = admin.firestore();
 
 // Gmail transporter setup
 function createGmailTransporter() {
-  const functions = require('firebase-functions');
-  
   return nodemailer.createTransporter({
     service: 'gmail',
     auth: {
-      user: functions.config().gmail?.email || process.env.GMAIL_EMAIL,
-      pass: functions.config().gmail?.password || process.env.GMAIL_PASSWORD
+      user: gmailEmail.value(),
+      pass: gmailPassword.value()
     }
   });
 }
@@ -83,6 +86,8 @@ async function sendEmail(to, subject, htmlContent) {
 exports.sendNewsletterWelcome = onDocumentCreated({
   document: 'newsletter/{docId}',
   region: 'us-central1',
+  database: 'sargasolutions-db',
+  secrets: [gmailEmail, gmailPassword],
 }, async (event) => {
   try {
     const data = event.data.data();
@@ -113,6 +118,8 @@ exports.sendNewsletterWelcome = onDocumentCreated({
 exports.sendContactConfirmation = onDocumentCreated({
   document: 'contacts/{docId}',
   region: 'us-central1',
+  database: 'sargasolutions-db',
+  secrets: [gmailEmail, gmailPassword],
 }, async (event) => {
   try {
     const data = event.data.data();
@@ -155,6 +162,8 @@ exports.sendContactConfirmation = onDocumentCreated({
 exports.sendUnsubscribeConfirmation = onDocumentUpdated({
   document: 'newsletter/{docId}',
   region: 'us-central1',
+  database: 'sargasolutions-db',
+  secrets: [gmailEmail, gmailPassword],
 }, async (event) => {
   try {
     const beforeData = event.data.before.data();
@@ -200,7 +209,8 @@ exports.sendUnsubscribeConfirmation = onDocumentUpdated({
 exports.sendNewsletterBroadcast = onRequest({ 
   cors: true,
   invoker: 'public',
-  region: 'us-central1' 
+  region: 'us-central1',
+  secrets: [gmailEmail, gmailPassword],
 }, async (req, res) => {
   setCORSHeaders(res);
   
@@ -285,10 +295,8 @@ exports.sendNewsletterBroadcast = onRequest({
         successCount++;
         console.log(`✅ Newsletter sent to ${subscriber.email} (${successCount}/${subscribersSnapshot.size})`);
         
-        // Small delay to avoid rate limiting
-        if (successCount % 10 === 0) {
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        }
+        // Delay after EVERY email to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 2000)); // 2 seconds between each email
         
       } catch (error) {
         errorCount++;
@@ -322,7 +330,8 @@ exports.sendNewsletterBroadcast = onRequest({
 exports.emailHealthCheck = onRequest({ 
   cors: true,
   invoker: 'public',
-  region: 'us-central1' 
+  region: 'us-central1',
+  secrets: [gmailEmail, gmailPassword],
 }, async (req, res) => {
   setCORSHeaders(res);
   
@@ -332,11 +341,9 @@ exports.emailHealthCheck = onRequest({
   }
   
   try {
-    const functions = require('firebase-functions');
-    
     // Check if Gmail credentials are configured
-    const gmailEmail = functions.config().gmail?.email || process.env.GMAIL_EMAIL;
-    const gmailPassword = functions.config().gmail?.password || process.env.GMAIL_PASSWORD;
+    const emailValue = gmailEmail.value();
+    const passwordValue = gmailPassword.value();
     
     const result = {
       status: 'healthy',
@@ -344,8 +351,8 @@ exports.emailHealthCheck = onRequest({
       emailSystem: 'gmail-nodemailer',
       templatesPath: path.join(__dirname, '../Templates/'),
       credentials: {
-        email: gmailEmail ? '✅ Configured' : '❌ Missing',
-        password: gmailPassword ? '✅ Configured' : '❌ Missing'
+        email: emailValue ? '✅ Configured' : '❌ Missing',
+        password: passwordValue ? '✅ Configured' : '❌ Missing'
       },
       templates: {
         welcomeEmail: '✅ Available',

@@ -386,3 +386,7 @@ exports.getVisitorTrends = onRequest({ invoker: 'public' }, async (req, res) => 
     res.status(500).json({ error: `Failed to get visitor trends: ${error.message}` });
   }
 });
+
+// Re-export email functions
+const emailFunctions = require('./email-functions.js');
+Object.assign(exports, emailFunctions);
