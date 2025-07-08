@@ -47,14 +47,14 @@
     <link rel="icon" type="image/png" href="Assets/logo.png">
     <link rel="shortcut icon" type="image/png" href="Assets/logo.png">
     
-    <!-- Google Analytics - ADD THIS HERE -->
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-85ESTBJQ5G"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-85ESTBJQ5G');
-</script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-85ESTBJQ5G');
+    </script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
@@ -211,6 +211,39 @@
         
         .nav-menu a:hover::after {
             opacity: 0;
+        }
+
+        /* Fleet Hub Special Button */
+        .fleet-hub-nav {
+            background: linear-gradient(45deg, var(--accent-green), var(--secondary-green)) !important;
+            color: var(--primary-black) !important;
+            font-weight: 700 !important;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fleet-hub-nav::before {
+            opacity: 0 !important;
+        }
+
+        .fleet-hub-nav::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .fleet-hub-nav:hover::after {
+            left: 100%;
+        }
+
+        .fleet-hub-nav:hover {
+            color: var(--primary-black) !important;
+            box-shadow: 0 0 25px var(--glow-green);
         }
 
         /* Mobile Menu Toggle */
@@ -774,60 +807,60 @@
         }
         
         .carousel-nav {
-    position: absolute;
-    bottom: 15px;
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid var(--accent-green);
-    color: var(--accent-green);
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 16px;
-    font-weight: bold;
-    z-index: 10;
-}
+            position: absolute;
+            bottom: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 10;
+        }
 
-.carousel-nav:hover {
-    background: var(--accent-green);
-    color: var(--primary-black);
-    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
-}
+        .carousel-nav:hover {
+            background: var(--accent-green);
+            color: var(--primary-black);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+        }
 
-.carousel-prev {
-    left: 10px;
-}
+        .carousel-prev {
+            left: 10px;
+        }
 
-.carousel-next {
-    right: 10px;
-}
+        .carousel-next {
+            right: 10px;
+        }
 
-.carousel-indicators {
-    position: absolute;
-    bottom: 25px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-    z-index: 10;
-}
+        .carousel-indicators {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
 
-.carousel-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+        .carousel-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-.carousel-indicator.active {
-    background: var(--accent-green);
-    box-shadow: 0 0 10px var(--accent-green);
-}
+        .carousel-indicator.active {
+            background: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+        }
         
         .solution-info h3 {
             font-family: 'Orbitron', monospace;
@@ -940,38 +973,441 @@
             text-transform: uppercase;
         }
 
-        /* LIDAR Video Section */
-        .lidar-section {
+        /* Fleet Hub Section */
+        .fleet-hub-section {
             padding: 80px 0;
             background: var(--secondary-black);
             border-top: 1px solid var(--border-green);
             border-bottom: 1px solid var(--border-green);
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
-        
-        .lidar-video-container {
-            width: 100%;
-            text-align: center;
+
+        .fleet-hub-section:hover {
+            background: linear-gradient(135deg, var(--secondary-black) 0%, rgba(0, 255, 136, 0.05) 50%, var(--secondary-black) 100%);
         }
-        
-        .lidar-video-placeholder {
+
+        .fleet-hub-container {
             width: 100%;
-            height: 400px;
-            background: var(--tech-gray);
+            height: 600px;
+            position: relative;
             border: 2px solid var(--accent-green);
+            background: var(--tech-gray);
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .fleet-hub-container:hover {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.3);
+        }
+
+        /* Fleet Hub Background Grid */
+        .fleet-hub-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.2) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: hubGridFlow 8s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes hubGridFlow {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        /* Command Center Interface */
+        .command-interface {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            display: grid;
+            grid-template-areas: 
+                "header"
+                "main-display"
+                "main-display"
+                "control-bar";
+            grid-template-columns: 1fr;
+            grid-template-rows: 60px 1fr 1fr 80px;
+            gap: 15px;
+        }
+
+        /* Header Terminal */
+        .hub-header {
+            grid-area: header;
+            background: var(--primary-black);
+            border: 1px solid var(--accent-green);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            font-family: 'Orbitron', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hub-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+            animation: headerScan 4s ease-in-out infinite;
+        }
+
+        @keyframes headerScan {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: -100%; }
+        }
+
+        .hub-title {
+            color: var(--accent-green);
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hub-status {
+            color: var(--neon-green);
+            font-size: 12px;
+            font-weight: 600;
+            animation: statusBlink 2s ease-in-out infinite;
+        }
+
+        @keyframes statusBlink {
+            0%, 90% { opacity: 1; }
+            95% { opacity: 0.3; }
+        }
+
+        /* Navigation Panel */
+        .nav-panel {
+            grid-area: nav-panel;
+            background: var(--primary-black);
+            border: 1px solid var(--accent-green);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            background: var(--tech-gray);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 12px 8px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-gray);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item.active {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-item:hover::before {
+            left: 100%;
+        }
+
+        /* Main Display */
+        .main-display {
+            grid-area: main-display;
+            background: var(--primary-black);
+            border: 1px solid var(--accent-green);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Fleet Map */
+        .fleet-map {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 40%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+                         radial-gradient(circle at 70% 60%, rgba(0, 255, 136, 0.08) 0%, transparent 50%);
+        }
+
+        /* Autonomous Vessels */
+        .vessel {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: vesselPulse 3s ease-in-out infinite;
+        }
+
+        .vessel.isac {
+            background: var(--accent-green);
+            box-shadow: 0 0 15px var(--accent-green);
+            top: 35%;
+            left: 25%;
+            animation-delay: 0s;
+        }
+
+        .vessel.scout {
+            background: var(--secondary-green);
+            box-shadow: 0 0 15px var(--secondary-green);
+            top: 60%;
+            left: 45%;
+            animation-delay: 1s;
+        }
+
+        .vessel.scout-2 {
+            background: var(--secondary-green);
+            box-shadow: 0 0 15px var(--secondary-green);
+            top: 20%;
+            left: 65%;
+            animation-delay: 2s;
+        }
+
+        @keyframes vesselPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(1.5);
+                opacity: 1;
+            }
+        }
+
+        /* Vessel Paths */
+        .vessel-path {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+            opacity: 0.6;
+            animation: pathFlow 4s linear infinite;
+        }
+
+        .path-1 {
+            top: 35.5%;
+            left: 25%;
+            width: 150px;
+            transform: rotate(25deg);
+        }
+
+        .path-2 {
+            top: 60.5%;
+            left: 45%;
+            width: 120px;
+            transform: rotate(-15deg);
+            animation-delay: 1s;
+        }
+
+        .path-3 {
+            top: 20.5%;
+            left: 65%;
+            width: 100px;
+            transform: rotate(45deg);
+            animation-delay: 2s;
+        }
+
+        @keyframes pathFlow {
+            0% { 
+                opacity: 0;
+                transform: translateX(-20px) rotate(var(--rotation, 0deg));
+            }
+            50% { 
+                opacity: 0.6;
+            }
+            100% { 
+                opacity: 0;
+                transform: translateX(20px) rotate(var(--rotation, 0deg));
+            }
+        }
+
+        /* Sargassum Detection Zones */
+        .detection-zone {
+            position: absolute;
+            border: 2px dashed rgba(255, 71, 87, 0.6);
+            border-radius: 50%;
+            animation: detectionPulse 5s ease-in-out infinite;
+        }
+
+        .zone-1 {
+            width: 80px;
+            height: 60px;
+            top: 45%;
+            left: 35%;
+            animation-delay: 0s;
+        }
+
+        .zone-2 {
+            width: 60px;
+            height: 45px;
+            top: 25%;
+            left: 55%;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes detectionPulse {
+            0%, 100% { 
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Status Panel */
+        .status-panel {
+            grid-area: status-panel;
+            background: var(--primary-black);
+            border: 1px solid var(--accent-green);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .status-item {
+            background: var(--tech-gray);
+            border-left: 3px solid var(--accent-green);
+            padding: 8px;
+            font-size: 9px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .status-label {
+            color: var(--text-gray);
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .status-value {
+            color: var(--accent-green);
+            font-family: 'Orbitron', monospace;
+        }
+
+        .status-active {
+            border-left-color: var(--neon-green);
+        }
+
+        .status-active .status-value {
+            color: var(--neon-green);
+            animation: valueFlicker 1.5s ease-in-out infinite;
+        }
+
+        @keyframes valueFlicker {
+            0%, 90% { opacity: 1; }
+            95% { opacity: 0.6; }
+        }
+
+        /* Control Bar */
+        .control-bar {
+            grid-area: control-bar;
+            background: var(--primary-black);
+            border: 1px solid var(--accent-green);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
         }
-        
-        .lidar-gif {
+
+        .access-button {
+            background: linear-gradient(45deg, var(--accent-green), var(--secondary-green));
+            color: var(--primary-black);
+            padding: 15px 40px;
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            clip-path: polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .access-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            display: block;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
         }
-        
+
+        .access-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+        }
+
+        .access-button:hover::before {
+            left: 100%;
+        }
+
+        /* Data Streams */
+        .data-stream {
+            position: absolute;
+            color: var(--accent-green);
+            font-size: 8px;
+            font-family: 'Orbitron', monospace;
+            opacity: 0;
+            animation: dataFlow 3s linear infinite;
+        }
+
+        .stream-1 { top: 15%; left: 10%; animation-delay: 0s; }
+        .stream-2 { top: 75%; right: 10%; animation-delay: 1s; }
+        .stream-3 { top: 40%; left: 5%; animation-delay: 2s; }
+        .stream-4 { bottom: 15%; right: 15%; animation-delay: 1.5s; }
+
+        @keyframes dataFlow {
+            0% { 
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            20%, 80% { 
+                opacity: 0.7;
+                transform: translateY(0);
+            }
+            100% { 
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
         /* About Section */
         .about-section {
             padding: 120px 0;
@@ -1444,13 +1880,59 @@
                 line-height: 1.5;
             }
 
-            /* LIDAR Section Mobile */
-            .lidar-section {
+            /* Fleet Hub Section Mobile */
+            .fleet-hub-section {
                 padding: 60px 0;
             }
 
-            .lidar-video-placeholder {
-                height: 250px;
+            .fleet-hub-container {
+                height: 400px;
+            }
+
+            .command-interface {
+                grid-template-areas: 
+                    "header"
+                    "main-display"
+                    "control-bar";
+                grid-template-columns: 1fr;
+                grid-template-rows: 50px 1fr 60px;
+                gap: 10px;
+                top: 15px;
+                left: 15px;
+                right: 15px;
+                bottom: 15px;
+            }
+
+            .hub-title {
+                font-size: 14px;
+            }
+
+            .hub-status {
+                font-size: 10px;
+            }
+
+            .access-button {
+                padding: 12px 25px;
+                font-size: 12px;
+            }
+
+            .vessel {
+                width: 10px;
+                height: 10px;
+            }
+
+            .detection-zone {
+                border-width: 1px;
+            }
+
+            .zone-1 {
+                width: 60px;
+                height: 45px;
+            }
+
+            .zone-2 {
+                width: 45px;
+                height: 35px;
             }
 
             /* About Section Mobile */
@@ -1638,6 +2120,7 @@
             .mobile-menu-overlay a:nth-child(4) { animation-delay: 0.25s; }
             .mobile-menu-overlay a:nth-child(5) { animation-delay: 0.3s; }
             .mobile-menu-overlay a:nth-child(6) { animation-delay: 0.35s; }
+            .mobile-menu-overlay a:nth-child(7) { animation-delay: 0.4s; }
 
             @keyframes slideInFromRight {
                 to {
@@ -1690,6 +2173,27 @@
                 padding: 12px 25px;
                 margin: 0 15px;
             }
+
+            .fleet-hub-container {
+                height: 350px;
+            }
+
+            .command-interface {
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                bottom: 10px;
+                gap: 8px;
+            }
+
+            .hub-title {
+                font-size: 12px;
+            }
+
+            .access-button {
+                padding: 10px 20px;
+                font-size: 11px;
+            }
         }
 
         /* Tablet */
@@ -1731,8 +2235,12 @@
                 order: -1;
             }
 
-            .lidar-video-placeholder {
-                height: 350px;
+            .fleet-hub-container {
+                height: 500px;
+            }
+
+            .command-interface {
+                grid-template-columns: 1fr;
             }
 
             .problem-grid {
@@ -1768,8 +2276,13 @@
             .solutions-section,
             .tech-section,
             .about-section,
-            .contact-section {
+            .contact-section,
+            .fleet-hub-section {
                 padding: 60px 0;
+            }
+
+            .fleet-hub-container {
+                height: 300px;
             }
         }
     </style>
@@ -1791,6 +2304,7 @@
                 <li><a href="#technology">Technology</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
+                <li><a href="#fleet-hub" class="fleet-hub-nav">Fleet Hub</a></li>
             </ul>
 
             <!-- Mobile Menu Toggle -->
@@ -1809,6 +2323,7 @@
             <a href="#technology">Technology</a>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
+            <a href="#fleet-hub">Fleet Hub</a>
         </div>
     </header>
 
@@ -2145,12 +2660,49 @@
         </div>
     </section>
 
-    <!-- LIDAR Video Section -->
-    <section class="lidar-section">
+    <!-- Fleet Hub Section -->
+    <section id="fleet-hub" class="fleet-hub-section" onclick="window.open('https://ashy-river-0a7bf7e03.5.azurestaticapps.net/login', '_blank')">
         <div class="section-container">
-            <div class="lidar-video-container">
-                <div class="lidar-video-placeholder">
-                    <img src="Assets/Lidar.gif" alt="LIDAR technology visualization for autonomous vessel navigation" class="lidar-gif">
+            <div class="fleet-hub-container">
+                <div class="fleet-hub-grid"></div>
+                
+                <!-- Command Center Interface -->
+                <div class="command-interface">
+                    <!-- Header Terminal -->
+                    <div class="hub-header">
+                        <div class="hub-title">◆ FLEET HUB COMMAND CENTER ◆</div>
+                        <div class="hub-status">● ONLINE</div>
+                    </div>
+                    
+                    <!-- Main Display -->
+                    <div class="main-display">
+                        <div class="fleet-map">
+                            <!-- Autonomous Vessels -->
+                            <div class="vessel isac" title="ISAC - Collection Platform"></div>
+                            <div class="vessel scout" title="ISAC Scout - Interceptor"></div>
+                            <div class="vessel scout scout-2" title="ISAC Scout - Patrol"></div>
+                            
+                            <!-- Vessel Paths -->
+                            <div class="vessel-path path-1" style="--rotation: 25deg;"></div>
+                            <div class="vessel-path path-2" style="--rotation: -15deg;"></div>
+                            <div class="vessel-path path-3" style="--rotation: 45deg;"></div>
+                            
+                            <!-- Sargassum Detection Zones -->
+                            <div class="detection-zone zone-1"></div>
+                            <div class="detection-zone zone-2"></div>
+                        </div>
+                        
+                        <!-- Data Streams -->
+                        <div class="data-stream stream-1">LAT: 18.4655°N</div>
+                        <div class="data-stream stream-2">LON: 69.9312°W</div>
+                        <div class="data-stream stream-3">SPEED: 2.3 kts</div>
+                        <div class="data-stream stream-4">STATUS: ACTIVE</div>
+                    </div>
+                    
+                    <!-- Control Bar -->
+                    <div class="control-bar">
+                        <button class="access-button">ACCESS FLEET HUB</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2392,6 +2944,7 @@
                 const totalSlides = carousel.querySelectorAll('.carousel-slide').length;
                 
                 let currentSlide = 0;
+                let autoSlideInterval;
 
                 function updateCarousel() {
                     const translateX = -currentSlide * 100;
@@ -2418,16 +2971,45 @@
                     updateCarousel();
                 }
 
+                // Auto-slide function
+                function startAutoSlide() {
+                    autoSlideInterval = setInterval(nextSlide, 2500); // 2.5 seconds
+                }
+
+                function stopAutoSlide() {
+                    if (autoSlideInterval) {
+                        clearInterval(autoSlideInterval);
+                    }
+                }
+
+                function restartAutoSlide() {
+                    stopAutoSlide();
+                    startAutoSlide();
+                }
                 // Event listeners
-                nextBtn.addEventListener('click', nextSlide);
-                prevBtn.addEventListener('click', prevSlide);
-                
-                indicators.forEach((indicator, index) => {
-                    indicator.addEventListener('click', () => goToSlide(index));
+                nextBtn.addEventListener('click', () => {
+                    nextSlide();
+                    restartAutoSlide();
                 });
 
-                // Auto-play (optional) - uncomment if you want auto-play
-                // setInterval(nextSlide, 5000);
+                prevBtn.addEventListener('click', () => {
+                    prevSlide();
+                    restartAutoSlide();
+                });
+                
+                indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    goToSlide(index);
+                    restartAutoSlide();
+                });
+            });
+
+            // Start auto-slide
+            startAutoSlide();
+
+            // Pause auto-slide on hover
+            carousel.addEventListener('mouseenter', stopAutoSlide);
+            carousel.addEventListener('mouseleave', startAutoSlide);
 
                 // Touch/swipe support for mobile
                 let startX = 0;
@@ -2612,17 +3194,14 @@
                 }
             });
 
-            // Newsletter form submission - FIXED
+            // Newsletter form submission
             newsletterForm.addEventListener('submit', async function(e) {
-                console.log('Newsletter form submitted!');
                 e.preventDefault();
 
                 const email = newsletterInput.value.trim();
-                console.log('Email entered:', email);
                 
                 // Validate email
                 if (!email || !isValidEmail(email)) {
-                    console.log('Invalid email');
                     showNewsletterFeedback('Please enter a valid email address', 'error');
                     return;
                 }
@@ -2631,7 +3210,6 @@
                 newsletterButton.textContent = 'SUBSCRIBING...';
                 newsletterButton.disabled = true;
                 newsletterButton.style.opacity = '0.7';
-                console.log('Loading state activated');
 
                 try {
                     const newsletterData = {
@@ -2641,8 +3219,6 @@
                         userAgent: navigator.userAgent,
                         subscribedFrom: window.location.href
                     };
-
-                    console.log('Attempting to save to Firebase...', newsletterData);
                     
                     // Add to newsletter collection
                     const docRef = await addDoc(collection(db, 'newsletter'), newsletterData);
@@ -2666,68 +3242,6 @@
                     }, 2000);
                 }
             });
-
-            // Add click event as backup
-            newsletterButton.addEventListener('click', function(e) {
-                console.log('Newsletter button clicked directly');
-                // Always prevent default and handle manually
-                e.preventDefault();
-                handleNewsletterSubmission();
-            });
-
-            // Separate function to handle newsletter submission
-            async function handleNewsletterSubmission() {
-                console.log('Handling newsletter submission...');
-                
-                const email = newsletterInput.value.trim();
-                console.log('Email entered:', email);
-                
-                // Validate email
-                if (!email || !isValidEmail(email)) {
-                    console.log('Invalid email');
-                    showNewsletterFeedback('Please enter a valid email address', 'error');
-                    return;
-                }
-
-                // Show loading state
-                newsletterButton.textContent = 'SUBSCRIBING...';
-                newsletterButton.disabled = true;
-                newsletterButton.style.opacity = '0.7';
-                console.log('Loading state activated');
-
-                try {
-                    const newsletterData = {
-                        email: email,
-                        timestamp: serverTimestamp(),
-                        source: 'website_newsletter',
-                        userAgent: navigator.userAgent,
-                        subscribedFrom: window.location.href
-                    };
-
-                    console.log('Attempting to save to Firebase...', newsletterData);
-                    
-                    // Add to newsletter collection
-                    const docRef = await addDoc(collection(db, 'newsletter'), newsletterData);
-                    console.log('Newsletter subscription saved with ID: ', docRef.id);
-
-                    // Show success message
-                    showNewsletterFeedback('Success!', 'success');
-                    
-                    // Reset form
-                    newsletterInput.value = '';
-
-                } catch (error) {
-                    console.error('Error saving newsletter subscription: ', error);
-                    showNewsletterFeedback('Sorry, there was an error. Please try again.', 'error');
-                } finally {
-                    // Reset button
-                    setTimeout(() => {
-                        newsletterButton.textContent = originalNewsletterText;
-                        newsletterButton.disabled = false;
-                        newsletterButton.style.opacity = '1';
-                    }, 2000);
-                }
-            }
 
             // Email validation function
             function isValidEmail(email) {
