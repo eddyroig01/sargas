@@ -769,66 +769,65 @@
         .solution-image {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             display: block;
         }
         
         .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid var(--accent-green);
-            color: var(--accent-green);
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 16px;
-            font-weight: bold;
-            z-index: 10;
-        }
-        
-        .carousel-nav:hover {
-            background: var(--accent-green);
-            color: var(--primary-black);
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
-        }
-        
-        .carousel-prev {
-            left: 10px;
-        }
-        
-        .carousel-next {
-            right: 10px;
-        }
-        
-        .carousel-indicators {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-            z-index: 10;
-        }
-        
-        .carousel-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .carousel-indicator.active {
-            background: var(--accent-green);
-            box-shadow: 0 0 10px var(--accent-green);
-        }
+    position: absolute;
+    bottom: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--accent-green);
+    color: var(--accent-green);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 10;
+}
+
+.carousel-nav:hover {
+    background: var(--accent-green);
+    color: var(--primary-black);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+}
+
+.carousel-prev {
+    left: 10px;
+}
+
+.carousel-next {
+    right: 10px;
+}
+
+.carousel-indicators {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.carousel-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carousel-indicator.active {
+    background: var(--accent-green);
+    box-shadow: 0 0 10px var(--accent-green);
+}
         
         .solution-info h3 {
             font-family: 'Orbitron', monospace;
@@ -1941,10 +1940,10 @@
                                         <img src="Assets/ISAC.jpg" alt="ISAC Autonomous Collection Platform for sargassum removal" class="solution-image">
                                     </div>
                                     <div class="carousel-slide">
-                                        <img src="Assets/ISAC.jpg" alt="ISAC AI-powered vessel side view showing collection system" class="solution-image">
+                                        <img src="Assets/ISAC2.jpg" alt="ISAC AI-powered vessel side view showing collection system" class="solution-image">
                                     </div>
                                     <div class="carousel-slide">
-                                        <img src="Assets/ISAC.jpg" alt="ISAC collection system in operation gathering seaweed" class="solution-image">
+                                        <img src="Assets/ISAC3.jpg" alt="ISAC collection system in operation gathering seaweed" class="solution-image">
                                     </div>
                                 </div>
                                 <button class="carousel-nav carousel-prev">‹</button>
@@ -2023,10 +2022,10 @@
                                         <img src="Assets/SARGASCAN.png" alt="SargaScan AI camera network for sargassum detection" class="solution-image">
                                     </div>
                                     <div class="carousel-slide">
-                                        <img src="Assets/SARGASCAN.png" alt="SargaScan computer vision AI detection system" class="solution-image">
+                                        <img src="Assets/SARGASCAN2.png" alt="SargaScan computer vision AI detection system" class="solution-image">
                                     </div>
                                     <div class="carousel-slide">
-                                        <img src="Assets/SARGASCAN.png" alt="SargaScan real-time data analysis dashboard" class="solution-image">
+                                        <img src="Assets/SARGASCAN3.png" alt="SargaScan real-time data analysis dashboard" class="solution-image">
                                     </div>
                                 </div>
                                 <button class="carousel-nav carousel-prev">‹</button>
@@ -2050,10 +2049,10 @@
                                         <img src="Assets/WEBAPP.png" alt="Fleet Hub web platform interface for autonomous vessel management" class="solution-image">
                                     </div>
                                     <div class="carousel-slide">
-                                        <img src="Assets/WEBAPP.png" alt="Fleet management dashboard with real-time monitoring" class="solution-image">
+                                        <img src="Assets/WEBAPP2.png" alt="Fleet management dashboard with real-time monitoring" class="solution-image">
                                     </div>
                                     <div class="carousel-slide">
-                                        <img src="Assets/WEBAPP.png" alt="Real-time analytics and mission control interface" class="solution-image">
+                                        <img src="Assets/WEBAPP3.png" alt="Real-time analytics and mission control interface" class="solution-image">
                                     </div>
                                 </div>
                                 <button class="carousel-nav carousel-prev">‹</button>
@@ -2185,7 +2184,7 @@
                 </div>
                 
                 <div class="live-feed">
-                    <div class="feed-header">Live SargaScan Feed</div>
+                    <div class="feed-header">SargaScan Feed</div>
                     <div class="feed-display">
                         <img src="Assets/DETECTION.png" alt="Real-time sargassum detection data from AI monitoring system" class="detection-image">
                     </div>
