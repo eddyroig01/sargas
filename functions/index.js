@@ -1,3 +1,6 @@
+// Import email functions
+require('./email-functions.js');
+
 // Firebase Functions Gen 2 with HTTP endpoints and CORS - WITH STATE SUPPORT
 const { onRequest } = require('firebase-functions/v2/https');
 const { setGlobalOptions } = require('firebase-functions/v2');
