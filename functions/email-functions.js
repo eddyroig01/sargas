@@ -1,18 +1,10 @@
 // Firebase Functions Gen 2 for Email Automation with Gmail
 const { onRequest } = require('firebase-functions/v2/https');
 const { onDocumentCreated, onDocumentUpdated } = require('firebase-functions/v2/firestore');
-const { setGlobalOptions } = require('firebase-functions/v2');
 const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
-
-// Set global options for all functions
-setGlobalOptions({
-  region: 'us-central1',
-  memory: '256MiB',
-  timeoutSeconds: 60,
-});
 
 // Initialize Firebase Admin if not already initialized
 if (!admin.apps.length) {
