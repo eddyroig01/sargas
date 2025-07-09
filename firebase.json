@@ -42,5 +42,8 @@
         "*.local"
       ]
     }
-  ]
+  ],
+  "firestore": {
+    "database": "sargasolutions-db"
+  }
 }

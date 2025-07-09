@@ -1,6 +1,6 @@
 {
   "name": "functions",
-  "description": "Cloud Functions for Firebase with Google Analytics 4 Integration",
+  "description": "Cloud Functions for Firebase with Google Analytics 4 Integration and Resend Email System",
   "scripts": {
     "lint": "eslint .",
     "serve": "firebase emulators:start --only functions",
@@ -16,7 +16,8 @@
   "dependencies": {
     "@google-analytics/data": "^4.0.0",
     "firebase-admin": "^12.1.0",
-    "firebase-functions": "^6.3.2"
+    "firebase-functions": "^6.3.2",
+    "resend": "^4.0.0"
   },
   "devDependencies": {
     "eslint": "^8.15.0",

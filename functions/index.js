@@ -1,14 +1,31 @@
-// Firebase Functions Gen 2 with HTTP endpoints and CORS - WITH STATE SUPPORT
+// Complete Firebase Functions with Analytics + Email System
+// This is your complete index.js file
+
 const { onRequest } = require('firebase-functions/v2/https');
+const { onDocumentCreated } = require('firebase-functions/v2/firestore');
 const { setGlobalOptions } = require('firebase-functions/v2');
+const { initializeApp } = require('firebase-admin/app');
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const { BetaAnalyticsDataClient } = require('@google-analytics/data');
+const { Resend } = require('resend');
+const fs = require('fs');
+const path = require('path');
+
+// Initialize Firebase Admin
+const app = initializeApp();
+const db = getFirestore(app, 'sargasolutions-db'); // Explicitly use your database name
 
 // Set global options for all functions
 setGlobalOptions({
   region: 'us-central1',
-  memory: '256MiB',
-  timeoutSeconds: 60,
+  memory: '512MiB',
+  timeoutSeconds: 540, // 9 minutes for newsletter broadcasts
 });
+
+// Access secrets using process.env (Firebase automatically injects secrets)
+function getResendApiKey() {
+  return process.env.RESEND_API_KEY;
+}
 
 // Initialize Google Analytics Data API client
 const analyticsDataClient = new BetaAnalyticsDataClient({
@@ -26,6 +43,527 @@ function setCORSHeaders(res) {
   res.set('Access-Control-Max-Age', '3600');
 }
 
+// =============================================================================
+// EMAIL SYSTEM FUNCTIONS
+// =============================================================================
+
+// Template loading and processing functions
+function loadTemplate(templateName) {
+  try {
+    const templatePath = path.join(__dirname, 'Templates', templateName);
+    return fs.readFileSync(templatePath, 'utf8');
+  } catch (error) {
+    console.error(`Error loading template ${templateName}:`, error);
+    throw new Error(`Template ${templateName} not found`);
+  }
+}
+
+function processTemplate(template, variables) {
+  let processedTemplate = template;
+  
+  // Replace all variables in format {{VARIABLE_NAME}}
+  Object.keys(variables).forEach(key => {
+    const regex = new RegExp(`{{${key}}}`, 'g');
+    processedTemplate = processedTemplate.replace(regex, variables[key] || '');
+  });
+  
+  // Handle conditional sections (basic Mustache-like syntax)
+  // {{#VARIABLE}} content {{/VARIABLE}}
+  Object.keys(variables).forEach(key => {
+    const showSectionRegex = new RegExp(`{{#${key}}}([\\s\\S]*?){{/${key}}}`, 'g');
+    if (variables[key]) {
+      processedTemplate = processedTemplate.replace(showSectionRegex, '$1');
+    } else {
+      processedTemplate = processedTemplate.replace(showSectionRegex, '');
+    }
+  });
+  
+  return processedTemplate;
+}
+
+// Rate limiting helper
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Core email sending function
+async function sendEmail(resend, to, subject, htmlContent, fromEmail = 'SARGAS.AI <noreply@sargas.ai>') {
+  try {
+    console.log(`📧 Sending email to: ${to}`);
+    console.log(`📧 Subject: ${subject}`);
+    
+    const result = await resend.emails.send({
+      from: fromEmail,
+      to: [to],
+      subject: subject,
+      html: htmlContent,
+    });
+    
+    console.log(`✅ Email sent successfully to ${to}:`, result);
+    return { success: true, messageId: result.data?.id };
+  } catch (error) {
+    console.error(`❌ Failed to send email to ${to}:`, error);
+    return { success: false, error: error.message };
+  }
+}
+
+// =============================================================================
+// 1. NEWSLETTER WELCOME EMAIL TRIGGER
+// =============================================================================
+exports.sendWelcomeEmail = onDocumentCreated({
+  document: 'newsletter/{docId}',
+  secrets: ['RESEND_API_KEY']
+}, async (event) => {
+  const resend = new Resend(getResendApiKey());
+  
+  try {
+    const snapshot = event.data;
+    const subscriberData = snapshot.data();
+    
+    console.log('🎉 New newsletter subscriber:', subscriberData);
+    
+    // Load and process welcome template
+    const template = loadTemplate('newsletter-welcome.html');
+    const variables = {
+      EMAIL: subscriberData.email,
+      SUBSCRIBER_NAME: subscriberData.name || 'Valued Subscriber',
+      SUBSCRIPTION_DATE: new Date().toLocaleDateString(),
+    };
+    
+    const htmlContent = processTemplate(template, variables);
+    
+    // Send welcome email
+    const result = await sendEmail(
+      resend,
+      subscriberData.email,
+      'Welcome to SARGAS.AI - Your Subscription is Active',
+      htmlContent
+    );
+    
+    if (result.success) {
+      // Update subscriber record with welcome email status
+      await snapshot.ref.update({
+        welcomeEmailSent: true,
+        welcomeEmailSentAt: FieldValue.serverTimestamp(),
+        welcomeEmailMessageId: result.messageId
+      });
+      
+      console.log('✅ Welcome email sent and recorded');
+    } else {
+      console.error('❌ Failed to send welcome email:', result.error);
+    }
+    
+  } catch (error) {
+    console.error('❌ Error in welcome email trigger:', error);
+  }
+});
+
+// =============================================================================
+// 2. CONTACT FORM CONFIRMATION EMAIL TRIGGER
+// =============================================================================
+exports.sendContactConfirmation = onDocumentCreated({
+  document: 'contacts/{docId}',
+  secrets: ['RESEND_API_KEY']
+}, async (event) => {
+  const resend = new Resend(getResendApiKey());
+  
+  try {
+    const snapshot = event.data;
+    const contactData = snapshot.data();
+    
+    console.log('📞 New contact form submission:', contactData);
+    
+    // Load and process contact confirmation template
+    const template = loadTemplate('contact-confirmation.html');
+    const variables = {
+      EMAIL: contactData.email,
+      NAME: contactData.name || 'Valued Contact',
+      INTEREST: contactData.interest || 'General Inquiry',
+      MESSAGE: contactData.message || 'No message provided',
+      SUBMITTED: new Date().toLocaleDateString(),
+    };
+    
+    const htmlContent = processTemplate(template, variables);
+    
+    // Send confirmation email
+    const result = await sendEmail(
+      resend,
+      contactData.email,
+      'Message Received - SARGAS.AI Contact Confirmation',
+      htmlContent
+    );
+    
+    if (result.success) {
+      // Update contact record with confirmation email status
+      await snapshot.ref.update({
+        confirmationEmailSent: true,
+        confirmationEmailSentAt: FieldValue.serverTimestamp(),
+        confirmationEmailMessageId: result.messageId
+      });
+      
+      console.log('✅ Contact confirmation email sent and recorded');
+    } else {
+      console.error('❌ Failed to send contact confirmation email:', result.error);
+    }
+    
+  } catch (error) {
+    console.error('❌ Error in contact confirmation email trigger:', error);
+  }
+});
+
+// =============================================================================
+// 3. UNSUBSCRIBE CONFIRMATION EMAIL FUNCTION
+// =============================================================================
+exports.sendUnsubscribeConfirmation = onRequest({
+  secrets: ['RESEND_API_KEY'],
+  invoker: 'public'
+}, async (req, res) => {
+  setCORSHeaders(res);
+  
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+  
+  const resend = new Resend(getResendApiKey());
+  
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      res.status(400).json({ error: 'Email is required' });
+      return;
+    }
+    
+    console.log('🚫 Processing unsubscribe confirmation for:', email);
+    
+    // Load and process unsubscribe confirmation template
+    const template = loadTemplate('unsubscribe-confirmation.html');
+    const variables = {
+      EMAIL: email,
+      UNSUBSCRIBE_DATE: new Date().toLocaleDateString(),
+    };
+    
+    const htmlContent = processTemplate(template, variables);
+    
+    // Send unsubscribe confirmation email
+    const result = await sendEmail(
+      resend,
+      email,
+      'Unsubscribed Successfully - SARGAS.AI',
+      htmlContent
+    );
+    
+    if (result.success) {
+      res.json({ 
+        success: true, 
+        message: 'Unsubscribe confirmation sent',
+        messageId: result.messageId
+      });
+    } else {
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to send confirmation email' 
+      });
+    }
+    
+  } catch (error) {
+    console.error('❌ Error in unsubscribe confirmation:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// =============================================================================
+// 4. NEWSLETTER BROADCAST FUNCTION
+// =============================================================================
+exports.sendNewsletterBroadcast = onRequest({
+  secrets: ['RESEND_API_KEY'],
+  invoker: 'public',
+  timeoutSeconds: 540 // 9 minutes for large broadcasts
+}, async (req, res) => {
+  setCORSHeaders(res);
+  
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+  
+  const resend = new Resend(getResendApiKey());
+  
+  try {
+    const newsletterData = req.body;
+    
+    console.log('📡 Starting newsletter broadcast:', newsletterData);
+    
+    // Validate required fields
+    if (!newsletterData.title || !newsletterData.content) {
+      res.status(400).json({ 
+        success: false, 
+        error: 'Title and content are required' 
+      });
+      return;
+    }
+    
+    // Get all active newsletter subscribers from your custom database
+    const subscribersSnapshot = await db.collection('newsletter')
+      .where('unsubscribed', '!=', true)
+      .get();
+    
+    const subscribers = [];
+    subscribersSnapshot.forEach(doc => {
+      const data = doc.data();
+      if (data.email) {
+        subscribers.push({
+          id: doc.id,
+          email: data.email,
+          name: data.name || 'Valued Subscriber'
+        });
+      }
+    });
+    
+    console.log(`👥 Found ${subscribers.length} active subscribers`);
+    
+    if (subscribers.length === 0) {
+      res.json({
+        success: true,
+        message: 'No active subscribers found',
+        sent: 0,
+        errors: 0
+      });
+      return;
+    }
+    
+    // Load and prepare newsletter template
+    const template = loadTemplate('newsletter-broadcast.html');
+    
+    let sentCount = 0;
+    let errorCount = 0;
+    const errors = [];
+    
+    // Send to each subscriber with rate limiting
+    for (const subscriber of subscribers) {
+      try {
+        // Prepare personalized variables for this subscriber
+        const variables = {
+          EMAIL: subscriber.email,
+          SUBSCRIBER_NAME: subscriber.name,
+          NEWSLETTER_BADGE: newsletterData.badge || '◆ NEWSLETTER UPDATE ◆',
+          NEWSLETTER_TITLE: newsletterData.title,
+          NEWSLETTER_SUBTITLE: newsletterData.subtitle || '',
+          NEWSLETTER_CONTENT: newsletterData.content,
+          FEATURED_TITLE: newsletterData.featuredTitle || '',
+          FEATURED_CONTENT: newsletterData.featuredContent || '',
+          CTA_TEXT: newsletterData.ctaText || '',
+          CTA_LINK: newsletterData.ctaLink || 'https://sargas.ai',
+          SHOW_QUICK_UPDATES: newsletterData.showQuickUpdates === 'true' ? true : false,
+          TECH_UPDATE: newsletterData.techUpdate || '',
+          OPERATIONS_UPDATE: newsletterData.operationsUpdate || '',
+          PARTNERSHIPS_UPDATE: newsletterData.partnershipsUpdate || ''
+        };
+        
+        // Process template with subscriber-specific variables
+        const personalizedContent = processTemplate(template, variables);
+        
+        // Send email to this subscriber
+        const result = await sendEmail(
+          resend,
+          subscriber.email,
+          `${newsletterData.title} - SARGAS.AI Newsletter`,
+          personalizedContent
+        );
+        
+        if (result.success) {
+          sentCount++;
+          console.log(`✅ Newsletter sent to ${subscriber.email} (${sentCount}/${subscribers.length})`);
+        } else {
+          errorCount++;
+          errors.push({ email: subscriber.email, error: result.error });
+          console.error(`❌ Failed to send to ${subscriber.email}:`, result.error);
+        }
+        
+        // Rate limiting: 2-second delay between emails
+        if (sentCount + errorCount < subscribers.length) {
+          console.log('⏱️ Rate limiting: waiting 2 seconds...');
+          await delay(2000);
+        }
+        
+      } catch (error) {
+        errorCount++;
+        errors.push({ email: subscriber.email, error: error.message });
+        console.error(`❌ Error sending to ${subscriber.email}:`, error);
+      }
+    }
+    
+    // Log broadcast completion to Firestore
+    await db.collection('newsletter_broadcasts').add({
+      title: newsletterData.title,
+      subtitle: newsletterData.subtitle,
+      sentAt: FieldValue.serverTimestamp(),
+      recipientCount: subscribers.length,
+      sentCount: sentCount,
+      errorCount: errorCount,
+      errors: errors.slice(0, 10) // Store first 10 errors for debugging
+    });
+    
+    console.log(`📊 Broadcast complete: ${sentCount} sent, ${errorCount} errors`);
+    
+    res.json({
+      success: true,
+      message: `Newsletter broadcast completed`,
+      sent: sentCount,
+      errors: errorCount,
+      totalSubscribers: subscribers.length,
+      details: errorCount > 0 ? `${errorCount} emails failed to send` : 'All emails sent successfully'
+    });
+    
+  } catch (error) {
+    console.error('❌ Error in newsletter broadcast:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message,
+      message: 'Newsletter broadcast failed'
+    });
+  }
+});
+
+// =============================================================================
+// 5. EMAIL SYSTEM HEALTH CHECK
+// =============================================================================
+exports.emailHealthCheck = onRequest({
+  secrets: ['RESEND_API_KEY'],
+  invoker: 'public'
+}, async (req, res) => {
+  setCORSHeaders(res);
+  
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+  
+  try {
+    const resend = new Resend(getResendApiKey());
+    
+    // Test Resend connection
+    const testResult = await resend.emails.send({
+      from: 'SARGAS.AI <noreply@sargas.ai>',
+      to: ['test@resend.dev'], // Resend test email
+      subject: 'SARGAS.AI Email System Health Check',
+      html: '<p>Email system is operational</p>',
+    });
+    
+    // Check template availability
+    const templates = ['newsletter-welcome.html', 'contact-confirmation.html', 'unsubscribe-confirmation.html', 'newsletter-broadcast.html'];
+    const templateStatus = {};
+    
+    templates.forEach(template => {
+      try {
+        loadTemplate(template);
+        templateStatus[template] = 'OK';
+      } catch (error) {
+        templateStatus[template] = 'ERROR';
+      }
+    });
+    
+    // Check database connectivity
+    const dbTest = await db.collection('newsletter').limit(1).get();
+    
+    res.json({
+      success: true,
+      timestamp: new Date().toISOString(),
+      resendStatus: testResult.data ? 'OK' : 'ERROR',
+      templates: templateStatus,
+      databaseStatus: dbTest ? 'OK' : 'ERROR',
+      rateLimiting: 'Enabled (2 seconds)',
+      message: 'Email system is operational'
+    });
+    
+  } catch (error) {
+    console.error('❌ Email health check failed:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// =============================================================================
+// 6. TEMPLATE TESTING FUNCTION (for development)
+// =============================================================================
+exports.testEmailTemplate = onRequest({
+  secrets: ['RESEND_API_KEY'],
+  invoker: 'public'
+}, async (req, res) => {
+  setCORSHeaders(res);
+  
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+  
+  const resend = new Resend(getResendApiKey());
+  
+  try {
+    const { templateName, testEmail, variables } = req.body;
+    
+    if (!templateName || !testEmail) {
+      res.status(400).json({ error: 'templateName and testEmail are required' });
+      return;
+    }
+    
+    // Load template
+    const template = loadTemplate(templateName);
+    
+    // Default test variables
+    const testVariables = {
+      EMAIL: testEmail,
+      NAME: 'Test User',
+      SUBSCRIBER_NAME: 'Test Subscriber',
+      NEWSLETTER_TITLE: 'Test Newsletter',
+      NEWSLETTER_SUBTITLE: 'This is a test newsletter',
+      NEWSLETTER_CONTENT: 'This is test content for the newsletter.',
+      UNSUBSCRIBE_DATE: new Date().toLocaleDateString(),
+      SUBMITTED: new Date().toLocaleDateString(),
+      INTEREST: 'Technology',
+      MESSAGE: 'This is a test message',
+      ...variables // Override with provided variables
+    };
+    
+    // Process template
+    const htmlContent = processTemplate(template, testVariables);
+    
+    // Send test email
+    const result = await sendEmail(
+      resend,
+      testEmail,
+      `Test Email - ${templateName}`,
+      htmlContent
+    );
+    
+    if (result.success) {
+      res.json({
+        success: true,
+        message: `Test email sent to ${testEmail}`,
+        templateName: templateName,
+        messageId: result.messageId
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: result.error
+      });
+    }
+    
+  } catch (error) {
+    console.error('❌ Error in template testing:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// =============================================================================
+// EXISTING ANALYTICS FUNCTIONS (UNCHANGED)
+// =============================================================================
+
 // Health Check Function
 exports.healthCheck = onRequest({ invoker: 'public' }, async (req, res) => {
   setCORSHeaders(res);
@@ -39,10 +577,10 @@ exports.healthCheck = onRequest({ invoker: 'public' }, async (req, res) => {
     const result = {
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      message: 'Firebase Functions with GA4 integration operational',
-      version: '3.0',
+      message: 'Firebase Functions with GA4 integration and Email system operational',
+      version: '4.0',
       propertyId: GA4_PROPERTY_ID,
-      features: ['real-time-analytics', 'ga4-integration', 'caribbean-focus', 'state-level-data'],
+      features: ['real-time-analytics', 'ga4-integration', 'caribbean-focus', 'state-level-data', 'resend-email-system'],
       cors: 'enabled'
     };
     
