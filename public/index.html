@@ -2304,7 +2304,8 @@
                 <li><a href="#technology">Technology</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><a href="#fleet-hub" class="fleet-hub-nav">Fleet Hub</a></li>
+                <li><a href="https://ashy-river-0a7bf7e03.5.azurestaticapps.net/login" class="fleet-hub-nav" target="_blank" rel="noopener noreferrer">Fleet Hub</a></li>
+
             </ul>
 
             <!-- Mobile Menu Toggle -->
@@ -2482,10 +2483,10 @@
                                         <img src="Assets/ISAC-SCOUT.png" alt="ISAC Scout interceptor vessel for sargassum redirection" class="solution-image">
                                     </div>
                                     <div class="carousel-slide">
-                                        <img src="Assets/ISAC-SCOUT.png" alt="ISAC Scout autonomous navigation system" class="solution-image">
+                                        <img src="Assets/ISAC-SCOUT2.png" alt="ISAC Scout autonomous navigation system" class="solution-image">
                                     </div>
                                     <div class="carousel-slide">
-                                        <img src="Assets/ISAC-SCOUT.png" alt="ISAC Scout fleet coordination technology" class="solution-image">
+                                        <img src="Assets/ISAC-SCOUT3.png" alt="ISAC Scout fleet coordination technology" class="solution-image">
                                     </div>
                                 </div>
                                 <button class="carousel-nav carousel-prev">‹</button>
@@ -2660,53 +2661,44 @@
         </div>
     </section>
 
-    <!-- Fleet Hub Section -->
-    <section id="fleet-hub" class="fleet-hub-section" onclick="window.open('https://ashy-river-0a7bf7e03.5.azurestaticapps.net/login', '_blank')">
-        <div class="section-container">
-            <div class="fleet-hub-container">
-                <div class="fleet-hub-grid"></div>
-                
-                <!-- Command Center Interface -->
-                <div class="command-interface">
-                    <!-- Header Terminal -->
-                    <div class="hub-header">
-                        <div class="hub-title">◆ FLEET HUB COMMAND CENTER ◆</div>
-                        <div class="hub-status">● ONLINE</div>
-                    </div>
-                    
-                    <!-- Main Display -->
-                    <div class="main-display">
-                        <div class="fleet-map">
-                            <!-- Autonomous Vessels -->
-                            <div class="vessel isac" title="ISAC - Collection Platform"></div>
-                            <div class="vessel scout" title="ISAC Scout - Interceptor"></div>
-                            <div class="vessel scout scout-2" title="ISAC Scout - Patrol"></div>
-                            
-                            <!-- Vessel Paths -->
-                            <div class="vessel-path path-1" style="--rotation: 25deg;"></div>
-                            <div class="vessel-path path-2" style="--rotation: -15deg;"></div>
-                            <div class="vessel-path path-3" style="--rotation: 45deg;"></div>
-                            
-                            <!-- Sargassum Detection Zones -->
-                            <div class="detection-zone zone-1"></div>
-                            <div class="detection-zone zone-2"></div>
-                        </div>
+   <!-- Fleet Hub Section -->
+<section id="fleet-hub" class="fleet-hub-section">
+    <div class="section-container" style="position: relative; height: 100%; padding: 0;">
+        <div class="fleet-hub-container" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+            <div class="fleet-hub-grid"></div>
+            
+            <!-- Main Display (now fits full container) -->
+            <div class="main-display" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: none; background: transparent;">
+                    <div class="fleet-map">
+                        <!-- Autonomous Vessels -->
+                        <div class="vessel isac" title="ISAC - Collection Platform"></div>
+                        <div class="vessel scout" title="ISAC Scout - Interceptor"></div>
+                        <div class="vessel scout scout-2" title="ISAC Scout - Patrol"></div>
                         
-                        <!-- Data Streams -->
-                        <div class="data-stream stream-1">LAT: 18.4655°N</div>
-                        <div class="data-stream stream-2">LON: 69.9312°W</div>
-                        <div class="data-stream stream-3">SPEED: 2.3 kts</div>
-                        <div class="data-stream stream-4">STATUS: ACTIVE</div>
+                        <!-- Vessel Paths -->
+                        <div class="vessel-path path-1" style="--rotation: 25deg;"></div>
+                        <div class="vessel-path path-2" style="--rotation: -15deg;"></div>
+                        <div class="vessel-path path-3" style="--rotation: 45deg;"></div>
+                        
+                        <!-- Sargassum Detection Zones -->
+                        <div class="detection-zone zone-1"></div>
+                        <div class="detection-zone zone-2"></div>
                     </div>
                     
-                    <!-- Control Bar -->
-                    <div class="control-bar">
-                        <button class="access-button">ACCESS FLEET HUB</button>
+                    <!-- Data Streams -->
+                    <div class="data-stream stream-1">LAT: 18.4655°N</div>
+                    <div class="data-stream stream-2">LON: 69.9312°W</div>
+                    <div class="data-stream stream-3">SPEED: 2.3 kts</div>
+                    <div class="data-stream stream-4">STATUS: ACTIVE</div>
+                    
+                    <!-- Access Button (centered and prominent) -->
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100;">
+                        <button class="access-button" style="padding: 12px 30px; font-size: 14px; white-space: nowrap;">ACCESS FLEET HUB</button>
                     </div>
                 </div>
-            </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- About Section -->
     <section id="about" class="about-section">
@@ -2719,7 +2711,7 @@
             <div class="about-content">
                 <div class="about-text">
                     <p>
-                        SARGAS.AI is a maritime technology startup developing autonomous systems to tackle the growing 
+                        SargaSolutions also known as SARGAS.AI is a maritime technology startup developing autonomous systems to tackle the growing 
                         threat of sargassum seaweed along tropical coastlines. Our cutting-edge approach combines robotics, 
                         artificial intelligence, and sustainable design principles.
                     </p>
@@ -2842,7 +2834,7 @@
         <div class="section-container">
             <div class="footer-grid">
                 <div class="footer-section">
-                    <h4>SARGAS.AI</h4>
+                    <h4>SargaSolutions</h4>
                     <p style="color: var(--text-gray); font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
                         Autonomous maritime technology for sargassum management, marine operations, and water-based mobility solutions.
                     </p>

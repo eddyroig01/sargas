@@ -1,15 +1,7 @@
-// Firebase Functions Gen 2 with HTTP endpoints and CORS - WITH STATE SUPPORT + EMAIL
+// Firebase Functions Gen 2 with HTTP endpoints and CORS - WITH STATE SUPPORT
 const { onRequest } = require('firebase-functions/v2/https');
-const { onDocumentCreated, onDocumentUpdated } = require('firebase-functions/v2/firestore');
 const { setGlobalOptions } = require('firebase-functions/v2');
-const { defineSecret } = require('firebase-functions/params');
 const { BetaAnalyticsDataClient } = require('@google-analytics/data');
-
-// ADDED: Email functionality imports
-const admin = require('firebase-admin');
-const nodemailer = require('nodemailer');
-const path = require('path');
-const fs = require('fs').promises;
 
 // Set global options for all functions
 setGlobalOptions({
@@ -23,19 +15,8 @@ const analyticsDataClient = new BetaAnalyticsDataClient({
   keyFilename: './service-account-key.json',
 });
 
-// Initialize Firebase Admin (ADDED)
-if (!admin.apps.length) {
-  admin.initializeApp();
-}
-
-// Use the SAME database connection pattern as your successful client-side code
-const db = admin.firestore();
 // Your GA4 Property ID
 const GA4_PROPERTY_ID = '495789768';
-
-// Email Secrets (ADDED)
-const gmailEmail = defineSecret('GMAIL_EMAIL');
-const gmailPassword = defineSecret('GMAIL_PASSWORD');
 
 // CORS helper function
 function setCORSHeaders(res) {
@@ -44,36 +25,6 @@ function setCORSHeaders(res) {
   res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.set('Access-Control-Max-Age', '3600');
 }
-
-// ==================== EMAIL UTILITY FUNCTIONS (ADDED) ====================
-
-async function createEmailTransporter(emailSecret, passwordSecret) {
-  return nodemailer.createTransporter({
-    service: 'gmail',
-    auth: {
-      user: emailSecret.value(),
-      pass: passwordSecret.value(),
-    },
-    pool: true,
-    maxConnections: 1,
-    rateDelta: 2000,
-    rateLimit: 1,
-  });
-}
-
-async function loadEmailTemplate(templateName) {
-  try {
-    const templatePath = path.join(__dirname, 'Templates', templateName);
-    console.log(`📄 Loading template from: ${templatePath}`);
-    const template = await fs.readFile(templatePath, 'utf8');
-    return template;
-  } catch (error) {
-    console.error(`❌ Template loading error: ${error.message}`);
-    throw error;
-  }
-}
-
-// ==================== YOUR ORIGINAL ANALYTICS FUNCTIONS ====================
 
 // Health Check Function
 exports.healthCheck = onRequest({ invoker: 'public' }, async (req, res) => {
@@ -91,7 +42,7 @@ exports.healthCheck = onRequest({ invoker: 'public' }, async (req, res) => {
       message: 'Firebase Functions with GA4 integration operational',
       version: '3.0',
       propertyId: GA4_PROPERTY_ID,
-      features: ['real-time-analytics', 'ga4-integration', 'caribbean-focus', 'state-level-data', 'email-automation'],
+      features: ['real-time-analytics', 'ga4-integration', 'caribbean-focus', 'state-level-data'],
       cors: 'enabled'
     };
     
@@ -189,7 +140,7 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
       ],
     });
 
-    // Get country AND region data for state-level breakdown
+    // *** NEW: Get country AND region data for state-level breakdown ***
     console.log('📍 Requesting country and region data from GA4...');
     const [locationResponse] = await analyticsDataClient.runReport({
       property: `properties/${GA4_PROPERTY_ID}`,
@@ -201,7 +152,7 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
       ],
       dimensions: [
         { name: 'country' },
-        { name: 'region' }  // This gives us states/provinces
+        { name: 'region' }  // *** NEW: This gives us states/provinces ***
       ],
       metrics: [
         { name: 'sessions' },
@@ -268,7 +219,7 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
     const hasRealTimeData = realTimeUsers > 0;
     const hasHistoricalData = totalSessions > 0 || totalUsers > 0;
 
-    // Better fallback for state data
+    // *** IMPROVED: Better fallback for state data ***
     let finalLocations = locations.slice(0, 20); // Show top 20 locations
     
     if (finalLocations.length === 0 && hasRealTimeData) {
@@ -304,7 +255,7 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
         bounceRate: hasHistoricalData ? Math.round(bounceRate * 100) : (hasRealTimeData ? 50 : 0),
         users: hasHistoricalData ? totalUsers : (hasRealTimeData ? realTimeUsers : 0)
       },
-      countries: finalLocations, // Now includes both countries AND states
+      countries: finalLocations, // *** NEW: Now includes both countries AND states ***
       stateData: {
         totalStates: locations.filter(l => l.hasStateData).length,
         stateBreakdown: locations.filter(l => l.hasStateData).slice(0, 10), // Top 10 states
@@ -430,281 +381,5 @@ exports.getVisitorTrends = onRequest({ invoker: 'public' }, async (req, res) => 
   } catch (error) {
     console.error('Visitor trends error:', error);
     res.status(500).json({ error: `Failed to get visitor trends: ${error.message}` });
-  }
-});
-
-// ==================== EMAIL FUNCTIONS (ADDED) ====================
-
-// 1. AUTO-SEND WELCOME EMAIL ON NEWSLETTER SIGNUP
-exports.sendNewsletterWelcome = onDocumentCreated({
-  document: 'newsletter/{docId}',
-  region: 'us-central1',
-  database: 'sargasolutions-db',
-  secrets: [gmailEmail, gmailPassword],
-}, async (event) => {
-  try {
-    console.log('📧 Newsletter welcome trigger activated');
-    
-    const subscriberData = event.data.data();
-    const { email, name = 'Subscriber' } = subscriberData;
-    
-    if (!email) {
-      console.error('❌ No email found in subscriber data');
-      return;
-    }
-
-    console.log(`📧 Sending welcome email to: ${email}`);
-    
-    const transporter = await createEmailTransporter(gmailEmail, gmailPassword);
-    const template = await loadEmailTemplate('newsletter-welcome.html');
-    
-    const personalizedTemplate = template
-      .replace(/{{SUBSCRIBER_NAME}}/g, name)
-      .replace(/{{SUBSCRIBER_EMAIL}}/g, email);
-
-    const mailOptions = {
-      from: `"SARGAS.AI" <${gmailEmail.value()}>`,
-      to: email,
-      subject: '🚀 Welcome to SARGAS.AI Newsletter!',
-      html: personalizedTemplate,
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log(`✅ Welcome email sent successfully to ${email}`);
-    
-  } catch (error) {
-    console.error('❌ Newsletter welcome email error:', error);
-  }
-});
-
-// 2. AUTO-SEND CONTACT CONFIRMATION
-exports.sendContactConfirmation = onDocumentCreated({
-  document: 'contacts/{docId}',
-  region: 'us-central1',
-  database: 'sargasolutions-db',
-  secrets: [gmailEmail, gmailPassword],
-}, async (event) => {
-  try {
-    console.log('📧 Contact confirmation trigger activated');
-    
-    const contactData = event.data.data();
-    const { email, name = 'Friend' } = contactData;
-    
-    if (!email) {
-      console.error('❌ No email found in contact data');
-      return;
-    }
-
-    console.log(`📧 Sending contact confirmation to: ${email}`);
-    
-    const transporter = await createEmailTransporter(gmailEmail, gmailPassword);
-    const template = await loadEmailTemplate('contact-confirmation.html');
-    
-    const personalizedTemplate = template
-      .replace(/{{CONTACT_NAME}}/g, name)
-      .replace(/{{CONTACT_EMAIL}}/g, email);
-
-    const mailOptions = {
-      from: `"SARGAS.AI" <${gmailEmail.value()}>`,
-      to: email,
-      subject: '✅ We received your message - SARGAS.AI',
-      html: personalizedTemplate,
-    };
-
-    await transporter.sendMail(mailOptions);
-    console.log(`✅ Contact confirmation sent successfully to ${email}`);
-    
-  } catch (error) {
-    console.error('❌ Contact confirmation email error:', error);
-  }
-});
-
-// 3. MANUAL NEWSLETTER BROADCAST (Admin Dashboard)
-exports.sendNewsletterBroadcast = onRequest({ 
-  cors: true,
-  invoker: 'public',
-  region: 'us-central1',
-  secrets: [gmailEmail, gmailPassword],
-}, async (req, res) => {
-  setCORSHeaders(res);
-  
-  if (req.method === 'OPTIONS') {
-    res.status(200).send('');
-    return;
-  }
-
-  if (req.method === 'GET') {
-    res.json({ 
-      status: 'Newsletter broadcast function is running',
-      timestamp: new Date().toISOString(),
-      method: 'POST required'
-    });
-    return;
-  }
-
-  if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
-  }
-
-  try {
-    console.log('📧 Starting newsletter broadcast...');
-    
-    // Get newsletter data from request
-    const { title, subtitle, content, badge, featuredTitle, featuredContent, ctaText, ctaLink } = req.body;
-    
-    if (!title || !content) {
-      res.status(400).json({ 
-        error: 'Missing required fields', 
-        required: ['title', 'content'] 
-      });
-      return;
-    }
-
-    console.log('📊 Querying for active subscribers...');
-    
-    // Use the SAME query pattern as your successful client-side writes
-    const subscribersSnapshot = await db.collection('newsletter').get();
-    
-    if (subscribersSnapshot.empty) {
-      console.log('❌ No documents found in newsletter collection');
-      res.json({ 
-        success: false, 
-        message: 'No subscribers found in collection',
-        sent: 0 
-      });
-      return;
-    }
-    
-    console.log(`📊 Found ${subscribersSnapshot.size} total documents`);
-    
-    // Filter for active subscribers
-    const activeSubscribers = [];
-    subscribersSnapshot.forEach(doc => {
-      const data = doc.data();
-      console.log(`📋 Subscriber: ${data.email}, unsubscribed: ${data.unsubscribed}`);
-      
-      if (!data.unsubscribed && data.email) {
-        activeSubscribers.push({ id: doc.id, ...data });
-      }
-    });
-    
-    console.log(`✅ Found ${activeSubscribers.length} active subscribers`);
-    
-    if (activeSubscribers.length === 0) {
-      res.json({ 
-        success: false, 
-        message: 'No active subscribers found',
-        sent: 0 
-      });
-      return;
-    }
-
-    // Load email template and send emails
-    const template = await loadEmailTemplate('newsletter-broadcast.html');
-    const transporter = await createEmailTransporter(gmailEmail, gmailPassword);
-    
-    let successCount = 0;
-    let errorCount = 0;
-    
-    console.log(`📧 Starting to send ${activeSubscribers.length} emails...`);
-    
-    // Send emails with rate limiting
-    for (const subscriber of activeSubscribers) {
-      try {
-        const personalizedTemplate = template
-          .replace(/{{SUBSCRIBER_NAME}}/g, subscriber.name || 'Subscriber')
-          .replace(/{{NEWSLETTER_TITLE}}/g, title)
-          .replace(/{{NEWSLETTER_SUBTITLE}}/g, subtitle || '')
-          .replace(/{{NEWSLETTER_CONTENT}}/g, content)
-          .replace(/{{NEWSLETTER_BADGE}}/g, badge || 'Newsletter Update')
-          .replace(/{{FEATURED_TITLE}}/g, featuredTitle || '')
-          .replace(/{{FEATURED_CONTENT}}/g, featuredContent || '')
-          .replace(/{{CTA_TEXT}}/g, ctaText || '')
-          .replace(/{{CTA_LINK}}/g, ctaLink || '#');
-
-        const mailOptions = {
-          from: `"SARGAS.AI Newsletter" <${gmailEmail.value()}>`,
-          to: subscriber.email,
-          subject: `📧 ${title} - SARGAS.AI`,
-          html: personalizedTemplate,
-        };
-
-        await transporter.sendMail(mailOptions);
-        successCount++;
-        console.log(`✅ Newsletter sent to ${subscriber.email} (${successCount}/${activeSubscribers.length})`);
-        
-        // Rate limiting: 2 seconds between emails
-        if (successCount < activeSubscribers.length) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
-        }
-        
-      } catch (emailError) {
-        errorCount++;
-        console.error(`❌ Failed to send to ${subscriber.email}:`, emailError.message);
-      }
-    }
-
-    console.log(`📊 Newsletter broadcast completed: ${successCount} sent, ${errorCount} failed`);
-    
-    res.json({
-      success: true,
-      message: 'Newsletter broadcast completed',
-      sent: successCount,
-      failed: errorCount,
-      total: activeSubscribers.length
-    });
-
-  } catch (error) {
-    console.error('❌ Newsletter broadcast error:', error);
-    res.status(500).json({ 
-      error: 'Failed to send newsletter broadcast', 
-      details: error.message 
-    });
-  }
-});
-
-// 4. EMAIL HEALTH CHECK
-exports.emailHealthCheck = onRequest({
-  cors: true,
-  invoker: 'public',
-  region: 'us-central1',
-  secrets: [gmailEmail, gmailPassword],
-}, async (req, res) => {
-  setCORSHeaders(res);
-  
-  if (req.method === 'OPTIONS') {
-    res.status(200).send('');
-    return;
-  }
-
-  try {
-    console.log('🔍 Email health check starting...');
-    
-    const transporter = await createEmailTransporter(gmailEmail, gmailPassword);
-    await transporter.verify();
-    
-    const templatesPath = path.join(__dirname, 'Templates');
-    const templateFiles = await fs.readdir(templatesPath);
-    
-    res.json({
-      status: 'healthy',
-      timestamp: new Date().toISOString(),
-      emailSystem: 'gmail-nodemailer',
-      templatesPath: templatesPath,
-      credentials: {
-        email: gmailEmail.value(),
-        passwordConfigured: !!gmailPassword.value()
-      },
-      templates: templateFiles
-    });
-    
-  } catch (error) {
-    console.error('❌ Email health check failed:', error);
-    res.status(500).json({
-      status: 'unhealthy',
-      error: error.message,
-      timestamp: new Date().toISOString()
-    });
   }
 });
