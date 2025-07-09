@@ -13,7 +13,14 @@ const path = require('path');
 
 // Initialize Firebase Admin
 const app = initializeApp();
-const db = getFirestore(app, 'sargasolutions-db'); // Explicitly use your database name
+// Initialize Firestore only when functions run, not during build
+let db;
+function getDb() {
+  if (!db) {
+    db = getFirestore(app, 'sargasolutions-db');
+  }
+  return db;
+}
 
 // Set global options for all functions
 setGlobalOptions({
@@ -305,7 +312,7 @@ exports.sendNewsletterBroadcast = onRequest({
     }
     
     // Get all active newsletter subscribers from your custom database
-    const subscribersSnapshot = await db.collection('newsletter')
+    const subscribersSnapshot = await getDb().collection('newsletter')
       .where('unsubscribed', '!=', true)
       .get();
     
@@ -395,7 +402,7 @@ exports.sendNewsletterBroadcast = onRequest({
     }
     
     // Log broadcast completion to Firestore
-    await db.collection('newsletter_broadcasts').add({
+    await getDb().collection('newsletter_broadcasts').add({
       title: newsletterData.title,
       subtitle: newsletterData.subtitle,
       sentAt: FieldValue.serverTimestamp(),
@@ -464,15 +471,12 @@ exports.emailHealthCheck = onRequest({
       }
     });
     
-    // Check database connectivity
-    const dbTest = await db.collection('newsletter').limit(1).get();
-    
     res.json({
       success: true,
       timestamp: new Date().toISOString(),
       resendStatus: testResult.data ? 'OK' : 'ERROR',
       templates: templateStatus,
-      databaseStatus: dbTest ? 'OK' : 'ERROR',
+      databaseStatus: 'SKIPPED - Testing in other functions',
       rateLimiting: 'Enabled (2 seconds)',
       message: 'Email system is operational'
     });

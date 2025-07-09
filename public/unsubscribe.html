@@ -518,7 +518,29 @@
                     unsubscribedFrom: window.location.href
                 });
                 
-                console.log('User unsubscribed successfully');
+                console.log('User unsubscribed successfully from Firestore');
+                
+                // *** NEW: Send confirmation email ***
+                try {
+                    console.log('Sending unsubscribe confirmation email...');
+                    const confirmationResponse = await fetch('https://us-central1-sargasolutions-webbpage.cloudfunctions.net/sendUnsubscribeConfirmation', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email: email })
+                    });
+                    
+                    if (confirmationResponse.ok) {
+                        const confirmationResult = await confirmationResponse.json();
+                        console.log('✅ Confirmation email sent successfully:', confirmationResult);
+                    } else {
+                        console.warn('⚠️ Confirmation email failed, but unsubscribe was successful');
+                    }
+                } catch (emailError) {
+                    console.warn('⚠️ Confirmation email error, but unsubscribe was successful:', emailError);
+                    // Don't show error to user since unsubscribe itself succeeded
+                }
                 
                 // Show success state
                 formState.style.display = 'none';
