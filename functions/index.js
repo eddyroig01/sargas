@@ -13,11 +13,11 @@ const path = require('path');
 
 // Initialize Firebase Admin
 const app = initializeApp();
-// Initialize Firestore only when functions run, not during build
+// Initialize Firestore to use default database
 let db;
 function getDb() {
   if (!db) {
-    db = getFirestore(app, 'sargasolutions-db');
+    db = getFirestore(app); // Use default database, not sargasolutions-db
   }
   return db;
 }
