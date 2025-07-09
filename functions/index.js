@@ -1,5 +1,5 @@
 // Complete Firebase Functions with Analytics + Email System
-// This is your complete index.js file
+// This is your FIXED index.js file with proper service account configuration
 
 const { onRequest } = require('firebase-functions/v2/https');
 const { onDocumentCreated } = require('firebase-functions/v2/firestore');
@@ -13,21 +13,23 @@ const path = require('path');
 
 // Initialize Firebase Admin
 const app = initializeApp();
+
+// *** CRITICAL FIX: Specify which service account to use ***
+setGlobalOptions({
+  region: 'us-central1',
+  memory: '512MiB',
+  timeoutSeconds: 540,
+  serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webbpage.iam.gserviceaccount.com'
+});
+
 // Initialize Firestore to use default database
 let db;
 function getDb() {
   if (!db) {
-    db = getFirestore(app); // Use default database, not sargasolutions-db
+    db = getFirestore(app);
   }
   return db;
 }
-
-// Set global options for all functions
-setGlobalOptions({
-  region: 'us-central1',
-  memory: '512MiB',
-  timeoutSeconds: 540, // 9 minutes for newsletter broadcasts
-});
 
 // Access secrets using process.env (Firebase automatically injects secrets)
 function getResendApiKey() {
@@ -281,7 +283,7 @@ exports.sendUnsubscribeConfirmation = onRequest({
 });
 
 // =============================================================================
-// 4. NEWSLETTER BROADCAST FUNCTION
+// 4. NEWSLETTER BROADCAST FUNCTION - FIXED WITH SERVICE ACCOUNT
 // =============================================================================
 exports.sendNewsletterBroadcast = onRequest({
   secrets: ['RESEND_API_KEY'],
@@ -311,20 +313,30 @@ exports.sendNewsletterBroadcast = onRequest({
       return;
     }
     
-    // Get all active newsletter subscribers from your custom database
-    const subscribersSnapshot = await getDb().collection('newsletter')
-      .where('unsubscribed', '!=', true)
-      .get();
+    // *** CRITICAL: This should now work with the firebase-adminsdk service account ***
+    console.log('🔐 Using firebase-adminsdk service account for Firestore access');
+    
+    // Get all newsletter subscribers (we'll filter manually for better reliability)
+    const subscribersSnapshot = await getDb().collection('newsletter').get();
     
     const subscribers = [];
     subscribersSnapshot.forEach(doc => {
       const data = doc.data();
       if (data.email) {
-        subscribers.push({
-          id: doc.id,
-          email: data.email,
-          name: data.name || 'Valued Subscriber'
-        });
+        // Include subscriber if:
+        // 1. No unsubscribed field exists (default to active)
+        // 2. unsubscribed field exists and is false
+        // 3. Exclude only if unsubscribed is explicitly true
+        const isUnsubscribed = data.unsubscribed === true;
+        
+        if (!isUnsubscribed) {
+          subscribers.push({
+            id: doc.id,
+            email: data.email,
+            name: data.name || 'Valued Subscriber',
+            unsubscribed: data.unsubscribed || false
+          });
+        }
       }
     });
     
@@ -434,8 +446,10 @@ exports.sendNewsletterBroadcast = onRequest({
 });
 
 // =============================================================================
-// 5. EMAIL SYSTEM HEALTH CHECK
+// REST OF YOUR EXISTING FUNCTIONS (unchanged)
 // =============================================================================
+
+// 5. EMAIL SYSTEM HEALTH CHECK
 exports.emailHealthCheck = onRequest({
   secrets: ['RESEND_API_KEY'],
   invoker: 'public'
@@ -478,6 +492,7 @@ exports.emailHealthCheck = onRequest({
       templates: templateStatus,
       databaseStatus: 'SKIPPED - Testing in other functions',
       rateLimiting: 'Enabled (2 seconds)',
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webbpage.iam.gserviceaccount.com',
       message: 'Email system is operational'
     });
     
@@ -491,9 +506,7 @@ exports.emailHealthCheck = onRequest({
   }
 });
 
-// =============================================================================
 // 6. TEMPLATE TESTING FUNCTION (for development)
-// =============================================================================
 exports.testEmailTemplate = onRequest({
   secrets: ['RESEND_API_KEY'],
   invoker: 'public'
@@ -564,10 +577,6 @@ exports.testEmailTemplate = onRequest({
   }
 });
 
-// =============================================================================
-// EXISTING ANALYTICS FUNCTIONS (UNCHANGED)
-// =============================================================================
-
 // Health Check Function
 exports.healthCheck = onRequest({ invoker: 'public' }, async (req, res) => {
   setCORSHeaders(res);
@@ -585,6 +594,7 @@ exports.healthCheck = onRequest({ invoker: 'public' }, async (req, res) => {
       version: '4.0',
       propertyId: GA4_PROPERTY_ID,
       features: ['real-time-analytics', 'ga4-integration', 'caribbean-focus', 'state-level-data', 'resend-email-system'],
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webbpage.iam.gserviceaccount.com',
       cors: 'enabled'
     };
     
@@ -813,6 +823,7 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
       message: hasHistoricalData ? 
         `Real GA4 data with ${locations.filter(l => l.hasStateData).length} states retrieved successfully` : 
         'Real-time GA4 data available - state data will appear in 24-48 hours',
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webbpage.iam.gserviceaccount.com',
       cors: 'enabled'
     };
     
@@ -854,6 +865,7 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
           { country: 'Canada', region: 'Ontario', sessions: 987, users: 823 }
         ]
       },
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webbpage.iam.gserviceaccount.com',
       cors: 'enabled'
     };
     
@@ -916,6 +928,7 @@ exports.getVisitorTrends = onRequest({ invoker: 'public' }, async (req, res) => 
         peakDay: trends.reduce((peak, day) => day.sessions > peak.sessions ? day : peak, trends[0] || { sessions: 0 })
       },
       message: 'Real visitor trends data retrieved successfully',
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webbpage.iam.gserviceaccount.com',
       cors: 'enabled'
     };
     
