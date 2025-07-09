@@ -464,7 +464,7 @@
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app, 'sargasolutions-db');
+        const db = getFirestore(app);
 
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
