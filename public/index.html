@@ -2746,10 +2746,10 @@
                 <p style="color: var(--text-gray); margin-bottom: 20px;">
                     Get the latest updates on autonomous technology, sargassum research, and our mission to protect coastal ecosystems.
                 </p>
-                <div class="newsletter-form">
-                    <input type="email" class="newsletter-input" placeholder="Enter your email address">
-                    <button class="newsletter-button">Subscribe</button>
-                </div>
+                <form class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+                <button type="submit" class="newsletter-button">Subscribe</button>
+                </form>
                 <p style="font-size: 12px; color: var(--text-dark-gray); margin-top: 15px;">
                     We respect your privacy. Unsubscribe at any time.
                 </p>
@@ -3128,7 +3128,7 @@
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app, 'sargasolutions-db');
+        const db = getFirestore(app);
 
         // Contact form handler
         document.addEventListener('DOMContentLoaded', function() {
