@@ -1416,7 +1416,7 @@
                         <div id="newsletterSuccessMessage" class="success-message" style="display: none;"></div>
                         <div id="newsletterErrorMessage" class="error-message" style="display: none;"></div>
                         
-                        <!-- Live Email Template with Editable Fields -->
+                        <!-- Live Email Template with Better Visual Helpers -->
                         <div class="live-email-template">
                             <!-- Email Header -->
                             <div class="email-header">
@@ -1433,42 +1433,70 @@
                                 
                                 <!-- Newsletter Badge -->
                                 <div class="email-badge">
-                                    <input class="editable-field" id="newsletterBadge" placeholder="◆ NEWSLETTER UPDATE ◆" value="◆ NEWSLETTER UPDATE ◆" style="background: transparent; border: none; color: inherit; font-size: inherit; font-weight: inherit; text-transform: uppercase; letter-spacing: 2px;">
+                                    <input class="editable-field" id="newsletterBadge" placeholder="✨ Click here to edit badge text ✨" value="◆ NEWSLETTER UPDATE ◆" style="background: transparent; border: none; color: inherit; font-size: inherit; font-weight: inherit; text-transform: uppercase; letter-spacing: 2px; text-align: center; width: 100%;">
                                 </div>
                                 
                                 <!-- Newsletter Title -->
                                 <h1 class="email-title">
-                                    <input class="editable-field" id="newsletterTitle" placeholder="Your Newsletter Title" style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit; font-weight: inherit; text-transform: uppercase;">
+                                    <input class="editable-field" id="newsletterTitle" placeholder="🎯 ENTER YOUR NEWSLETTER TITLE HERE 🎯" style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit; font-weight: inherit; text-transform: uppercase; text-align: center; width: 100%;">
                                 </h1>
                                 
                                 <!-- Newsletter Subtitle -->
                                 <p class="email-subtitle">
-                                    <input class="editable-field" id="newsletterSubtitle" placeholder="Your newsletter subtitle will appear here" style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit;">
+                                    <input class="editable-field" id="newsletterSubtitle" placeholder="💡 Add a compelling subtitle that describes your newsletter..." style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit; text-align: center; width: 100%;">
                                 </p>
                                 
                                 <!-- Main Newsletter Content -->
                                 <div class="email-content">
-                                    <textarea class="editable-field editable-textarea" id="newsletterContent" placeholder="Write your newsletter content here. You can use HTML formatting like <strong>bold</strong>, <em>italic</em>, etc." style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit; white-space: pre-wrap;"></textarea>
+                                    <textarea class="editable-field editable-textarea" id="newsletterContent" placeholder="📝 MAIN CONTENT - Write your newsletter content here...
+
+You can include:
+• Company updates and news
+• Product announcements
+• Industry insights
+• Technical developments
+• Partnership news
+
+You can use HTML formatting like:
+<strong>bold text</strong>
+<em>italic text</em>
+<br> for line breaks
+
+This is the main body of your newsletter that subscribers will read." style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit; white-space: pre-wrap; min-height: 150px; width: 100%;"></textarea>
                                 </div>
                                 
-                                <!-- Optional Featured Update -->
+                                <!-- Featured Update Section -->
                                 <div style="background: #2a2a2a; border: 1px solid #00ff8844; padding: 25px; margin: 30px 0; position: relative; overflow: hidden;">
                                     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, #00ff88, #00cc6a);"></div>
                                     <div style="font-family: 'Courier New', monospace; color: #00ff88; font-size: 18px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px;">
-                                        <input class="editable-field" id="featuredTitle" placeholder="Featured Update Title (Optional)" style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit; font-weight: inherit; text-transform: uppercase;">
+                                        <input class="editable-field" id="featuredTitle" placeholder="🌟 FEATURED UPDATE TITLE (Optional) - e.g., 'Product Launch', 'Major Partnership', etc." style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit; font-weight: inherit; text-transform: uppercase; width: 100%;">
                                     </div>
                                     <div style="color: #b0b0b0; font-size: 16px; line-height: 1.6;">
-                                        <textarea class="editable-field" id="featuredContent" placeholder="Special announcement or featured content (Optional)" style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit; min-height: 80px;"></textarea>
+                                        <textarea class="editable-field" id="featuredContent" placeholder="📢 FEATURED CONTENT (Optional) - Highlight something special:
+
+• New product features
+• Major announcements
+• Special offers
+• Important updates
+• Company milestones
+
+This section stands out with a special design to draw attention to key information." style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit; min-height: 100px; width: 100%;"></textarea>
                                     </div>
                                 </div>
                                 
-                                <!-- CTA Button -->
-                                <div style="text-align: center; margin: 40px 0;">
+                                <!-- Call-to-Action Section -->
+                                <div style="text-align: center; margin: 40px 0; padding: 20px; background: rgba(0, 255, 136, 0.05); border: 1px dashed rgba(0, 255, 136, 0.3); border-radius: 8px;">
+                                    <div style="color: #00ff88; font-size: 14px; font-weight: 600; margin-bottom: 15px; text-transform: uppercase;">
+                                        🎯 CALL-TO-ACTION SECTION (Optional)
+                                    </div>
                                     <div style="margin-bottom: 15px;">
-                                        <input class="editable-field" id="ctaText" placeholder="Call-to-Action Button Text (Optional)" style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: 14px; text-align: center; width: 250px;">
+                                        <input class="editable-field" id="ctaText" placeholder="💫 Button text - e.g., 'Learn More', 'Visit Website', 'Contact Us', etc." style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: 14px; text-align: center; width: 100%; max-width: 300px;">
                                     </div>
                                     <div>
-                                        <input class="editable-field" id="ctaLink" placeholder="https://sargas.ai/..." style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: 12px; text-align: center; width: 300px;">
+                                        <input class="editable-field" id="ctaLink" placeholder="🔗 Button URL - e.g., https://sargas.ai/products or https://sargas.ai/contact" style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: 12px; text-align: center; width: 100%; max-width: 400px;">
+                                    </div>
+                                    <div style="font-size: 11px; color: #666; margin-top: 10px;">
+                                        💡 Leave empty if you don't want a call-to-action button
                                     </div>
                                 </div>
                             </div>
@@ -1807,7 +1835,7 @@
                     updateProgress(100, `✅ Newsletter sent successfully!`, `Sent to ${result.sent} active subscribers. ${result.errors || 0} failed.`);
                     showNewsletterSuccess(`Newsletter sent successfully to ${result.sent} active subscribers!`);
                     
-                    // Clear form fields
+                    // Clear form fields after successful send
                     document.getElementById('newsletterTitle').value = '';
                     document.getElementById('newsletterSubtitle').value = '';
                     document.getElementById('newsletterContent').value = '';
@@ -1816,9 +1844,10 @@
                     document.getElementById('ctaText').value = '';
                     document.getElementById('ctaLink').value = '';
                     
+                    // Auto-close modal after 3 seconds
                     setTimeout(() => {
-                        document.getElementById('closeModalBtn').style.display = 'block';
-                    }, 2000);
+                        closeProgressModal();
+                    }, 3000);
                 } else {
                     throw new Error(result.message || result.error || 'Failed to send newsletter');
                 }
@@ -1828,6 +1857,7 @@
                 updateProgress(0, '❌ Failed to send newsletter', error.message);
                 showNewsletterError(`Failed to send newsletter: ${error.message}`);
                 
+                // Show close button after error
                 setTimeout(() => {
                     document.getElementById('closeModalBtn').style.display = 'block';
                 }, 2000);
