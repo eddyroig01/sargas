@@ -356,7 +356,7 @@
             display: block;
         }
 
-        /* Stats Cards */
+        /* Enhanced Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -383,6 +383,10 @@
             background: linear-gradient(90deg, var(--accent-green), var(--secondary-green));
         }
         
+        .stat-card.unsubscribed::before {
+            background: linear-gradient(90deg, var(--danger-red), #ff3742);
+        }
+        
         .stat-card:hover {
             border-color: var(--accent-green);
             box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
@@ -396,6 +400,10 @@
             margin-bottom: 8px;
         }
         
+        .stat-card.unsubscribed .stat-number {
+            color: var(--danger-red);
+        }
+        
         .stat-label {
             color: var(--text-gray);
             font-size: 14px;
@@ -403,22 +411,23 @@
             letter-spacing: 0.5px;
         }
 
-        /* Newsletter Broadcast Section */
+        /* Newsletter Broadcast Section - REDESIGNED */
         .newsletter-broadcast-container {
             display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 40px;
+            grid-template-columns: 1fr;
+            gap: 0;
             margin-bottom: 40px;
         }
         
-        .newsletter-form-container {
+        .newsletter-email-container {
             background: var(--tech-gray);
             border: 1px solid var(--border-green);
-            padding: 30px;
+            padding: 0;
             position: relative;
+            overflow: hidden;
         }
         
-        .newsletter-form-container::before {
+        .newsletter-email-container::before {
             content: '';
             position: absolute;
             top: 0;
@@ -428,16 +437,16 @@
             background: linear-gradient(90deg, var(--accent-green), var(--secondary-green));
         }
         
-        .newsletter-form-header {
+        .newsletter-email-header {
+            background: var(--primary-black);
+            padding: 20px;
+            border-bottom: 2px solid var(--border-green);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-green);
         }
         
-        .newsletter-form-title {
+        .newsletter-email-title {
             font-family: 'Orbitron', monospace;
             color: var(--accent-green);
             font-size: 18px;
@@ -445,55 +454,165 @@
             text-transform: uppercase;
         }
         
-        .newsletter-preview-container {
-            background: var(--tech-gray);
-            border: 1px solid var(--border-green);
-            padding: 25px;
-            max-height: 600px;
-            overflow-y: auto;
+        .send-newsletter-btn {
+            background: linear-gradient(45deg, var(--accent-green), var(--secondary-green));
+            border: none;
+            color: var(--primary-black);
+            padding: 12px 25px;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 100%, 8px 100%);
         }
         
-        .newsletter-preview-header {
-            color: var(--accent-green);
-            font-weight: 700;
-            font-size: 14px;
+        .send-newsletter-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+        }
+        
+        .send-newsletter-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Live Email Template */
+        .live-email-template {
+            background: #0a0a0a;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .email-header {
+            background: rgba(10, 10, 10, 0.95);
+            border-bottom: 2px solid #00ff8844;
+            padding: 30px 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .email-logo {
+            font-family: 'Courier New', monospace;
+            font-size: 28px;
+            font-weight: bold;
+            color: #00ff88;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .email-tagline {
+            color: #b0b0b0;
+            font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 20px;
-            text-align: center;
-            border-bottom: 1px solid var(--border-green);
-            padding-bottom: 10px;
+            margin-top: 5px;
         }
-        
-        .preview-content {
-            background: var(--primary-black);
-            border: 1px solid var(--border-green);
-            padding: 20px;
-            border-radius: 4px;
-            font-size: 14px;
-            line-height: 1.6;
+
+        .email-main-content {
+            padding: 50px 40px;
+            position: relative;
         }
-        
-        .preview-title {
-            font-family: 'Orbitron', monospace;
-            color: var(--accent-green);
-            font-size: 20px;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-        
-        .preview-subtitle {
-            color: var(--text-gray);
+
+        .email-greeting {
+            color: #b0b0b0;
             font-size: 16px;
             margin-bottom: 20px;
         }
-        
-        .preview-text {
-            color: var(--text-white);
-            white-space: pre-wrap;
+
+        .greeting-name {
+            color: #00ff88;
+            font-weight: bold;
         }
-        
+
+        .email-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: #0a0a0a;
+            padding: 8px 20px;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            clip-path: polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+        }
+
+        .email-title {
+            font-family: 'Courier New', monospace;
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            line-height: 1.1;
+        }
+
+        .email-subtitle {
+            color: #b0b0b0;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .email-content {
+            color: #b0b0b0;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .email-footer {
+            background: #1a1a1a;
+            border-top: 1px solid #00ff8844;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .footer-content {
+            color: #666666;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* Editable Fields */
+        .editable-field {
+            background: transparent;
+            border: 2px dashed rgba(0, 255, 136, 0.5);
+            padding: 8px;
+            color: inherit;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            width: 100%;
+            min-height: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .editable-field:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .editable-field::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+        }
+
+        .editable-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
         /* Progress Modal */
         .modal-overlay {
             position: fixed;
@@ -990,6 +1109,24 @@
             font-size: 12px;
         }
 
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--accent-green);
+        }
+
+        .status-unsubscribed {
+            background: rgba(255, 71, 87, 0.2);
+            color: var(--danger-red);
+        }
+
         /* Loading States */
         .loading {
             display: flex;
@@ -1061,6 +1198,22 @@
             
             .search-input {
                 width: 100%;
+            }
+
+            .email-main-content {
+                padding: 30px 20px;
+            }
+
+            .email-header {
+                padding: 20px;
+            }
+
+            .email-logo {
+                font-size: 24px;
+            }
+
+            .email-title {
+                font-size: 24px;
             }
         }
     </style>
@@ -1154,15 +1307,23 @@
             <p class="dashboard-subtitle">Monitor website activity, manage contacts, and track analytics</p>
         </div>
 
-        <!-- Top Stats -->
+        <!-- Enhanced Stats with Unsubscriber Tracking -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-number" id="totalContacts">0</div>
                 <div class="stat-label">Total Contacts</div>
             </div>
             <div class="stat-card">
+                <div class="stat-number" id="activeSubscribers">0</div>
+                <div class="stat-label">Active Subscribers</div>
+            </div>
+            <div class="stat-card unsubscribed">
+                <div class="stat-number" id="unsubscribedCount">0</div>
+                <div class="stat-label">Unsubscribed</div>
+            </div>
+            <div class="stat-card">
                 <div class="stat-number" id="totalNewsletter">0</div>
-                <div class="stat-label">Newsletter Subscribers</div>
+                <div class="stat-label">Total Newsletter</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="totalVisitors">0</div>
@@ -1230,7 +1391,9 @@
                                 <tr>
                                     <th>Email</th>
                                     <th>Source</th>
+                                    <th>Status</th>
                                     <th>Date Subscribed</th>
+                                    <th>Unsubscribed Date</th>
                                 </tr>
                             </thead>
                             <tbody id="newsletterTableBody">
@@ -1240,97 +1403,91 @@
                 </div>
             </div>
 
-            <!-- Newsletter Broadcast Tab -->
+            <!-- Newsletter Broadcast Tab - REDESIGNED -->
             <div id="broadcast" class="tab-content">
                 <div class="newsletter-broadcast-container">
-                    <!-- Newsletter Composition Form -->
-                    <div class="newsletter-form-container">
-                        <div class="newsletter-form-header">
-                            <h3 class="newsletter-form-title">📧 Compose Newsletter</h3>
+                    <!-- Live Email Template -->
+                    <div class="newsletter-email-container">
+                        <div class="newsletter-email-header">
+                            <h3 class="newsletter-email-title">📧 Live Newsletter Editor</h3>
+                            <button class="send-newsletter-btn" id="sendNewsletterBtn">📧 Send to All Active Subscribers</button>
                         </div>
                         
                         <div id="newsletterSuccessMessage" class="success-message" style="display: none;"></div>
                         <div id="newsletterErrorMessage" class="error-message" style="display: none;"></div>
                         
-                        <form id="newsletterForm">
-                            <div class="form-group">
-                                <label>Newsletter Badge (e.g., "Weekly Update", "Special Announcement")</label>
-                                <input type="text" id="newsletterBadge" value="Newsletter Update" required>
+                        <!-- Live Email Template with Editable Fields -->
+                        <div class="live-email-template">
+                            <!-- Email Header -->
+                            <div class="email-header">
+                                <div class="email-logo">SARGAS.AI</div>
+                                <div class="email-tagline">Autonomous Maritime Solutions</div>
                             </div>
                             
-                            <div class="form-group">
-                                <label>Newsletter Title</label>
-                                <input type="text" id="newsletterTitle" placeholder="e.g., Latest Maritime Innovations" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Newsletter Subtitle</label>
-                                <input type="text" id="newsletterSubtitle" placeholder="Brief description of this newsletter">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Main Content</label>
-                                <textarea id="newsletterContent" placeholder="Write your newsletter content here. You can use HTML formatting like <strong>bold</strong>, <em>italic</em>, etc." required></textarea>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Featured Update Title (Optional)</label>
-                                <input type="text" id="featuredTitle" placeholder="e.g., Product Launch">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Featured Update Content (Optional)</label>
-                                <textarea id="featuredContent" placeholder="Special announcement or featured content"></textarea>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Include Quick Updates Section?</label>
-                                <select id="showQuickUpdates">
-                                    <option value="false">No</option>
-                                    <option value="true">Yes</option>
-                                </select>
-                            </div>
-                            
-                            <div id="quickUpdatesSection" style="display: none;">
-                                <div class="form-group">
-                                    <label>Technology Update</label>
-                                    <input type="text" id="techUpdate" placeholder="Latest technology news">
+                            <!-- Email Content -->
+                            <div class="email-main-content">
+                                <!-- Personal Greeting -->
+                                <p class="email-greeting">
+                                    Hello <span class="greeting-name">Subscriber</span>,
+                                </p>
+                                
+                                <!-- Newsletter Badge -->
+                                <div class="email-badge">
+                                    <input class="editable-field" id="newsletterBadge" placeholder="◆ NEWSLETTER UPDATE ◆" value="◆ NEWSLETTER UPDATE ◆" style="background: transparent; border: none; color: inherit; font-size: inherit; font-weight: inherit; text-transform: uppercase; letter-spacing: 2px;">
                                 </div>
                                 
-                                <div class="form-group">
-                                    <label>Operations Update</label>
-                                    <input type="text" id="operationsUpdate" placeholder="Operations news">
+                                <!-- Newsletter Title -->
+                                <h1 class="email-title">
+                                    <input class="editable-field" id="newsletterTitle" placeholder="Your Newsletter Title" style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit; font-weight: inherit; text-transform: uppercase;">
+                                </h1>
+                                
+                                <!-- Newsletter Subtitle -->
+                                <p class="email-subtitle">
+                                    <input class="editable-field" id="newsletterSubtitle" placeholder="Your newsletter subtitle will appear here" style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit;">
+                                </p>
+                                
+                                <!-- Main Newsletter Content -->
+                                <div class="email-content">
+                                    <textarea class="editable-field editable-textarea" id="newsletterContent" placeholder="Write your newsletter content here. You can use HTML formatting like <strong>bold</strong>, <em>italic</em>, etc." style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit; white-space: pre-wrap;"></textarea>
                                 </div>
                                 
-                                <div class="form-group">
-                                    <label>Partnerships Update</label>
-                                    <input type="text" id="partnershipsUpdate" placeholder="Partnership news">
+                                <!-- Optional Featured Update -->
+                                <div style="background: #2a2a2a; border: 1px solid #00ff8844; padding: 25px; margin: 30px 0; position: relative; overflow: hidden;">
+                                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, #00ff88, #00cc6a);"></div>
+                                    <div style="font-family: 'Courier New', monospace; color: #00ff88; font-size: 18px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px;">
+                                        <input class="editable-field" id="featuredTitle" placeholder="Featured Update Title (Optional)" style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit; font-weight: inherit; text-transform: uppercase;">
+                                    </div>
+                                    <div style="color: #b0b0b0; font-size: 16px; line-height: 1.6;">
+                                        <textarea class="editable-field" id="featuredContent" placeholder="Special announcement or featured content (Optional)" style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: inherit; min-height: 80px;"></textarea>
+                                    </div>
+                                </div>
+                                
+                                <!-- CTA Button -->
+                                <div style="text-align: center; margin: 40px 0;">
+                                    <div style="margin-bottom: 15px;">
+                                        <input class="editable-field" id="ctaText" placeholder="Call-to-Action Button Text (Optional)" style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: 14px; text-align: center; width: 250px;">
+                                    </div>
+                                    <div>
+                                        <input class="editable-field" id="ctaLink" placeholder="https://sargas.ai/..." style="background: transparent; border: 2px dashed rgba(0, 255, 136, 0.5); color: inherit; font-family: inherit; font-size: 12px; text-align: center; width: 300px;">
+                                    </div>
                                 </div>
                             </div>
                             
-                            <div class="form-group">
-                                <label>Call-to-Action Button Text (Optional)</label>
-                                <input type="text" id="ctaText" placeholder="e.g., Learn More">
+                            <!-- Email Footer -->
+                            <div class="email-footer">
+                                <div class="footer-content">
+                                    <p>
+                                        You're receiving this email because you subscribed to SARGAS.AI updates.<br>
+                                        <a href="#" style="color: #00ff88; text-decoration: none;">Unsubscribe</a> | 
+                                        <a href="https://sargas.ai" style="color: #00ff88; text-decoration: none;">Visit Website</a> | 
+                                        <a href="mailto:info@sargas.ai" style="color: #00ff88; text-decoration: none;">Contact</a>
+                                    </p>
+                                    <p style="margin-top: 15px;">
+                                        © 2025 SargaSolutions. All rights reserved.<br>
+                                        Protecting coastlines through autonomous technology.
+                                    </p>
+                                </div>
                             </div>
-                            
-                            <div class="form-group">
-                                <label>Call-to-Action Link (Optional)</label>
-                                <input type="url" id="ctaLink" placeholder="https://sargas.ai/...">
-                            </div>
-                            
-                            <button type="submit" class="newsletter-button" id="sendNewsletterBtn">
-                                📧 Send Newsletter to All Subscribers
-                            </button>
-                        </form>
-                    </div>
-                    
-                    <!-- Newsletter Preview -->
-                    <div class="newsletter-preview-container">
-                        <div class="newsletter-preview-header">📧 Live Preview</div>
-                        <div class="preview-content" id="newsletterPreview">
-                            <div class="preview-title">Your Newsletter Title</div>
-                            <div class="preview-subtitle">Your newsletter subtitle will appear here</div>
-                            <div class="preview-text">Your newsletter content will be previewed here as you type...</div>
                         </div>
                     </div>
                 </div>
@@ -1589,130 +1746,14 @@
             });
         });
 
-        // Newsletter form functionality
-        document.getElementById('showQuickUpdates').addEventListener('change', (e) => {
-            const quickUpdatesSection = document.getElementById('quickUpdatesSection');
-            if (e.target.value === 'true') {
-                quickUpdatesSection.style.display = 'block';
-            } else {
-                quickUpdatesSection.style.display = 'none';
-            }
-            updateNewsletterPreview();
-        });
-
-        // Live preview update - ENHANCED to show full template
-        function updateNewsletterPreview() {
-            const title = document.getElementById('newsletterTitle').value || 'Your Newsletter Title';
-            const subtitle = document.getElementById('newsletterSubtitle').value || 'Your newsletter subtitle will appear here';
-            const content = document.getElementById('newsletterContent').value || 'Your newsletter content will be previewed here as you type...';
-            const badge = document.getElementById('newsletterBadge').value || 'Newsletter Update';
-            const featuredTitle = document.getElementById('featuredTitle').value || '';
-            const featuredContent = document.getElementById('featuredContent').value || '';
-            const ctaText = document.getElementById('ctaText').value || '';
-            const ctaLink = document.getElementById('ctaLink').value || 'https://sargas.ai';
-            
-            const preview = document.getElementById('newsletterPreview');
-            
-            // Create full template preview with SARGAS.AI styling
-            const previewHtml = `
-                <div style="background: #0a0a0a; color: #ffffff; font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; border: 1px solid #00ff8844;">
-                    <!-- Header -->
-                    <div style="text-align: center; padding: 20px; border-bottom: 2px solid #00ff8844; margin-bottom: 30px;">
-                        <div style="font-family: 'Courier New', monospace; font-size: 24px; font-weight: bold; color: #00ff88; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);">
-                            SARGAS.AI
-                        </div>
-                        <div style="color: #b0b0b0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px;">
-                            Autonomous Maritime Solutions
-                        </div>
-                    </div>
-                    
-                    <!-- Main Content -->
-                    <div style="padding: 0 20px;">
-                        <!-- Personal Greeting -->
-                        <p style="color: #b0b0b0; font-size: 16px; margin-bottom: 20px;">
-                            Hello <span style="color: #00ff88; font-weight: bold;">Subscriber</span>,
-                        </p>
-                        
-                        <!-- Newsletter Badge -->
-                        <div style="display: inline-block; background: linear-gradient(45deg, #00ff88, #00cc6a); color: #0a0a0a; padding: 8px 20px; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; clip-path: polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%);">
-                            ${badge}
-                        </div>
-                        
-                        <!-- Newsletter Title -->
-                        <h1 style="font-family: 'Courier New', monospace; font-size: 28px; font-weight: bold; text-transform: uppercase; color: #ffffff; margin-bottom: 20px; text-shadow: 0 0 20px rgba(0, 255, 136, 0.3); line-height: 1.1;">
-                            ${title}
-                        </h1>
-                        
-                        <!-- Newsletter Subtitle -->
-                        ${subtitle ? `<p style="color: #b0b0b0; font-size: 18px; margin-bottom: 30px; line-height: 1.6;">${subtitle}</p>` : ''}
-                        
-                        <!-- Main Newsletter Content -->
-                        <div style="color: #b0b0b0; font-size: 16px; line-height: 1.7; margin-bottom: 30px; white-space: pre-wrap;">
-                            ${content}
-                        </div>
-                        
-                        <!-- Featured Update (if provided) -->
-                        ${featuredTitle ? `
-                        <div style="background: #2a2a2a; border: 1px solid #00ff8844; padding: 25px; margin: 30px 0; position: relative; overflow: hidden;">
-                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, #00ff88, #00cc6a);"></div>
-                            <div style="font-family: 'Courier New', monospace; color: #00ff88; font-size: 18px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px;">
-                                ${featuredTitle}
-                            </div>
-                            <div style="color: #b0b0b0; font-size: 16px; line-height: 1.6;">
-                                ${featuredContent}
-                            </div>
-                        </div>
-                        ` : ''}
-                        
-                        <!-- CTA Button (if provided) -->
-                        ${ctaText ? `
-                        <div style="text-align: center; margin: 40px 0;">
-                            <a href="${ctaLink}" style="display: inline-block; background: linear-gradient(45deg, #00ff88, #00cc6a); color: #0a0a0a; padding: 15px 30px; text-decoration: none; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; clip-path: polygon(15px 0, 100% 0, calc(100% - 15px) 100%, 0 100%); transition: all 0.3s ease;">
-                                ${ctaText}
-                            </a>
-                            
-                            <!-- Logo underneath CTA -->
-                            <div style="margin-top: 30px;">
-                                <div style="width: 60px; height: 60px; margin: 0 auto; background: #00ff88; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; color: #0a0a0a;">S.AI</div>
-                            </div>
-                        </div>
-                        ` : ''}
-                    </div>
-                    
-                    <!-- Footer -->
-                    <div style="background: #1a1a1a; border-top: 1px solid #00ff8844; padding: 40px; text-align: center; margin-top: 40px;">
-                        <div style="color: #666666; font-size: 12px; line-height: 1.5;">
-                            <p>
-                                You're receiving this email because you subscribed to SARGAS.AI updates.<br>
-                                <a href="#" style="color: #00ff88; text-decoration: none;">Unsubscribe</a> | 
-                                <a href="https://sargas.ai" style="color: #00ff88; text-decoration: none;">Visit Website</a> | 
-                                <a href="mailto:info@sargas.ai" style="color: #00ff88; text-decoration: none;">Contact</a>
-                            </p>
-                            <p style="margin-top: 15px;">
-                                © 2025 SargaSolutions. All rights reserved.<br>
-                                Protecting coastlines through autonomous technology.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            preview.innerHTML = previewHtml;
-        }
-
-        // Add event listeners for live preview - ENHANCED with more fields
-        ['newsletterTitle', 'newsletterSubtitle', 'newsletterContent', 'newsletterBadge', 'featuredTitle', 'featuredContent', 'ctaText', 'ctaLink'].forEach(id => {
-            document.getElementById(id).addEventListener('input', updateNewsletterPreview);
-        });
-
-        // Newsletter form submission
-        document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
+        // FIXED: Newsletter send button event listener
+        document.getElementById('sendNewsletterBtn').addEventListener('click', async (e) => {
             e.preventDefault();
             
             const button = document.getElementById('sendNewsletterBtn');
             const originalText = button.textContent;
             
-            // Prepare newsletter data to match your Firebase Function parameters
+            // Get data from the live template fields
             const newsletterData = {
                 title: document.getElementById('newsletterTitle').value.trim(),
                 subtitle: document.getElementById('newsletterSubtitle').value.trim(),
@@ -1724,9 +1765,9 @@
                 ctaLink: document.getElementById('ctaLink').value.trim() || ''
             };
 
-            // Validate required fields - FIXED: using correct field names
+            // Validate required fields
             if (!newsletterData.title || !newsletterData.content) {
-                showNewsletterError('Please fill in the required fields: Title and Content');
+                showNewsletterError('Please fill in the Newsletter Title and Content fields');
                 return;
             }
 
@@ -1737,25 +1778,9 @@
             button.disabled = true;
 
             try {
-                console.log('🚀 Sending newsletter broadcast...', newsletterData);
+                console.log('🚀 Sending newsletter broadcast via Resend...', newsletterData);
                 
-                // First, let's test the email health check
-                console.log('🔍 Testing email system health...');
-                const healthResponse = await fetch('https://emailhealthcheck-wbm2t3lzaq-uc.a.run.app', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-                
-                if (healthResponse.ok) {
-                    const healthResult = await healthResponse.json();
-                    console.log('📊 Email system health:', healthResult);
-                } else {
-                    console.warn('⚠️ Email health check failed');
-                }
-                
-                // Now send the newsletter
+                // Send to your Firebase Function that uses Resend
                 const response = await fetch(NEWSLETTER_BROADCAST_URL, {
                     method: 'POST',
                     headers: {
@@ -1765,7 +1790,6 @@
                 });
 
                 console.log('📧 Newsletter response status:', response.status);
-                console.log('📧 Newsletter response headers:', response.headers);
                 
                 let result;
                 try {
@@ -1780,12 +1804,17 @@
                 console.log('📧 Newsletter broadcast result:', result);
 
                 if (result.success) {
-                    updateProgress(100, `✅ Newsletter sent successfully!`, `Sent to ${result.sent} subscribers. ${result.errors || 0} failed.`);
-                    showNewsletterSuccess(`Newsletter sent successfully to ${result.sent} subscribers!`);
+                    updateProgress(100, `✅ Newsletter sent successfully!`, `Sent to ${result.sent} active subscribers. ${result.errors || 0} failed.`);
+                    showNewsletterSuccess(`Newsletter sent successfully to ${result.sent} active subscribers!`);
                     
-                    // Reset form
-                    document.getElementById('newsletterForm').reset();
-                    updateNewsletterPreview();
+                    // Clear form fields
+                    document.getElementById('newsletterTitle').value = '';
+                    document.getElementById('newsletterSubtitle').value = '';
+                    document.getElementById('newsletterContent').value = '';
+                    document.getElementById('featuredTitle').value = '';
+                    document.getElementById('featuredContent').value = '';
+                    document.getElementById('ctaText').value = '';
+                    document.getElementById('ctaLink').value = '';
                     
                     setTimeout(() => {
                         document.getElementById('closeModalBtn').style.display = 'block';
@@ -1815,7 +1844,7 @@
             updateProgress(0, 'Preparing to send newsletter...', 'Initializing broadcast system...');
             
             // Simulate progress updates
-            setTimeout(() => updateProgress(20, 'Loading subscribers...', 'Fetching newsletter subscriber list...'), 500);
+            setTimeout(() => updateProgress(20, 'Loading active subscribers...', 'Fetching newsletter subscriber list...'), 500);
             setTimeout(() => updateProgress(40, 'Preparing emails...', 'Personalizing content for each subscriber...'), 1000);
             setTimeout(() => updateProgress(60, 'Sending emails...', 'Broadcasting to subscribers (2 second delay between emails)...'), 1500);
             setTimeout(() => updateProgress(80, 'Almost complete...', 'Finishing email delivery...'), 2000);
@@ -2637,7 +2666,7 @@
             }
         }
 
-        // Load newsletter data
+        // Load newsletter data with enhanced tracking
         async function loadNewsletter() {
             try {
                 const q = query(collection(db, 'newsletter'), orderBy('timestamp', 'desc'));
@@ -2678,7 +2707,7 @@
             });
         }
 
-        // Display newsletter
+        // Enhanced display newsletter with status tracking
         function displayNewsletter(newsletters) {
             const tbody = document.getElementById('newsletterTableBody');
             tbody.innerHTML = '';
@@ -2686,19 +2715,32 @@
             newsletters.forEach(newsletter => {
                 const row = document.createElement('tr');
                 const timestamp = newsletter.timestamp ? new Date(newsletter.timestamp.toDate()).toLocaleDateString() : 'N/A';
+                const unsubscribedDate = newsletter.unsubscribedDate ? new Date(newsletter.unsubscribedDate.toDate()).toLocaleDateString() : 'N/A';
+                const isUnsubscribed = newsletter.unsubscribed === true;
                 
                 row.innerHTML = `
                     <td>${newsletter.email || 'N/A'}</td>
                     <td>${newsletter.source || 'website'}</td>
+                    <td>
+                        <span class="status-badge ${isUnsubscribed ? 'status-unsubscribed' : 'status-active'}">
+                            ${isUnsubscribed ? 'UNSUBSCRIBED' : 'ACTIVE'}
+                        </span>
+                    </td>
                     <td><span class="timestamp">${timestamp}</span></td>
+                    <td><span class="timestamp">${isUnsubscribed ? unsubscribedDate : 'N/A'}</span></td>
                 `;
                 tbody.appendChild(row);
             });
         }
 
-        // Update top stats
+        // Enhanced top stats with unsubscriber tracking
         function updateTopStats() {
+            const activeSubscribers = newsletterData.filter(newsletter => !newsletter.unsubscribed).length;
+            const unsubscribedCount = newsletterData.filter(newsletter => newsletter.unsubscribed === true).length;
+            
             document.getElementById('totalContacts').textContent = contactsData.length;
+            document.getElementById('activeSubscribers').textContent = activeSubscribers;
+            document.getElementById('unsubscribedCount').textContent = unsubscribedCount;
             document.getElementById('totalNewsletter').textContent = newsletterData.length;
             
             // Calculate today's submissions
@@ -2743,7 +2785,7 @@
         });
 
         document.getElementById('exportNewsletter').addEventListener('click', () => {
-            exportToCSV(newsletterData, 'newsletter.csv', ['email', 'source', 'timestamp']);
+            exportToCSV(newsletterData, 'newsletter.csv', ['email', 'source', 'unsubscribed', 'timestamp', 'unsubscribedDate']);
         });
 
         function exportToCSV(data, filename, fields) {
@@ -2752,7 +2794,7 @@
                 ...data.map(row => 
                     fields.map(field => {
                         let value = row[field] || '';
-                        if (field === 'timestamp' && value && value.toDate) {
+                        if ((field === 'timestamp' || field === 'unsubscribedDate') && value && value.toDate) {
                             value = new Date(value.toDate()).toLocaleDateString();
                         }
                         return `"${value.toString().replace(/"/g, '""')}"`;
