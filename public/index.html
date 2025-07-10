@@ -785,18 +785,26 @@
         }
         
         .carousel-slides {
-            display: flex;
+            position: relative;
             width: 100%;
             height: 100%;
-            transition: transform 0.5s ease;
         }
         
         .carousel-slide {
-            min-width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+        
+        .carousel-slide.active {
+            opacity: 1;
         }
         
         .solution-image {
@@ -822,6 +830,8 @@
             font-size: 16px;
             font-weight: bold;
             z-index: 10;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .carousel-nav:hover {
@@ -855,6 +865,8 @@
             background: rgba(255, 255, 255, 0.5);
             cursor: pointer;
             transition: all 0.3s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .carousel-indicator.active {
@@ -1024,128 +1036,15 @@
             100% { transform: translate(40px, 40px); }
         }
 
-        /* Command Center Interface */
-        .command-interface {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            bottom: 20px;
-            display: grid;
-            grid-template-areas: 
-                "header"
-                "main-display"
-                "main-display"
-                "control-bar";
-            grid-template-columns: 1fr;
-            grid-template-rows: 60px 1fr 1fr 80px;
-            gap: 15px;
-        }
-
-        /* Header Terminal */
-        .hub-header {
-            grid-area: header;
-            background: var(--primary-black);
-            border: 1px solid var(--accent-green);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            font-family: 'Orbitron', monospace;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hub-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
-            animation: headerScan 4s ease-in-out infinite;
-        }
-
-        @keyframes headerScan {
-            0% { left: -100%; }
-            50% { left: 100%; }
-            100% { left: -100%; }
-        }
-
-        .hub-title {
-            color: var(--accent-green);
-            font-size: 18px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .hub-status {
-            color: var(--neon-green);
-            font-size: 12px;
-            font-weight: 600;
-            animation: statusBlink 2s ease-in-out infinite;
-        }
-
-        @keyframes statusBlink {
-            0%, 90% { opacity: 1; }
-            95% { opacity: 0.3; }
-        }
-
-        /* Navigation Panel */
-        .nav-panel {
-            grid-area: nav-panel;
-            background: var(--primary-black);
-            border: 1px solid var(--accent-green);
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .nav-item {
-            background: var(--tech-gray);
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            padding: 12px 8px;
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: var(--text-gray);
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-item.active {
-            border-color: var(--accent-green);
-            color: var(--accent-green);
-            background: rgba(0, 255, 136, 0.1);
-        }
-
-        .nav-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .nav-item:hover::before {
-            left: 100%;
-        }
-
         /* Main Display */
         .main-display {
-            grid-area: main-display;
-            background: var(--primary-black);
-            border: 1px solid var(--accent-green);
-            position: relative;
-            overflow: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: none;
+            background: transparent;
         }
 
         /* Fleet Map */
@@ -1284,63 +1183,7 @@
             }
         }
 
-        /* Status Panel */
-        .status-panel {
-            grid-area: status-panel;
-            background: var(--primary-black);
-            border: 1px solid var(--accent-green);
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .status-item {
-            background: var(--tech-gray);
-            border-left: 3px solid var(--accent-green);
-            padding: 8px;
-            font-size: 9px;
-            font-weight: 600;
-            position: relative;
-        }
-
-        .status-label {
-            color: var(--text-gray);
-            text-transform: uppercase;
-            margin-bottom: 2px;
-        }
-
-        .status-value {
-            color: var(--accent-green);
-            font-family: 'Orbitron', monospace;
-        }
-
-        .status-active {
-            border-left-color: var(--neon-green);
-        }
-
-        .status-active .status-value {
-            color: var(--neon-green);
-            animation: valueFlicker 1.5s ease-in-out infinite;
-        }
-
-        @keyframes valueFlicker {
-            0%, 90% { opacity: 1; }
-            95% { opacity: 0.6; }
-        }
-
-        /* Control Bar */
-        .control-bar {
-            grid-area: control-bar;
-            background: var(--primary-black);
-            border: 1px solid var(--accent-green);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
+        /* Access Button */
         .access-button {
             background: linear-gradient(45deg, var(--accent-green), var(--secondary-green));
             color: var(--primary-black);
@@ -1889,28 +1732,6 @@
                 height: 400px;
             }
 
-            .command-interface {
-                grid-template-areas: 
-                    "header"
-                    "main-display"
-                    "control-bar";
-                grid-template-columns: 1fr;
-                grid-template-rows: 50px 1fr 60px;
-                gap: 10px;
-                top: 15px;
-                left: 15px;
-                right: 15px;
-                bottom: 15px;
-            }
-
-            .hub-title {
-                font-size: 14px;
-            }
-
-            .hub-status {
-                font-size: 10px;
-            }
-
             .access-button {
                 padding: 12px 25px;
                 font-size: 12px;
@@ -2178,18 +1999,6 @@
                 height: 350px;
             }
 
-            .command-interface {
-                top: 10px;
-                left: 10px;
-                right: 10px;
-                bottom: 10px;
-                gap: 8px;
-            }
-
-            .hub-title {
-                font-size: 12px;
-            }
-
             .access-button {
                 padding: 10px 20px;
                 font-size: 11px;
@@ -2237,10 +2046,6 @@
 
             .fleet-hub-container {
                 height: 500px;
-            }
-
-            .command-interface {
-                grid-template-columns: 1fr;
             }
 
             .problem-grid {
@@ -2305,7 +2110,6 @@
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
                 <li><a href="https://ashy-river-0a7bf7e03.5.azurestaticapps.net/login" class="fleet-hub-nav" target="_blank" rel="noopener noreferrer">Fleet Hub</a></li>
-
             </ul>
 
             <!-- Mobile Menu Toggle -->
@@ -2452,7 +2256,7 @@
                         <div class="solution-carousel">
                             <div class="carousel-container">
                                 <div class="carousel-slides">
-                                    <div class="carousel-slide">
+                                    <div class="carousel-slide active">
                                         <img src="Assets/ISAC.jpg" alt="ISAC Autonomous Collection Platform for sargassum removal" class="solution-image">
                                     </div>
                                     <div class="carousel-slide">
@@ -2479,7 +2283,7 @@
                         <div class="solution-carousel">
                             <div class="carousel-container">
                                 <div class="carousel-slides">
-                                    <div class="carousel-slide">
+                                    <div class="carousel-slide active">
                                         <img src="Assets/ISAC-SCOUT.png" alt="ISAC Scout interceptor vessel for sargassum redirection" class="solution-image">
                                     </div>
                                     <div class="carousel-slide">
@@ -2534,7 +2338,7 @@
                         <div class="solution-carousel">
                             <div class="carousel-container">
                                 <div class="carousel-slides">
-                                    <div class="carousel-slide">
+                                    <div class="carousel-slide active">
                                         <img src="Assets/SARGASCAN.png" alt="SargaScan AI camera network for sargassum detection" class="solution-image">
                                     </div>
                                     <div class="carousel-slide">
@@ -2561,7 +2365,7 @@
                         <div class="solution-carousel">
                             <div class="carousel-container">
                                 <div class="carousel-slides">
-                                    <div class="carousel-slide">
+                                    <div class="carousel-slide active">
                                         <img src="Assets/WEBAPP.png" alt="Fleet Hub web platform interface for autonomous vessel management" class="solution-image">
                                     </div>
                                     <div class="carousel-slide">
@@ -2924,158 +2728,204 @@
             });
         });
 
-        // Image Carousel functionality
+        // Improved Carousel functionality with fade transitions and intersection observer
         function initCarousels() {
             const carousels = document.querySelectorAll('.solution-carousel');
             
             carousels.forEach((carousel, carouselIndex) => {
-                const slides = carousel.querySelector('.carousel-slides');
+                const slides = carousel.querySelectorAll('.carousel-slide');
                 const prevBtn = carousel.querySelector('.carousel-prev');
                 const nextBtn = carousel.querySelector('.carousel-next');
                 const indicators = carousel.querySelectorAll('.carousel-indicator');
-                const totalSlides = carousel.querySelectorAll('.carousel-slide').length;
+                const totalSlides = slides.length;
                 
                 let currentSlide = 0;
                 let autoSlideInterval;
+                let isTransitioning = false;
+                let isVisible = true;
+                let lastInteractionTime = 0;
+                let hasStarted = false;
 
                 function updateCarousel() {
-                    const translateX = -currentSlide * 100;
-                    slides.style.transform = `translateX(${translateX}%)`;
+                    if (isTransitioning) return;
                     
-                    // Update indicators
-                    indicators.forEach((indicator, index) => {
-                        indicator.classList.toggle('active', index === currentSlide);
-                    });
+                    isTransitioning = true;
+                    
+                    // Remove active class from all slides
+                    slides.forEach(slide => slide.classList.remove('active'));
+                    indicators.forEach(indicator => indicator.classList.remove('active'));
+                    
+                    // Add active class to current slide
+                    slides[currentSlide].classList.add('active');
+                    indicators[currentSlide].classList.add('active');
+                    
+                    // Reset transition flag after fade completes
+                    setTimeout(() => {
+                        isTransitioning = false;
+                    }, 800);
                 }
 
                 function nextSlide() {
+                    if (isTransitioning) return;
                     currentSlide = (currentSlide + 1) % totalSlides;
                     updateCarousel();
                 }
 
                 function prevSlide() {
+                    if (isTransitioning) return;
                     currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
                     updateCarousel();
                 }
 
                 function goToSlide(index) {
+                    if (isTransitioning || index === currentSlide) return;
                     currentSlide = index;
                     updateCarousel();
                 }
 
-                // Auto-slide function
                 function startAutoSlide() {
-                    autoSlideInterval = setInterval(nextSlide, 2500); // 2.5 seconds
+                    if (!isVisible || !hasStarted) return;
+                    
+                    stopAutoSlide();
+                    autoSlideInterval = setInterval(() => {
+                        if (isVisible && !isTransitioning && hasStarted) {
+                            nextSlide();
+                        }
+                    }, 2500);
                 }
 
                 function stopAutoSlide() {
                     if (autoSlideInterval) {
                         clearInterval(autoSlideInterval);
+                        autoSlideInterval = null;
                     }
                 }
 
                 function restartAutoSlide() {
+                    lastInteractionTime = Date.now();
                     stopAutoSlide();
-                    startAutoSlide();
+                    
+                    setTimeout(() => {
+                        if (Date.now() - lastInteractionTime >= 1000 && hasStarted) {
+                            startAutoSlide();
+                        }
+                    }, 1000);
                 }
-                // Event listeners
-                nextBtn.addEventListener('click', () => {
+
+                // Debounce function
+                function debounce(func, wait) {
+                    let timeout;
+                    return function executedFunction(...args) {
+                        const later = () => {
+                            clearTimeout(timeout);
+                            func.apply(this, args);
+                        };
+                        clearTimeout(timeout);
+                        timeout = setTimeout(later, wait);
+                    };
+                }
+
+                // Event listeners with debouncing
+                nextBtn.addEventListener('click', debounce(() => {
                     nextSlide();
                     restartAutoSlide();
-                });
+                }, 200));
 
-                prevBtn.addEventListener('click', () => {
+                prevBtn.addEventListener('click', debounce(() => {
                     prevSlide();
                     restartAutoSlide();
-                });
+                }, 200));
                 
                 indicators.forEach((indicator, index) => {
-                indicator.addEventListener('click', () => {
-                    goToSlide(index);
-                    restartAutoSlide();
+                    indicator.addEventListener('click', debounce(() => {
+                        goToSlide(index);
+                        restartAutoSlide();
+                    }, 200));
                 });
-            });
 
-            // Start auto-slide
-            startAutoSlide();
+                // Visibility API to pause when tab is not active
+                document.addEventListener('visibilitychange', () => {
+                    isVisible = !document.hidden;
+                    if (isVisible && hasStarted) {
+                        startAutoSlide();
+                    } else {
+                        stopAutoSlide();
+                    }
+                });
 
-            // Pause auto-slide on hover
-            carousel.addEventListener('mouseenter', stopAutoSlide);
-            carousel.addEventListener('mouseleave', startAutoSlide);
+                // Pause auto-slide on hover
+                carousel.addEventListener('mouseenter', stopAutoSlide);
+                carousel.addEventListener('mouseleave', () => {
+                    if (hasStarted) startAutoSlide();
+                });
 
-                // Touch/swipe support for mobile
-                let startX = 0;
-                let startY = 0;
-                let isDown = false;
+                // Touch/swipe support
+                let touchStartX = 0;
+                let touchStartY = 0;
+                let isDragging = false;
 
                 carousel.addEventListener('touchstart', (e) => {
-                    startX = e.touches[0].clientX;
-                    startY = e.touches[0].clientY;
-                    isDown = true;
-                });
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                    isDragging = true;
+                    stopAutoSlide();
+                }, { passive: true });
 
                 carousel.addEventListener('touchmove', (e) => {
-                    if (!isDown) return;
-                    e.preventDefault();
-                });
+                    if (!isDragging) return;
+                    
+                    const touchX = e.touches[0].clientX;
+                    const touchY = e.touches[0].clientY;
+                    const diffX = touchStartX - touchX;
+                    const diffY = touchStartY - touchY;
+                    
+                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
 
                 carousel.addEventListener('touchend', (e) => {
-                    if (!isDown) return;
-                    isDown = false;
+                    if (!isDragging) return;
                     
-                    const endX = e.changedTouches[0].clientX;
-                    const endY = e.changedTouches[0].clientY;
-                    const diffX = startX - endX;
-                    const diffY = startY - endY;
+                    isDragging = false;
+                    const touchEndX = e.changedTouches[0].clientX;
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const diffX = touchStartX - touchEndX;
+                    const diffY = touchStartY - touchEndY;
                     
-                    // Check if horizontal swipe is more significant than vertical
-                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 30) {
+                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
                         if (diffX > 0) {
                             nextSlide();
                         } else {
                             prevSlide();
                         }
                     }
-                });
-
-                // Mouse drag support for desktop
-                let isMouseDown = false;
-                let startMouseX = 0;
-
-                carousel.addEventListener('mousedown', (e) => {
-                    isMouseDown = true;
-                    startMouseX = e.clientX;
-                    carousel.style.cursor = 'grabbing';
-                });
-
-                carousel.addEventListener('mousemove', (e) => {
-                    if (!isMouseDown) return;
-                    e.preventDefault();
-                });
-
-                carousel.addEventListener('mouseup', (e) => {
-                    if (!isMouseDown) return;
-                    isMouseDown = false;
-                    carousel.style.cursor = 'grab';
                     
-                    const endMouseX = e.clientX;
-                    const diffX = startMouseX - endMouseX;
-                    
-                    if (Math.abs(diffX) > 30) {
-                        if (diffX > 0) {
-                            nextSlide();
-                        } else {
-                            prevSlide();
+                    restartAutoSlide();
+                }, { passive: true });
+
+                // Intersection Observer to start carousel when in view
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                            if (!hasStarted) {
+                                hasStarted = true;
+                                // Start with a slight delay for better UX
+                                setTimeout(() => {
+                                    if (hasStarted) startAutoSlide();
+                                }, carouselIndex * 200 + 500);
+                            }
+                        } else if (entry.intersectionRatio < 0.1) {
+                            // Stop when completely out of view
+                            stopAutoSlide();
                         }
-                    }
+                    });
+                }, {
+                    threshold: [0.1, 0.5],
+                    rootMargin: '-10% 0px -10% 0px'
                 });
 
-                carousel.addEventListener('mouseleave', () => {
-                    if (isMouseDown) {
-                        isMouseDown = false;
-                        carousel.style.cursor = 'grab';
-                    }
-                });
+                observer.observe(carousel);
 
                 // Set initial cursor
                 carousel.style.cursor = 'grab';
@@ -3404,6 +3254,7 @@
                     margin-top: 15px;
                     padding: 12px 20px;
                     text-align: center;
+                    color: var(--text-white);
                     font-size: 14px;
                     font-weight: 600;
                     border-radius: 4px;
