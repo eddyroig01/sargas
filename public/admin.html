@@ -1908,7 +1908,8 @@
         const ADMIN_CODE = 'SARGAS2025';
 
         // Newsletter broadcast URL
-        const NEWSLETTER_BROADCAST_URL = 'https://us-central1-sargasolutions-webbpage.cloudfunctions.net/sendNewsletterBroadcast';
+        const NEWSLETTER_BROADCAST_URL = 'https://us-central1-sargasolutions-webapp.cloudfunctions.net/sendNewsletterBroadcast';
+
 
         // FIXED: Initialize Traffic Chart with better error handling
         function initializeTrafficChart() {
@@ -2022,7 +2023,8 @@
             try {
                 console.log(`📊 Loading real ${metric} data for ${days} ${days === 1 ? 'day (hourly)' : 'days'}...`);
                 
-                const response = await fetch('https://us-central1-sargasolutions-webbpage.cloudfunctions.net/getAnalyticsData', {
+                const response = await fetch('https://us-central1-sargasolutions-webapp.cloudfunctions.net/getAnalyticsData', {
+
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
