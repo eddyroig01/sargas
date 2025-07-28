@@ -20,7 +20,6 @@ setGlobalOptions({
   region: 'us-central1',
   memory: '512MiB',
   timeoutSeconds: 540,
-  serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webbpage.iam.gserviceaccount.com'
 });
 
 // Initialize Firestore to use default database
