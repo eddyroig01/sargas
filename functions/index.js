@@ -42,8 +42,7 @@ const analyticsDataClient = new BetaAnalyticsDataClient({
 });
 
 // Your GA4 Property ID
-const GA4_PROPERTY_ID = '495789768';
-
+const GA4_PROPERTY_ID = '498578057';
 // =============================================================================
 // SIMPLIFIED CACHING SYSTEM - 7 DAYS ONLY
 // =============================================================================
