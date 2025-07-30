@@ -1,6 +1,6 @@
-// Complete Firebase Functions with Analytics + Email System + FIXED TO 7 DAYS ONLY
-// UPDATED: Simplified to only support reliable 7-day analytics data
-// NO SAMPLE DATA - Real GA4 data only with 7-day focus
+// Complete Firebase Functions with FIXED GA4 Authentication + Email System
+// UPDATED: Uses existing Firebase service account with simplified authentication
+// Your service account is already configured in GA4 with Administrator permissions
 
 const { onRequest } = require('firebase-functions/v2/https');
 const { onDocumentCreated } = require('firebase-functions/v2/firestore');
@@ -15,7 +15,6 @@ const path = require('path');
 // Initialize Firebase Admin
 const app = initializeApp();
 
-// *** CRITICAL FIX: Specify which service account to use ***
 setGlobalOptions({
   region: 'us-central1',
   memory: '512MiB',
@@ -36,15 +35,21 @@ function getResendApiKey() {
   return process.env.RESEND_API_KEY;
 }
 
-// Initialize Google Analytics Data API client
+// *** FIXED: GA4 Authentication with Application Default Credentials ***
+// Uses the existing firebase-adminsdk service account automatically
+// No keys or secrets needed - just proper scopes
 const analyticsDataClient = new BetaAnalyticsDataClient({
-  keyFilename: './service-account-key.json',
+  scopes: [
+    'https://www.googleapis.com/auth/analytics.readonly',
+    'https://www.googleapis.com/auth/cloud-platform'
+  ]
 });
 
 // Your GA4 Property ID
 const GA4_PROPERTY_ID = '498578057';
+
 // =============================================================================
-// SIMPLIFIED CACHING SYSTEM - 7 DAYS ONLY
+// CACHING SYSTEM - 7 DAYS ONLY
 // =============================================================================
 
 // In-memory cache for analytics data - simplified to only cache what works
@@ -111,7 +116,7 @@ function handleAnalyticsError(error, errorType = 'unknown') {
 }
 
 // =============================================================================
-// EMAIL SYSTEM FUNCTIONS (keeping your existing email code unchanged)
+// EMAIL SYSTEM FUNCTIONS
 // =============================================================================
 
 // Template loading and processing functions
@@ -314,7 +319,7 @@ async function createTimeSeriesFromAggregateData() {
 }
 
 // =============================================================================
-// EMAIL FUNCTIONS (unchanged - keeping all your existing email functionality)
+// EMAIL FUNCTIONS
 // =============================================================================
 
 exports.sendWelcomeEmail = onDocumentCreated({
@@ -634,7 +639,65 @@ exports.sendNewsletterBroadcast = onRequest({
 });
 
 // =============================================================================
-// UTILITY FUNCTIONS (unchanged)
+// TEST FUNCTION FOR SIMPLIFIED AUTHENTICATION
+// =============================================================================
+
+exports.testGA4AuthSimplified = onRequest({ 
+  invoker: 'public' 
+}, async (req, res) => {
+  setCORSHeaders(res);
+  
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
+
+  try {
+    console.log('🔐 Testing simplified GA4 authentication...');
+    console.log('🔑 Using firebase-adminsdk service account automatically');
+    
+    // Test the connection
+    const [response] = await analyticsDataClient.runReport({
+      property: `properties/${GA4_PROPERTY_ID}`,
+      dateRanges: [{ startDate: 'today', endDate: 'today' }],
+      metrics: [{ name: 'activeUsers' }]
+    });
+
+    const activeUsers = response.rows?.[0]?.metricValues?.[0]?.value || '0';
+    
+    res.json({
+      success: true,
+      message: '✅ GA4 Authentication Working with Existing Service Account!',
+      activeUsers: activeUsers,
+      timestamp: new Date().toISOString(),
+      authMethod: 'application-default-credentials',
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
+      propertyId: GA4_PROPERTY_ID,
+      securityNote: 'Using existing Firebase service account - no key download required'
+    });
+    
+  } catch (error) {
+    console.error('❌ GA4 Auth test failed:', error);
+    
+    res.json({
+      success: false,
+      error: error.message,
+      code: error.code,
+      details: error.details || 'No additional details',
+      timestamp: new Date().toISOString(),
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
+      troubleshooting: {
+        note: 'Service account already configured in GA4 with Administrator role',
+        step1: 'Wait 5-10 minutes for permissions to propagate',
+        step2: 'Verify property ID 498578057 is correct',
+        step3: 'Check that GA4 APIs are enabled in Google Cloud Console'
+      }
+    });
+  }
+});
+
+// =============================================================================
+// UTILITY FUNCTIONS
 // =============================================================================
 
 exports.emailHealthCheck = onRequest({
@@ -679,7 +742,7 @@ exports.emailHealthCheck = onRequest({
       templates: templateStatus,
       databaseStatus: 'SKIPPED - Testing in other functions',
       rateLimiting: 'Enabled (2 seconds)',
-      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webbpage.iam.gserviceaccount.com',
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
       message: 'Email system is operational'
     });
     
@@ -775,6 +838,8 @@ exports.diagnoseGA4 = onRequest({ invoker: 'public' }, async (req, res) => {
     const diagnostics = {
       timestamp: new Date().toISOString(),
       propertyId: GA4_PROPERTY_ID,
+      authMethod: 'application-default-credentials',
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
       checks: {}
     };
     
@@ -794,15 +859,17 @@ exports.diagnoseGA4 = onRequest({ invoker: 'public' }, async (req, res) => {
       
       diagnostics.checks.apiConnection = {
         status: 'SUCCESS',
-        message: 'GA4 API connection successful',
-        dataRows: response.rows?.length || 0
+        message: 'GA4 API connection successful with simplified auth',
+        dataRows: response.rows?.length || 0,
+        authMethod: 'application-default-credentials'
       };
       
     } catch (apiError) {
       diagnostics.checks.apiConnection = {
         status: 'FAILED',
         error: apiError.message,
-        code: apiError.code
+        code: apiError.code,
+        authMethod: 'application-default-credentials'
       };
     }
     
@@ -836,11 +903,12 @@ exports.healthCheck = onRequest({ invoker: 'public' }, async (req, res) => {
     const result = {
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      message: 'Firebase Functions with GA4 integration (7-day optimized) and Email system operational',
-      version: '7.0-simplified-7day-only',
+      message: 'Firebase Functions with SIMPLIFIED GA4 integration and Email system operational',
+      version: '8.1-simplified-ga4-authentication',
       propertyId: GA4_PROPERTY_ID,
-      features: ['real-time-analytics', 'ga4-integration', 'caribbean-focus', 'state-level-data', 'resend-email-system', '7day-time-series-only', 'smart-caching'],
-      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webbpage.iam.gserviceaccount.com',
+      authMethod: 'application-default-credentials',
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
+      features: ['real-time-analytics', 'simplified-ga4-integration', 'caribbean-focus', 'state-level-data', 'resend-email-system', '7day-time-series-only', 'smart-caching'],
       timeRangeSupport: '7 days only (most reliable)',
       caching: {
         mainData: `${analyticsCache.mainData.duration / 1000 / 60} minutes`,
@@ -856,7 +924,9 @@ exports.healthCheck = onRequest({ invoker: 'public' }, async (req, res) => {
   }
 });
 
-exports.testAnalytics = onRequest({ invoker: 'public' }, async (req, res) => {
+exports.testAnalytics = onRequest({ 
+  invoker: 'public' 
+}, async (req, res) => {
   setCORSHeaders(res);
   
   if (req.method === 'OPTIONS') {
@@ -865,7 +935,7 @@ exports.testAnalytics = onRequest({ invoker: 'public' }, async (req, res) => {
   }
 
   try {
-    // Test GA4 connection with a simple request
+    // Test GA4 connection with simplified authentication
     const [response] = await analyticsDataClient.runReport({
       property: `properties/${GA4_PROPERTY_ID}`,
       dateRanges: [
@@ -881,9 +951,11 @@ exports.testAnalytics = onRequest({ invoker: 'public' }, async (req, res) => {
 
     const result = {
       success: true,
-      message: 'Google Analytics 4 connection successful!',
+      message: '✅ Google Analytics 4 connection successful with SIMPLIFIED authentication!',
       timestamp: new Date().toISOString(),
       propertyId: GA4_PROPERTY_ID,
+      authMethod: 'application-default-credentials',
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
       dataAvailable: response.rows?.length > 0,
       activeUsers: response.rows?.[0]?.metricValues?.[0]?.value || '0',
       testConnection: 'PASSED',
@@ -898,14 +970,17 @@ exports.testAnalytics = onRequest({ invoker: 'public' }, async (req, res) => {
       message: `GA4 connection failed: ${error.message}`,
       timestamp: new Date().toISOString(),
       error: error.code || 'UNKNOWN_ERROR',
+      authMethod: 'application-default-credentials',
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
       testConnection: 'FAILED',
+      troubleshooting: 'Service account already configured - check API enablement',
       cors: 'enabled'
     });
   }
 });
 
 // =============================================================================
-// MAIN ANALYTICS DATA FUNCTION - SIMPLIFIED FOR 7 DAYS ONLY
+// MAIN ANALYTICS DATA FUNCTION - SIMPLIFIED AUTHENTICATION
 // =============================================================================
 exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => {
   setCORSHeaders(res);
@@ -918,7 +993,7 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
   try {
     const { includeTimeSeries = false } = req.body || {};
     
-    console.log(`🔄 Analytics request: timeSeries=${includeTimeSeries} (7-day data only)`);
+    console.log(`🔄 Analytics request with SIMPLIFIED auth: timeSeries=${includeTimeSeries} (7-day data only)`);
 
     // Check cache for main analytics data
     const cachedMain = getCachedData('mainData');
@@ -927,7 +1002,7 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
     if (cachedMain) {
       mainAnalyticsData = cachedMain;
     } else {
-      console.log('📊 Cache miss - fetching fresh main analytics data...');
+      console.log('📊 Cache miss - fetching fresh main analytics data with simplified auth...');
       
       // Get real-time active users
       const [realtimeResponse] = await analyticsDataClient.runRealtimeReport({
@@ -1025,7 +1100,9 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
       mainAnalyticsData = {
         success: true,
         timestamp: new Date().toISOString(),
-        source: 'google-analytics-4',
+        source: 'google-analytics-4-simplified',
+        authMethod: 'application-default-credentials',
+        serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
         propertyId: GA4_PROPERTY_ID,
         realTime: { activeUsers: realTimeUsers },
         traffic: {
@@ -1048,9 +1125,8 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
         },
         dataRange: '7 days',
         message: hasHistoricalData ? 
-          `Real GA4 data with ${locations.filter(l => l.hasStateData).length} states retrieved successfully` : 
-          'Real-time GA4 data available - state data will appear in 24-48 hours',
-        serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webbpage.iam.gserviceaccount.com',
+          `✅ Real GA4 data with simplified authentication - ${locations.filter(l => l.hasStateData).length} states retrieved successfully` : 
+          '✅ Real-time GA4 data available with simplified auth - state data will appear in 24-48 hours',
         cors: 'enabled'
       };
       
@@ -1066,13 +1142,13 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
       if (cachedTimeSeries) {
         timeSeriesData = cachedTimeSeries;
       } else {
-        console.log(`📊 Cache miss - fetching fresh 7-day time-series data...`);
+        console.log(`📊 Cache miss - fetching fresh 7-day time-series data with simplified auth...`);
         try {
           timeSeriesData = await get7DayTimeSeriesData();
           setCachedData(timeSeriesData, 'timeSeries7d');
         } catch (timeSeriesError) {
           console.error('❌ 7-day time-series fetch failed:', timeSeriesError);
-          timeSeriesData = []; // Empty array instead of sample data
+          timeSeriesData = [];
         }
       }
     }
@@ -1095,13 +1171,13 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
       };
     }
     
-    console.log('✅ Successfully returning GA4 data (7-day optimized)');
+    console.log('✅ Successfully returning GA4 data with SIMPLIFIED authentication');
     res.json(result);
     
   } catch (error) {
-    console.error('❌ Analytics data error:', error);
+    console.error('❌ Analytics data error with simplified auth:', error);
     
-    // Check specific error types and return appropriate empty responses
+    // Check specific error types and return appropriate responses
     if (error.message && error.message.includes('429')) {
       res.json(handleAnalyticsError(error.message, 'rate-limit'));
       return;
@@ -1112,18 +1188,23 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
       return;
     }
     
+    if (error.message && error.message.includes('UNAUTHENTICATED')) {
+      res.json(handleAnalyticsError(error.message, 'authentication-failed'));
+      return;
+    }
+    
     if (error.message && error.message.includes('INVALID_ARGUMENT')) {
       res.json(handleAnalyticsError(error.message, 'invalid-configuration'));
       return;
     }
     
-    // Generic error fallback - NO SAMPLE DATA
+    // Generic error fallback
     res.json(handleAnalyticsError(error.message || error, 'service-unavailable'));
   }
 });
 
 // =============================================================================
-// SIMPLIFIED CACHE STATUS ENDPOINT
+// CACHE STATUS ENDPOINT
 // =============================================================================
 exports.cacheStatus = onRequest({ invoker: 'public' }, async (req, res) => {
   setCORSHeaders(res);
@@ -1138,6 +1219,8 @@ exports.cacheStatus = onRequest({ invoker: 'public' }, async (req, res) => {
     
     const cacheInfo = {
       timestamp: new Date().toISOString(),
+      authMethod: 'application-default-credentials',
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
       mainData: {
         cached: !!analyticsCache.mainData.data,
         age: analyticsCache.mainData.timestamp ? Math.round((now - analyticsCache.mainData.timestamp) / 1000) : null,
@@ -1161,9 +1244,9 @@ exports.cacheStatus = onRequest({ invoker: 'public' }, async (req, res) => {
       analyticsCache.timeSeries7d.data = null;
       analyticsCache.timeSeries7d.timestamp = null;
       
-      cacheInfo.message = 'Cache cleared successfully';
+      cacheInfo.message = 'Cache cleared successfully (Simplified auth version)';
     } else {
-      cacheInfo.message = 'Cache status retrieved (7-day optimized)';
+      cacheInfo.message = 'Cache status retrieved (Simplified GA4 authentication)';
     }
     
     res.json(cacheInfo);
