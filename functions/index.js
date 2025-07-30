@@ -1,5 +1,5 @@
 // Complete Firebase Functions with Analytics + Email System + FIXED TO 7 DAYS ONLY
-// UPDATED: Simplified to only support reliable 7-day analytics data
+// UPDATED: Fixed project ID mismatch - corrected to sargasolutions-webapp
 // NO SAMPLE DATA - Real GA4 data only with 7-day focus
 
 const { onRequest } = require('firebase-functions/v2/https');
@@ -15,7 +15,7 @@ const path = require('path');
 // Initialize Firebase Admin
 const app = initializeApp();
 
-// *** CRITICAL FIX: Specify which service account to use ***
+// *** FIXED: Updated to correct project configuration ***
 setGlobalOptions({
   region: 'us-central1',
   memory: '512MiB',
@@ -634,7 +634,7 @@ exports.sendNewsletterBroadcast = onRequest({
 });
 
 // =============================================================================
-// UTILITY FUNCTIONS (unchanged)
+// UTILITY FUNCTIONS (updated with correct project info)
 // =============================================================================
 
 exports.emailHealthCheck = onRequest({
@@ -679,7 +679,8 @@ exports.emailHealthCheck = onRequest({
       templates: templateStatus,
       databaseStatus: 'SKIPPED - Testing in other functions',
       rateLimiting: 'Enabled (2 seconds)',
-      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webbpage.iam.gserviceaccount.com',
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
+      projectId: 'sargasolutions-webapp',
       message: 'Email system is operational'
     });
     
@@ -774,7 +775,9 @@ exports.diagnoseGA4 = onRequest({ invoker: 'public' }, async (req, res) => {
   try {
     const diagnostics = {
       timestamp: new Date().toISOString(),
+      projectId: 'sargasolutions-webapp',
       propertyId: GA4_PROPERTY_ID,
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
       checks: {}
     };
     
@@ -837,10 +840,11 @@ exports.healthCheck = onRequest({ invoker: 'public' }, async (req, res) => {
       status: 'healthy',
       timestamp: new Date().toISOString(),
       message: 'Firebase Functions with GA4 integration (7-day optimized) and Email system operational',
-      version: '7.0-simplified-7day-only',
+      version: '7.1-fixed-project-id',
+      projectId: 'sargasolutions-webapp',
       propertyId: GA4_PROPERTY_ID,
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
       features: ['real-time-analytics', 'ga4-integration', 'caribbean-focus', 'state-level-data', 'resend-email-system', '7day-time-series-only', 'smart-caching'],
-      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webbpage.iam.gserviceaccount.com',
       timeRangeSupport: '7 days only (most reliable)',
       caching: {
         mainData: `${analyticsCache.mainData.duration / 1000 / 60} minutes`,
@@ -883,6 +887,8 @@ exports.testAnalytics = onRequest({ invoker: 'public' }, async (req, res) => {
       success: true,
       message: 'Google Analytics 4 connection successful!',
       timestamp: new Date().toISOString(),
+      projectId: 'sargasolutions-webapp',
+      serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
       propertyId: GA4_PROPERTY_ID,
       dataAvailable: response.rows?.length > 0,
       activeUsers: response.rows?.[0]?.metricValues?.[0]?.value || '0',
@@ -897,6 +903,7 @@ exports.testAnalytics = onRequest({ invoker: 'public' }, async (req, res) => {
       success: false,
       message: `GA4 connection failed: ${error.message}`,
       timestamp: new Date().toISOString(),
+      projectId: 'sargasolutions-webapp',
       error: error.code || 'UNKNOWN_ERROR',
       testConnection: 'FAILED',
       cors: 'enabled'
@@ -1026,7 +1033,9 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
         success: true,
         timestamp: new Date().toISOString(),
         source: 'google-analytics-4',
+        projectId: 'sargasolutions-webapp',
         propertyId: GA4_PROPERTY_ID,
+        serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webapp.iam.gserviceaccount.com',
         realTime: { activeUsers: realTimeUsers },
         traffic: {
           sessions: hasHistoricalData ? totalSessions : (hasRealTimeData ? realTimeUsers : 0),
@@ -1050,7 +1059,6 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
         message: hasHistoricalData ? 
           `Real GA4 data with ${locations.filter(l => l.hasStateData).length} states retrieved successfully` : 
           'Real-time GA4 data available - state data will appear in 24-48 hours',
-        serviceAccount: 'firebase-adminsdk-fbsvc@sargasolutions-webbpage.iam.gserviceaccount.com',
         cors: 'enabled'
       };
       
@@ -1095,7 +1103,7 @@ exports.getAnalyticsData = onRequest({ invoker: 'public' }, async (req, res) => 
       };
     }
     
-    console.log('✅ Successfully returning GA4 data (7-day optimized)');
+    console.log('✅ Successfully returning GA4 data (7-day optimized) - Fixed project ID');
     res.json(result);
     
   } catch (error) {
@@ -1138,6 +1146,7 @@ exports.cacheStatus = onRequest({ invoker: 'public' }, async (req, res) => {
     
     const cacheInfo = {
       timestamp: new Date().toISOString(),
+      projectId: 'sargasolutions-webapp',
       mainData: {
         cached: !!analyticsCache.mainData.data,
         age: analyticsCache.mainData.timestamp ? Math.round((now - analyticsCache.mainData.timestamp) / 1000) : null,
@@ -1163,7 +1172,7 @@ exports.cacheStatus = onRequest({ invoker: 'public' }, async (req, res) => {
       
       cacheInfo.message = 'Cache cleared successfully';
     } else {
-      cacheInfo.message = 'Cache status retrieved (7-day optimized)';
+      cacheInfo.message = 'Cache status retrieved (7-day optimized, fixed project ID)';
     }
     
     res.json(cacheInfo);
